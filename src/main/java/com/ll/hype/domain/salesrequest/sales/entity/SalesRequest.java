@@ -1,13 +1,17 @@
 package com.ll.hype.domain.salesrequest.sales.entity;
 
+import com.ll.hype.domain.member.member.entity.Member;
+import com.ll.hype.domain.shoes.shoes.entity.Shoes;
+import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.global.jpa.BaseEntity;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,13 +20,21 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class SalesRequest extends BaseEntity {
-    private String shoesId;
-    private int shoesSize;
-    private Long memberId;
+    @ManyToOne
+    private Shoes shoesId;
+
+    @ManyToOne
+    private ShoesSize shoesSize;
+
+    @ManyToOne
+    private Member memberId;
+
     private Long price;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String account;
     private String sendAddressId;
-    private String status;
+
+    @Enumerated(value = EnumType.STRING)
+    private Status status;
 }

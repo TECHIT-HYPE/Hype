@@ -4,6 +4,8 @@ import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.global.enums.QuestionCategory;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,8 +19,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CustomerQ extends BaseEntity {
+    @Enumerated(value = EnumType.STRING)
     private QuestionCategory questionCategory;
-
 
     @ManyToOne
     private Member member;
