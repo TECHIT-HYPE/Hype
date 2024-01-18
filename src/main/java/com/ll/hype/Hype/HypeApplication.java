@@ -9,5 +9,4 @@ public class HypeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(HypeApplication.class, args);
 	}
-
 }
