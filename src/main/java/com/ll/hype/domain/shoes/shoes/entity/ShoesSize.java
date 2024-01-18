@@ -2,6 +2,8 @@ package com.ll.hype.domain.shoes.shoes.entity;
 
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ShoesSize extends BaseEntity {
-    private String shoesId;
+    @ManyToOne
+    private Shoes shoes;
     private int size;
-
 }
