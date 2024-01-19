@@ -1,13 +1,10 @@
 package com.ll.hype.domain.orderrequest.order.entity;
 
 import com.ll.hype.domain.member.member.entity.Member;
-import com.ll.hype.domain.orderrequest.order.entity.Status;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
-import java.time.LocalDate;
-
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
@@ -17,6 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @SuperBuilder
@@ -24,13 +23,13 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderRequest extends BaseEntity {
     @ManyToOne
-    private Shoes shoesId;
+    private Shoes shoes;
 
     @ManyToOne
     private ShoesSize shoesSize;
 
     @ManyToOne
-    private Member memberId;
+    private Member member;
 
     private Long price;
     private LocalDate startDate;
