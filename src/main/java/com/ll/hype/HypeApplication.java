@@ -1,4 +1,4 @@
-package com.ll.hype.Hype;
+package com.ll.hype;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

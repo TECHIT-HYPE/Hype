@@ -3,6 +3,7 @@ package com.ll.hype.domain.wishlist.wishlist.entity;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,12 +17,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class WishListShoes extends BaseEntity {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private WishList wishList;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Shoes shoes;
     private int shoesSize;
-
-
 }

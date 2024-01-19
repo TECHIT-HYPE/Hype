@@ -1,9 +1,9 @@
 package com.ll.hype.domain.shoes.shoes.entity;
 
-import com.ll.hype.domain.brand.brand.entity.Brand;
 import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.enums.StatusCode;
 import com.ll.hype.global.jpa.BaseEntity;
+import com.ll.hype.domain.brand.brand.entity.Brand;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Shoes extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Brand brand;
 
     private String korName; // 한글명

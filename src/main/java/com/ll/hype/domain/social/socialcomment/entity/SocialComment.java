@@ -6,6 +6,7 @@ import com.ll.hype.domain.social.socialrecomment.entity.SocialReComment;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
@@ -23,15 +24,15 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class SocialComment extends BaseEntity {
-    @ManyToOne
-    private Social socialBoard;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Social social;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     private String comment;
-    private int like;
+    private int likes;
 
-    @OneToMany(mappedBy = "socialBoardComment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "socialComment", cascade = CascadeType.ALL)
     private List<SocialReComment> socialReComments = new ArrayList<>();
 }

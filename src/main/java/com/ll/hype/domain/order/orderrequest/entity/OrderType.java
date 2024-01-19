@@ -1,4 +1,4 @@
-package com.ll.hype.domain.order.transactionrequest.entity;
+package com.ll.hype.domain.order.orderrequest.entity;
 
 public enum OrderType {
     ORDER("ORDER"), // 구매요청
