@@ -27,4 +27,8 @@ public class Brand extends BaseEntity {
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
     List<Shoes> shoes = new ArrayList<>(); // 브랜드에서 가지고 있는 신발
+
+    public void updateStatus(StatusCode status) {
+        this.status = status;
+    }
 }
