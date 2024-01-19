@@ -1,4 +1,4 @@
-package com.ll.hype.domain.salesrequest.sales.entity;
+package com.ll.hype.global.enums;
 
 public enum Status {
     BIDDING("BIDDING"),

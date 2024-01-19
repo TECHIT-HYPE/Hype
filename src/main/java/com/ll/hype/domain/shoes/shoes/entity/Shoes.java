@@ -24,22 +24,22 @@ public class Shoes extends BaseEntity {
     @ManyToOne
     private Brand brand;
 
-    private String korName;
-    private String engName;
-    private String model;
-    private int price;
+    private String korName; // 한글명
+    private String engName; // 영문명
+    private String model; // 모델명
+    private int price; // 발매가
     private String release; //출시일
 
     @Enumerated(value = EnumType.STRING)
     private ShoesCategory shoesCategory;
 
-    private String color;
+    private String color; // 신발 색상
 
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
     @Enumerated(value = EnumType.STRING)
-    private StatusCode status;
+    private StatusCode status; // 공개 비공개
 
     @OneToMany(mappedBy = "shoes", cascade = CascadeType.ALL)
     List<ShoesSize> sizes = new ArrayList<>();

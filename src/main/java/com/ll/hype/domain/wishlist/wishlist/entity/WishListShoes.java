@@ -16,7 +16,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class WishListShoes extends BaseEntity {
-
     @ManyToOne
     private WishList wishList;
 

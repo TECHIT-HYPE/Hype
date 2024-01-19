@@ -24,7 +24,6 @@ import java.util.List;
 public class Social extends BaseEntity {
     @ManyToOne
     private Member member;
-
     private String content;
     private int like;
 
