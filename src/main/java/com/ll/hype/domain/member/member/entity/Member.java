@@ -5,13 +5,13 @@ import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails.Address;
+
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -29,8 +29,6 @@ public class Member extends BaseEntity {
 
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
-
-//    private Address address;
 
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
