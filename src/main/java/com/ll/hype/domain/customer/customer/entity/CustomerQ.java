@@ -1,8 +1,8 @@
 package com.ll.hype.domain.customer.customer.entity;
 
-import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.global.enums.QuestionCategory;
 import com.ll.hype.global.jpa.BaseEntity;
+import com.ll.hype.domain.member.member.entity.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

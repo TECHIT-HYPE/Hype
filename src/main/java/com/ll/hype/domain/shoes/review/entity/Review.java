@@ -1,7 +1,7 @@
 package com.ll.hype.domain.shoes.review.entity;
 
-import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
+import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;

@@ -1,8 +1,8 @@
 package com.ll.hype.domain.social.socialrecomment.entity;
 
+import com.ll.hype.global.jpa.BaseEntity;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.social.socialcomment.entity.SocialComment;
-import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;

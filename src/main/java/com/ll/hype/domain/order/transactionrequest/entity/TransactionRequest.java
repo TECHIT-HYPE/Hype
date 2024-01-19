@@ -1,10 +1,10 @@
 package com.ll.hype.domain.order.transactionrequest.entity;
 
-import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.global.enums.Address;
 import com.ll.hype.global.enums.Status;
+import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

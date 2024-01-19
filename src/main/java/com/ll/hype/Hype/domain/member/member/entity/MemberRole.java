@@ -1,4 +1,4 @@
-package com.ll.hype.domain.member.member.entity;
+package com.ll.hype.Hype.domain.member.member.entity;
 
 public enum MemberRole {
     MEMBER("MEMBER"),

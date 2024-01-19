@@ -1,4 +1,4 @@
-package com.ll.hype.global.security;
+package com.ll.hype.Hype.global.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
