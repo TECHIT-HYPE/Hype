@@ -1,8 +1,6 @@
 package com.ll.hype.domain.order.order.entity;
 
-import com.ll.hype.domain.orderrequest.order.entity.OrderRequest;
 import com.ll.hype.domain.order.transactionrequest.entity.TransactionRequest;
-import com.ll.hype.domain.salesrequest.sales.entity.SalesRequest;
 import com.ll.hype.global.enums.Address;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.*;
