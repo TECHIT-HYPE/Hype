@@ -19,7 +19,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Brand extends BaseEntity {
+    @Column(unique = true)
     private String korName; // 브랜드 한글명
+
+    @Column(unique = true)
     private String engName; // 브랜드 영문명
 
     @Enumerated(value = EnumType.STRING)

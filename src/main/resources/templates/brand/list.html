@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html" ; charset="UTF-8">
+</head>
+<body>
+<h2>Brand List</h2>
+<table border="1">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Create Date</th>
+    <th>Modify Date</th>
+    <th>Korean Name</th>
+    <th>English Name</th>
+    <th>Status</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="brand : ${brands}">
+    <td th:text="${brand.id}"></td>
+    <td th:text="${brand.createDate}"></td>
+    <td th:text="${brand.modifyDate}"></td>
+    <td th:text="${brand.korName}"></td>
+    <td th:text="${brand.engName}"></td>
+    <td th:text="${brand.status}"></td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
