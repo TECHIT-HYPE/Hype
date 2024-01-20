@@ -4,6 +4,7 @@ import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.global.enums.Gender;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -15,28 +16,32 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JoinRequest {
-    @NotNull
+    @NotBlank(message = "이메일은 필수 항목입니다.")
     private String email;
 
-    @NotNull
+    @NotBlank(message = "비밀번호는 필수 항목입니다.")
     private String password;
 
-    @NotNull
+    @NotBlank(message = "비밀번호 확인은 필수 항목입니다.")
+    private String passwordConfirm;
+
+    @NotBlank(message = "본명은 필수 항목입니다.")
     private String name; // 본명
 
-    @NotNull
+    @NotBlank(message = "별명은 필수 항목입니다.")
     private String nickname; // 별명
 
-    @NotNull
+    @NotBlank(message = "전화번호는 필수 항목입니다.")
     private String phoneNumber; // 010-1234-5678
 
-    @NotNull
+    @NotNull(message = "생년월일는 필수 항목입니다.")
     private LocalDate birthday;
 
-    private int shoesSize; // 회원 신발 사이즈
-
+    @NotNull(message = "성별 필수 항목입니다.")
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
+
+    private Integer shoesSize; // 회원 신발 사이즈
 
     public static Member toEntity(JoinRequest joinRequest) {
         return Member.builder()
@@ -46,8 +51,8 @@ public class JoinRequest {
                 .nickname(joinRequest.nickname)
                 .phoneNumber(joinRequest.phoneNumber)
                 .birthday(joinRequest.birthday)
-                .shoesSize(joinRequest.shoesSize)
                 .gender(joinRequest.gender)
+                .shoesSize(joinRequest.shoesSize)
                 .build();
     }
 }
