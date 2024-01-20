@@ -19,7 +19,7 @@ public class ImageBridge extends BaseEntity {
 
     private Long typeId;
 
-    @OneToOne
+    @ManyToOne
     private Image image;
 
     private int index;
