@@ -52,6 +52,10 @@ public class Member extends BaseEntity {
 
     private Integer shoesSize; // 회원 신발 사이즈
 
+    public void changeToEncodedPassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
     public void updateRole(MemberRole role) {
         this.role = role;
     }
