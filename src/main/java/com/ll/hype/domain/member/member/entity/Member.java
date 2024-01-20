@@ -21,6 +21,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
+    @NotNull
     @Column(unique = true)
     private String email;
 
@@ -30,22 +31,26 @@ public class Member extends BaseEntity {
     @NotNull
     private String name; // 본명
 
+    @NotNull
     @Column(unique = true)
     private String nickname; // 별명
 
+    @NotNull
     @Column(unique = true)
     private String phoneNumber; // 010-1234-5678
 
     @NotNull
     private LocalDate birthday;
 
-    private int shoesSize; // 회원 신발 사이즈
-
+    @NotNull
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
+    @NotNull
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
+
+    private Integer shoesSize; // 회원 신발 사이즈
 
     public void updateRole(MemberRole role) {
         this.role = role;
