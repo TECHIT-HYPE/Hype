@@ -47,7 +47,7 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
 
-    public void updateStatus(MemberRole role) {
+    public void updateRole(MemberRole role) {
         this.role = role;
     }
 }

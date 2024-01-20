@@ -14,7 +14,7 @@ public class MemberService {
 
     public void join(JoinRequest joinRequest) {
         Member member = JoinRequest.toEntity(joinRequest);
-        member.updateStatus(MemberRole.MEMBER);
+        member.updateRole(MemberRole.MEMBER);
         memberRepository.save(member);
     }
 }
