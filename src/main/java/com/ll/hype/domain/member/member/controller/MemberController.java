@@ -3,11 +3,13 @@ package com.ll.hype.domain.member.member.controller;
 import com.ll.hype.domain.member.member.dto.JoinRequest;
 import com.ll.hype.domain.member.member.service.MemberService;
 import com.ll.hype.global.enums.Gender;
+import com.ll.hype.global.util.ShoesSizeGenerator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,13 +23,44 @@ public class MemberController {
 
     @GetMapping("/join")
     public String joinForm(JoinRequest joinRequest, Model model) {
-        model.addAttribute("genders", Gender.values());
-        return "domain/member/member/join";
+        return loadAndReturnJoinForm(model);
     }
 
     @PostMapping("/join")
-    public String join(@Valid JoinRequest joinRequest) {
+    public String join(@Valid JoinRequest joinRequest, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return loadAndReturnJoinForm(model);
+        }
+
+        if (!memberService.confirmPassword(joinRequest.getPassword(), joinRequest.getPasswordConfirm())) {
+            bindingResult.reject(joinRequest.getEmail(), "비밀번호가 일치하지 않습니다.");
+            return loadAndReturnJoinForm(model);
+        }
+
+        if (memberService.existsByEmail(joinRequest.getEmail())) {
+            bindingResult.reject(joinRequest.getEmail(), "이미 존재하는 이메일입니다.");
+            return loadAndReturnJoinForm(model);
+        }
+
+        if (memberService.existsByNickname(joinRequest.getNickname())) {
+            bindingResult.reject(joinRequest.getEmail(), "이미 존재하는 별명입니다.");
+            return loadAndReturnJoinForm(model);
+        }
+
+        if (memberService.existsByPhoneNumber(joinRequest.getPhoneNumber())) {
+            bindingResult.reject(joinRequest.getEmail(), "이미 존재하는 전화번호입니다.");
+            return loadAndReturnJoinForm(model);
+        }
+
         memberService.join(joinRequest);
-        return "/home";
+
+        return "redirect:/";
+    }
+
+    private String loadAndReturnJoinForm(Model model) {
+        model.addAttribute("genderList", Gender.values());
+        model.addAttribute("shoesSizeList", ShoesSizeGenerator.getSizes());
+        return "domain/member/member/join";
     }
 }

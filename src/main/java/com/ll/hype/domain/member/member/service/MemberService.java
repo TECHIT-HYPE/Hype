@@ -17,4 +17,20 @@ public class MemberService {
         member.updateRole(MemberRole.MEMBER);
         memberRepository.save(member);
     }
+
+    public boolean confirmPassword(String password, String passwordConfirm) {
+        return password.equals(passwordConfirm);
+    }
+
+    public boolean existsByEmail(String email) {
+        return memberRepository.existsByEmail(email);
+    }
+
+    public boolean existsByNickname(String nickname) {
+        return memberRepository.existsByNickname(nickname);
+    }
+
+    public boolean existsByPhoneNumber(String phoneNumber) {
+        return memberRepository.existsByPhoneNumber(phoneNumber);
+    }
 }
