@@ -1,6 +1,7 @@
 package com.ll.hype.domain.member.member.controller;
 
 import com.ll.hype.domain.member.member.dto.JoinRequest;
+import com.ll.hype.domain.member.member.dto.LoginRequest;
 import com.ll.hype.domain.member.member.service.MemberService;
 import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.util.ShoesSizeGenerator;
@@ -34,33 +35,38 @@ public class MemberController {
         }
 
         if (!memberService.confirmPassword(joinRequest.getPassword(), joinRequest.getPasswordConfirm())) {
-            bindingResult.reject(joinRequest.getEmail(), "비밀번호가 일치하지 않습니다.");
+            bindingResult.reject("passwordIncorrect", "비밀번호가 일치하지 않습니다.");
             return loadAndReturnJoinForm(model);
         }
 
         if (memberService.existsByEmail(joinRequest.getEmail())) {
-            bindingResult.reject(joinRequest.getEmail(), "이미 존재하는 이메일입니다.");
+            bindingResult.reject("existEmail", "이미 존재하는 이메일입니다.");
             return loadAndReturnJoinForm(model);
         }
 
         if (memberService.existsByNickname(joinRequest.getNickname())) {
-            bindingResult.reject(joinRequest.getEmail(), "이미 존재하는 별명입니다.");
+            bindingResult.reject("existNickname", "이미 존재하는 별명입니다.");
             return loadAndReturnJoinForm(model);
         }
 
         if (memberService.existsByPhoneNumber(joinRequest.getPhoneNumber())) {
-            bindingResult.reject(joinRequest.getEmail(), "이미 존재하는 전화번호입니다.");
+            bindingResult.reject("existPhoneNumber", "이미 존재하는 전화번호입니다.");
             return loadAndReturnJoinForm(model);
         }
 
         memberService.join(joinRequest);
 
-        return "redirect:/";
+        return "redirect:/member/login";
     }
 
     private String loadAndReturnJoinForm(Model model) {
         model.addAttribute("genderList", Gender.values());
         model.addAttribute("shoesSizeList", ShoesSizeGenerator.getSizes());
         return "domain/member/member/join";
+    }
+
+    @GetMapping("/login")
+    public String loginForm(LoginRequest loginRequest) {
+        return "domain/member/member/login";
     }
 }
