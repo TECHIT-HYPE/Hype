@@ -1,1 +1,27 @@
-
+server:
+  port: 8090
+spring:
+  thymeleaf:
+    cache: false
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: jdbc:h2:./hype_db;MODE=MySQL
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+logging:
+  level:
+    com.ll.sb20231114: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.orm.jdbc.extract: TRACE
+    org.springframework.transaction.interceptor: TRACE
