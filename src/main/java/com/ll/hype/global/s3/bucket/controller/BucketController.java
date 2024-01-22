@@ -1,6 +1,6 @@
 package com.ll.hype.global.s3.bucket.controller;
 
-import com.example.s3demo.s3.bucket.service.BucketCreationService;
+import com.ll.hype.global.s3.bucket.service.BucketCreationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

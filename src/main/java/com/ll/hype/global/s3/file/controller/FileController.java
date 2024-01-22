@@ -1,9 +1,7 @@
 package com.ll.hype.global.s3.file.controller;
 
-import com.amazonaws.SdkClientException;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.example.s3demo.s3.file.service.FileDeleteService;
-import com.example.s3demo.s3.file.service.FileUploadService;
+import com.ll.hype.global.s3.file.service.FileDeleteService;
+import com.ll.hype.global.s3.file.service.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
