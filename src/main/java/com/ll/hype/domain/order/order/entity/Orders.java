@@ -1,7 +1,8 @@
 package com.ll.hype.domain.order.order.entity;
 
+import com.ll.hype.domain.adress.adress.entity.Address;
 import com.ll.hype.domain.order.orderrequest.entity.OrderRequest;
-import com.ll.hype.domain.order.orderrequest.entity.SalesRequest;
+import com.ll.hype.domain.order.salesrequest.entity.SalesRequest;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,7 +12,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
-import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails.Address;
 
 @Entity
 @Getter
@@ -30,7 +30,10 @@ public class Orders extends BaseEntity {
     private int deliveryNumber; // 운소장 번호
 
     private String name; // 받는사람 이름
-    // private Address address; // 받는사람 주소
+
+    @OneToOne
+    private Address address; // 받는사람 주소
+
     private String phoneNumber; // 받는 사람 연락처
 
     @Enumerated(value = EnumType.STRING)
