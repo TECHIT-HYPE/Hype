@@ -1,23 +1,23 @@
-package com.ll.hype.domain.order.orderrequest.entity;
+package com.ll.hype.domain.order.salesrequest.entity;
 
+import com.ll.hype.domain.adress.adress.entity.Address;
 import com.ll.hype.domain.member.member.entity.Member;
-import com.ll.hype.global.enums.Status;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
+import com.ll.hype.global.enums.Status;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDate;
-import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails.Address;
 
 @Entity
 @Getter
@@ -39,7 +39,9 @@ public class SalesRequest
     private Long price;
     private LocalDate startDate;
     private LocalDate endDate;
-//    private Address address;
+
+    @OneToOne
+    private Address address;
 
     @Enumerated(value = EnumType.STRING)
     private Status status;

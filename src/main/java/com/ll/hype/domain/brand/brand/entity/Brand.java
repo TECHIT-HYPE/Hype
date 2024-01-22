@@ -19,7 +19,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Brand extends BaseEntity {
+    @Column(unique = true)
     private String korName; // 브랜드 한글명
+
+    @Column(unique = true)
     private String engName; // 브랜드 영문명
 
     @Enumerated(value = EnumType.STRING)
@@ -27,4 +30,8 @@ public class Brand extends BaseEntity {
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
     List<Shoes> shoes = new ArrayList<>(); // 브랜드에서 가지고 있는 신발
+
+    public void updateStatus(StatusCode status) {
+        this.status = status;
+    }
 }

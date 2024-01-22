@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html" ; charset="UTF-8">
+</head>
+<body>
+
+<form th:action="@{/member/join}" method="post" th:object="${joinRequest}" >
+
+    <div th:if="${#fields.hasAnyErrors()}">
+        <div th:each="err : ${#fields.allErrors()}">
+            <span th:text="${err}">Error.</span>
+        </div>
+    </div>
+
+    <label for="email">email:</label>
+    <input type="email" id="email" name="email" th:field="*{email}" />
+
+    <br/>
+
+    <label for="password">password:</label>
+    <input type="password" id="password" name="password" th:field="*{password}" />
+
+    <br/>
+
+    <label for="passwordConfirm">passwordConfirm:</label>
+    <input type="password" id="passwordConfirm" name="passwordConfirm" th:field="*{passwordConfirm}" />
+
+    <br/>
+
+    <label for="name">name:</label>
+    <input type="text" id="name" name="name" th:field="*{name}" />
+
+    <br/>
+
+    <label for="nickname">nickname:</label>
+    <input type="text" id="nickname" name="nickname" th:field="*{nickname}" />
+
+    <br/>
+
+    <label for="phoneNumber">phoneNumber:</label>
+    <input type="tel" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" placeholder="예: 010-1234-5678" />
+    <br/>
+
+    <label for="birthday">birthday:</label>
+    <input type="date" id="birthday" name="birthday" th:field="*{birthday}" />
+
+    <br/>
+
+    <label for="gender">gender:</label>
+    <select id="gender" th:field="*{gender}">
+        <option value="">-- 선택 --</option>
+        <option th:each="gender : ${genderList}" th:value="${gender}" th:text="${gender}" />
+    </select>
+    <br/>
+
+    <label for="shoesSize">shoesSize:</label>
+    <select id="shoesSize" th:field="*{shoesSize}">
+        <option value="">-- 선택 --</option>
+        <option th:each="shoesSize : ${shoesSizeList}" th:value="${shoesSize}" th:text="${shoesSize}" />
+    </select>
+
+    <br/>
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.ll.hype.global.enums;
+package com.ll.hype.domain.customer.customer.entity;
 
 public enum QuestionCategory {
 
