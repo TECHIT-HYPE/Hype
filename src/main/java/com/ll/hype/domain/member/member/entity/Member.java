@@ -1,30 +1,62 @@
 package com.ll.hype.domain.member.member.entity;
 
-import com.ll.hype.domain.member.role.MemberRole;
 import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.jpa.BaseEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import java.time.LocalDate;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @SuperBuilder
-@NoArgsConstructor(access =  AccessLevel.PROTECTED)
-@AllArgsConstructor(access =  AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
+    @NotNull
+    @Column(unique = true)
     private String email;
+
+    @NotNull
     private String password;
-    private String name;
-    private String nickname;
-    private String phoneNumber;
+
+    @NotNull
+    private String name; // 본명
+
+    @NotNull
+    @Column(unique = true)
+    private String nickname; // 별명
+
+    @NotNull
+    @Column(unique = true)
+    private String phoneNumber; // 010-1234-5678
+
+    @NotNull
     private LocalDate birthday;
+
+    @NotNull
+    @Enumerated(value = EnumType.STRING)
     private Gender gender;
-    // private Adderss address; // 우체국 API 조사 후 주소 추가해야함
-    private int shoesSize;
+
+    @NotNull
+    @Enumerated(value = EnumType.STRING)
     private MemberRole role;
+
+    private Integer shoesSize; // 회원 신발 사이즈
+
+    public void changeToEncodedPassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public void updateRole(MemberRole role) {
+        this.role = role;
+    }
 }

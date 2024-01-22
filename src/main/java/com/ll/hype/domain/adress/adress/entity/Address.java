@@ -1,10 +1,8 @@
-package com.ll.hype.domain.customer.customer.entity;
+package com.ll.hype.domain.adress.adress.entity;
 
-import com.ll.hype.global.jpa.BaseEntity;
 import com.ll.hype.domain.member.member.entity.Member;
+import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
@@ -18,13 +16,13 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class CustomerQ extends BaseEntity {
-    @Enumerated(value = EnumType.STRING)
-    private QuestionCategory questionCategory;
-
+public class Address extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    private String questionTitle;
-    private String questionContent;
+    private String postcode;
+    private String address;
+    private String detailAddress;
+    private String extraAddress;
+
 }
