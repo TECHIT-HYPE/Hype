@@ -23,20 +23,20 @@ public class BrandController {
     // 브랜드 생성 폼
     @GetMapping("/create")
     public String createForm(BrandRequest brandRequest) {
-        return "/brand/addForm";
+        return "/domain/brand/brand/addForm";
     }
 
     // 브랜드 생성
     @PostMapping("/create")
     public String create(BrandRequest brandRequest) {
         brandService.save(brandRequest);
-        return "/brand/list";
+        return "redirect:/brand/list";
     }
 
     @GetMapping("/list")
     public String findAll(Model model) {
         List<BrandResponse> brands = brandService.findAll();
         model.addAttribute("brands", brands);
-        return "/brand/list";
+        return "domain/brand/brand/list";
     }
 }

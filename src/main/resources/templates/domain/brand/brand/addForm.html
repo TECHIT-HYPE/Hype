@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html" ; charset="UTF-8">
 </head>
 <body>
-<form th:action="@{/brand/create}" method="post" th:object="${brandRequest}">
+<form th:action method="post" th:object="${brandRequest}">
     <!-- existing code -->
     <label for="korName">Korean Name:</label>
     <input type="text" id="korName" name="korName" th:field="*{korName}" required />
