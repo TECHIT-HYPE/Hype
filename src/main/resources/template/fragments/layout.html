@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+    <!-- sbb CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <title>HYPE</title>
+
+</head>
+
+<body>
+    <!-- header fragment -->
+    <header th:replace="fragments/header :: header"></header>
+
+    <!-- navigation bar 홈 화면에만 적용 -->
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <!-- content fragment -->
+    <th:block layout:fragment="content"></th:block>
+
+    <!-- footer fragment -->
+    <footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+
+</html>
