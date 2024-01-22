@@ -1,4 +1,4 @@
-package com.ll.hype.global.jpa.image;
+package com.ll.hype.global.s3.image.image.entity;
 
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
@@ -14,5 +14,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Image extends BaseEntity {
-    private String path;
+    private String keyName;
+    private int index;
 }

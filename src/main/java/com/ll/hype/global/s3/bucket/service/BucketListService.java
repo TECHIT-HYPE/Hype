@@ -23,6 +23,7 @@ public class BucketListService {
             }
         } catch (AmazonS3Exception e) {
             e.printStackTrace();
+
         } catch(SdkClientException e) {
             e.printStackTrace();
         }
