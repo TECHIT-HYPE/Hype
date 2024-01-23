@@ -1,5 +1,6 @@
 package com.ll.hype.domain.shoes.shoes.entity;
 
+import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.enums.StatusCode;
 import com.ll.hype.global.jpa.BaseEntity;
@@ -43,4 +44,9 @@ public class Shoes extends BaseEntity {
 
     @OneToMany(mappedBy = "shoes", cascade = CascadeType.ALL)
     List<ShoesSize> sizes = new ArrayList<>();
+
+    public void updateStatus(StatusCode status) {
+        this.status = status;
+    }
+
 }
