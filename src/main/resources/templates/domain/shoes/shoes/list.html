@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+</head>
+<body>
+<h2>ShoesInfoList</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Create Date</th>
+        <th>Modify Date</th>
+        <th>Brand ID</th>
+        <th>Korean Name</th>
+        <th>English Name</th>
+        <th>Model</th>
+        <th>Price</th>
+        <th>Release</th>
+        <th>ShoesCategory</th>
+        <th>Color</th>
+        <th>Gender</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="shoes : ${shoesList}">
+        <td th:text="${shoes.id}"></td>
+        <td th:text="${shoes.createDate}"></td>
+        <td th:text="${shoes.modifyDate}"></td>
+        <td th:text="${shoes.brand}"></td>
+        <td th:text="${shoes.korName}"></td>
+        <td th:text="${shoes.engName}"></td>
+        <td th:text="${shoes.model}"></td>
+        <td th:text="${shoes.price}"></td>
+        <td th:text="${shoes.release}"></td>
+        <td th:text="${shoes.shoesCategory}"></td>
+        <td th:text="${shoes.color}"></td>
+        <td th:text="${shoes.gender}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
