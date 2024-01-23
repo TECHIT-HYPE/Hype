@@ -16,7 +16,7 @@ public class BucketCreationService {
     @Value("${spring.s3.bucket}")
     private String defaultBucketName;
 
-    public void createBucket() {
+    public void createBucket(String bucketName) {
     try {
         // create bucket if the bucket name does not exist
         if (amazonS3Client.doesBucketExistV2(defaultBucketName)) {

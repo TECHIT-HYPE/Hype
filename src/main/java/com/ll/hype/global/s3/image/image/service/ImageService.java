@@ -85,6 +85,8 @@ public class ImageService {
             if (amazonS3Client.doesObjectExist(defaultBucketName, decodedKeyName)) {
                 amazonS3Client.deleteObject(defaultBucketName, decodedKeyName);
                 log.info("Object {} in bucket {} has been deleted.", decodedKeyName, defaultBucketName);
+                imageRepository.deleteById(id);
+
             } else {
                 log.warn("Object {} in bucket {} does not exist.", decodedKeyName, defaultBucketName);
             }
@@ -115,3 +117,4 @@ public class ImageService {
         return fullPath;
     }
 }
+

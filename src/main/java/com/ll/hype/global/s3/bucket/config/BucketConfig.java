@@ -25,9 +25,25 @@ public class BucketConfig {
     @Value("${spring.s3.bucket}")
     private String defaultBucketName; //버킷이름은 소문자만 가능
 
+    @Value("${spring.s3.testBucket}")
+    private String testBucketName;
+
     @Bean
     public AmazonS3Client amazonS3Client() {
         BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey,secretKey);
+
+        return (AmazonS3Client) AmazonS3ClientBuilder
+                .standard()
+                .withEndpointConfiguration(
+                        new AwsClientBuilder.EndpointConfiguration(
+                                endPoint,
+                                regionName))
+                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .build();
+    }
+    @Bean
+    public AmazonS3Client amazonS3TestClient() {
+        BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 
         return (AmazonS3Client) AmazonS3ClientBuilder
                 .standard()
