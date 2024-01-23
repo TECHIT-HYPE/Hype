@@ -49,5 +49,4 @@ public class Shoes extends BaseEntity {
     public void updateStatus(StatusCode status) {
         this.status = status;
     }
-
 }

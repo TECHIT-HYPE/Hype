@@ -27,32 +27,16 @@ public class ShoesController {
     //신발 상세
     @GetMapping("/{id}")
     public String shoesDetail(@PathVariable long id, Model model){
-        Optional<Shoes> shoes = shoesService.findById(id);
-        model.addAttribute("shoes", shoes);
+        ShoesResponse findOne = shoesService.findById(id);
+        model.addAttribute("shoes", findOne);
         return "domain/shoes/shoes/detail";
     }
 
-    //신발 생성 - 관리자
-    @GetMapping("/create")
-    public String createForm(ShoesRequest shoesRequest) {
-        return "/domain/shoes/shoes/addForm";
-    }
-
-    @PostMapping("/create")
-    public String create(ShoesRequest shoesRequest) {
-        shoesService.save(shoesRequest);
-        return "redirect:/shoes/list";
-    }
-
-    //신발 리스트 - 관리자
+    // 신발 전체 목록
     @GetMapping("/list")
     public String findAll(Model model) {
         List<ShoesResponse> shoesList = shoesService.findAll();
         model.addAttribute("shoesList", shoesList);
         return "domain/shoes/shoes/list";
     }
-
-    //신발 수정 - 관리자
-    //신발 삭제 - 관리자
-
 }

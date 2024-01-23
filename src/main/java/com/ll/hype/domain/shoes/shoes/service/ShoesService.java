@@ -17,21 +17,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShoesService {
     private final ShoesRepository shoesRepository;
-
-    public ShoesResponse save(ShoesRequest shoesRequest) {
-        Shoes shoes = ShoesRequest.toEntity(shoesRequest);
-        shoes.updateStatus(StatusCode.ENABLE);
-        shoesRepository.save(shoes);
+    public ShoesResponse findById(long id) {
+        Shoes shoes = shoesRepository.findById(id).get();
         return ShoesResponse.of(shoes);
-    }
-
-    public Optional<Shoes> findById(long id) {
-        return shoesRepository.findById(id);
     }
 
     public List<ShoesResponse> findAll() {
         List<ShoesResponse> shoesList = new ArrayList<>();
-        for (Shoes shoes : shoesRepository.findAll()) {
+        for (Shoes shoes : shoesRepository.findByStatus(StatusCode.ENABLE)) {
             shoesList.add(ShoesResponse.of(shoes));
         }
         return shoesList;
