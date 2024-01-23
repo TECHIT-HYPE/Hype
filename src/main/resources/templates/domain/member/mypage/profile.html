@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{global/usrLayout}">
+<head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html" ; charset="UTF-8">
+</head>
+<body>
+
+<div layout:fragment="content">
+    <form th:action="@{/mypage/profile}" method="post" th:object="${modifyRequest}" >
+
+        <div th:if="${#fields.hasAnyErrors()}">
+            <div th:each="err : ${#fields.allErrors()}">
+                <span th:text="${err}">Error.</span>
+            </div>
+        </div>
+
+        <label for="email">email:</label>
+        <input type="text" id="email" name="email" th:field="*{email}" readonly />
+
+        <br/>
+
+        <label for="password">password:</label>
+        <input type="password" id="password" name="password" th:field="*{password}" />
+
+        <br/>
+
+        <label for="passwordConfirm">passwordConfirm:</label>
+        <input type="password" id="passwordConfirm" name="passwordConfirm" th:field="*{passwordConfirm}" />
+
+        <br/>
+
+        <label for="name">name:</label>
+        <input type="text" id="name" name="name" th:field="*{name}" readonly />
+
+        <br/>
+
+        <label for="nickname">nickname:</label>
+        <input type="text" id="nickname" name="nickname" th:field="*{nickname}" />
+
+        <br/>
+
+        <label for="phoneNumber">phoneNumber:</label>
+        <input type="tel" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" placeholder="예: 010-1234-5678" />
+        <br/>
+
+        <label for="birthday">birthday:</label>
+        <input type="text" id="birthday" name="birthday" th:field="*{birthday}" readonly />
+
+        <br/>
+
+        <label for="gender">gender:</label>
+        <input type="text" id="gender" name="gender" th:field="*{gender}" readonly />
+
+        <br/>
+
+        <label for="shoesSize">shoesSize:</label>
+        <select id="shoesSize" th:field="*{shoesSize}">
+            <option value="">-- 선택 --</option>
+            <option th:each="shoesSize : ${shoesSizeList}" th:value="${shoesSize}" th:text="${shoesSize}" />
+        </select>
+
+        <br/>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+</body>
+</html>
