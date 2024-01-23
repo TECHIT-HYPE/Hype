@@ -28,22 +28,16 @@ public class AdminController {
     public String home() {
         return "domain/admin/main";
     }
+    //============== Main End ==============
 
+
+    //============== Brand Start ==============
     // Brand home
     @GetMapping("/main/brand")
     public String brandHome() {
         return "domain/admin/brand/main";
     }
 
-    // Shoes home
-    @GetMapping("/main/shoes")
-    public String shoesHome() {
-        return "domain/admin/shoes/main";
-    }
-    //============== Main End ==============
-
-
-    //============== Brand Start ==============
     // 관리자 브랜드 생성 폼
     @GetMapping("/brand/create")
     public String createBrandForm(BrandRequest brandRequest) {
@@ -68,6 +62,11 @@ public class AdminController {
 
 
     //============== Shoes Start ==============
+    // Shoes home
+    @GetMapping("/main/shoes")
+    public String shoesHome() {
+        return "domain/admin/shoes/main";
+    }
     @GetMapping("/shoes/create")
     public String createShoesForm(ShoesRequest shoesRequest, Model model) {
         model.addAttribute("brands", adminService.brandFindEnable());
