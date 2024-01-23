@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html" ; charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body>
+<div class="container mx-auto mt-8">
+    <h1 class="text-3xl font-bold mb-4">Shoes List</h1>
+
+    <table class="min-w-full border border-gray-300">
+        <thead>
+        <tr>
+            <th class="py-2 px-4 border-b">ID</th>
+            <th class="py-2 px-4 border-b">Create Date</th>
+            <th class="py-2 px-4 border-b">Modify Date</th>
+            <th class="py-2 px-4 border-b">Brand</th>
+            <th class="py-2 px-4 border-b">Korean Name</th>
+            <th class="py-2 px-4 border-b">English Name</th>
+            <th class="py-2 px-4 border-b">Model</th>
+            <th class="py-2 px-4 border-b">Price</th>
+            <th class="py-2 px-4 border-b">Release</th>
+            <th class="py-2 px-4 border-b">Shoes Category</th>
+            <th class="py-2 px-4 border-b">Color</th>
+            <th class="py-2 px-4 border-b">Gender</th>
+            <th class="py-2 px-4 border-b">Status</th>
+        </tr>
+        </thead>
+        <tbody th:each="shoes : ${shoesList}">
+        <tr>
+            <td class="py-2 px-4 border-b" th:text="${shoes.id}"></td>
+            <td class="py-2 px-4 border-b" th:text="${shoes.createDate}"></td>
+            <td class="py-2 px-4 border-b" th:text="${shoes.modifyDate}"></td>
+            <td class="py-2 px-4 border-b" th:text="${shoes.brand.korName}"></td>
+            <td class="py-2 px-4 border-b" th:text="${shoes.korName}"></td>
+            <td class="py-2 px-4 border-b" th:text="${shoes.engName}"></td>
+            <td class="py-2 px-4 border-b" th:text="${shoes.model}"></td>
+            <td class="py-2 px-4 border-b" th:text="${shoes.price}"></td>
+            <td class="py-2 px-4 border-b" th:text="${shoes.release}"></td>
+            <td class="py-2 px-4 border-b" th:text="${shoes.shoesCategory}"></td>
+            <td class="py-2 px-4 border-b" th:text="${shoes.color}"></td>
+            <td class="py-2 px-4 border-b" th:text="${shoes.gender}"></td>
+            <td class="py-2 px-4 border-b" th:text="${shoes.status}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

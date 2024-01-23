@@ -9,12 +9,18 @@
     <!-- existing code -->
     <label for="korName">Korean Name:</label>
     <input type="text" id="korName" name="korName" th:field="*{korName}" required />
-
     <br/>
 
     <label for="engName">English Name:</label>
     <input type="text" id="engName" name="engName" th:field="*{engName}" required />
+    <br/>
 
+    <label for="status">Status:</label>
+    <select id="status" name="status" th:field="*{status}" required>
+        <option th:each="status : ${T(com.ll.hype.global.enums.StatusCode).values()}"
+                th:value="${status}"
+                th:text="${status}"></option>
+    </select>
     <br/>
 
     <button type="submit">Submit</button>

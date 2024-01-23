@@ -15,16 +15,10 @@ import org.springframework.stereotype.Service;
 public class BrandService {
     private final BrandRepository brandRepository;
 
-    public BrandResponse save(BrandRequest brandRequest) {
-        Brand brand = BrandRequest.toEntity(brandRequest);
-        brand.updateStatus(StatusCode.ENABLE);
-        brandRepository.save(brand);
-        return BrandResponse.of(brand);
-    }
-
+    // 관리자 브랜드 전체 조회 (ENABLE 조회 조회)
     public List<BrandResponse> findAll() {
         List<BrandResponse> brands = new ArrayList<>();
-        for (Brand brand : brandRepository.findAll()) {
+        for (Brand brand : brandRepository.findByStatus(StatusCode.ENABLE)) {
             brands.add(BrandResponse.of(brand));
         }
         return brands;
