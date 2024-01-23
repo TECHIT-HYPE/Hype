@@ -6,6 +6,7 @@ import com.ll.hype.global.enums.StatusCode;
 import com.ll.hype.global.jpa.BaseEntity;
 import com.ll.hype.domain.brand.brand.entity.Brand;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class Shoes extends BaseEntity {
     private String engName; // 영문명
     private String model; // 모델명
     private int price; // 발매가
-    private String release; //출시일
+    private LocalDate release; //출시일
 
     @Enumerated(value = EnumType.STRING)
     private ShoesCategory shoesCategory;

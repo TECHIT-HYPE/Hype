@@ -4,13 +4,13 @@ import com.ll.hype.domain.brand.brand.entity.Brand;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesCategory;
 import com.ll.hype.global.enums.Gender;
+import com.ll.hype.global.enums.StatusCode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-
 
 @Getter
 @Builder
@@ -25,17 +25,18 @@ public class ShoesResponse {
     private String engName;
     private String model;
     private int price;
-    private String release;
+    private LocalDate release;
     private ShoesCategory shoesCategory;
     private String color;
     private Gender gender;
+    private StatusCode status;
 
     public static ShoesResponse of(Shoes shoes) {
         return ShoesResponse.builder()
                 .id(shoes.getId())
-                .brand(shoes.getBrand())
                 .createDate(shoes.getCreateDate())
                 .modifyDate(shoes.getModifyDate())
+                .brand(shoes.getBrand())
                 .korName(shoes.getKorName())
                 .engName(shoes.getEngName())
                 .model(shoes.getModel())
@@ -44,7 +45,7 @@ public class ShoesResponse {
                 .shoesCategory(shoes.getShoesCategory())
                 .color(shoes.getColor())
                 .gender(shoes.getGender())
+                .status(shoes.getStatus())
                 .build();
     }
-
 }
