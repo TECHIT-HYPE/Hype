@@ -21,6 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class AdminController {
     private final AdminService adminService;
+    //============== Main ==============
+    @GetMapping("/main")
+    public String home() {
+        return "domain/admin/main";
+    }
+
     //============== Brand Start ==============
     // 관리자 브랜드 생성 폼
     @GetMapping("/brand/create")
