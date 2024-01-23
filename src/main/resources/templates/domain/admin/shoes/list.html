@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html" ; charset="UTF-8">
+</head>
+<body>
+<div>
+  <h1>Shoes List</h1>
+
+  <table border="1">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Create Date</th>
+      <th>Modify Date</th>
+      <th>Brand</th>
+      <th>Korean Name</th>
+      <th>English Name</th>
+      <th>Model</th>
+      <th>Price</th>
+      <th>Release</th>
+      <th>Shoes Category</th>
+      <th>Color</th>
+      <th>Gender</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+    <tbody th:each="shoes : ${shoes}">
+    <tr>
+      <td th:text="${shoes.id}"></td>
+      <td th:text="${shoes.createDate}"></td>
+      <td th:text="${shoes.modifyDate}"></td>
+      <td th:text="${shoes.brand.korName}"></td>
+      <td th:text="${shoes.korName}"></td>
+      <td th:text="${shoes.engName}"></td>
+      <td th:text="${shoes.model}"></td>
+      <td th:text="${shoes.price}"></td>
+      <td th:text="${shoes.release}"></td>
+      <td th:text="${shoes.shoesCategory}"></td>
+      <td th:text="${shoes.color}"></td>
+      <td th:text="${shoes.gender}"></td>
+      <td th:text="${shoes.status}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
