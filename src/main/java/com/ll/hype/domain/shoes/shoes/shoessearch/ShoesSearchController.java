@@ -27,6 +27,7 @@ public class ShoesSearchController {
     @PostMapping("/search")
     public String shoesSearch(@RequestParam(value = "keyword") String keyword,Model model) {
         List<ShoesResponse> findByKeywordShoes = shoesSearchService.findByKeyword(keyword);
+        shoesSearchService.findByEngword(keyword);
         model.addAttribute("shoes", findByKeywordShoes);
         return "domain/shoes/shoessearch/list";
     }

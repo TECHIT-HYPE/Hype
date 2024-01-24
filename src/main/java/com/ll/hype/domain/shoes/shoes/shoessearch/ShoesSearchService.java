@@ -25,15 +25,15 @@ public class ShoesSearchService {
         return shoess;
     }
 
-    // 신발 영어 이름 조회
-//    public List<ShoesResponse> findByEngword(String keyword) {
-//        List<ShoesResponse> shoess = new ArrayList<>();
-//        List<Shoes> findByEngNames = shoesRepository.findByEngNameContainingIgnoreCase(keyword);
-//        for (Shoes shoes : findByEngNames) {
-//            shoess.add(ShoesResponse.of(shoes));
-//        }
-//        return shoess;
-//    }
+     //신발 영어 이름 조회
+    public List<ShoesResponse> findByEngword(String keyword) {
+        List<ShoesResponse> shoess = new ArrayList<>();
+        List<Shoes> findByEngNames = shoesRepository.findByEngNameContainingIgnoreCase(keyword);
+        for (Shoes shoes : findByEngNames) {
+            shoess.add(ShoesResponse.of(shoes));
+        }
+        return shoess;
+    }
 
 }
 

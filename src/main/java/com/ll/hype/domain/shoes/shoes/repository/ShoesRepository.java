@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ShoesRepository extends JpaRepository<Shoes, Long> {
     List<Shoes> findByStatus(StatusCode status);
     List<Shoes> findByKorNameContainingIgnoreCase(String keyword);
-    //List<Shoes> findByEngNameContainingIgnoreCase(String keyword);
+    List<Shoes> findByEngNameContainingIgnoreCase(String keyword);
 
 }
