@@ -1,29 +1,38 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html layout:decorate="~{global/adLayout}">
 <head>
-    <title>Title</title>
-    <meta http-equiv="Content-Type" content="text/html" ; charset="UTF-8">
+    <title>관리자 브랜드 생성 폼</title>
 </head>
 <body>
-<form th:action method="post" th:object="${brandRequest}">
-    <!-- existing code -->
-    <label for="korName">Korean Name:</label>
-    <input type="text" id="korName" name="korName" th:field="*{korName}" required />
-    <br/>
+<div layout:fragment="content" class="container mx-auto mt-8 p-4 bg-white rounded shadow-md">
+    <form th:action method="post" th:object="${brandRequest}" class="max-w-md mx-auto">
+        <h1 class="text-3xl font-bold mb-4">Create Brand</h1>
+        <!-- existing code -->
+        <div class="mb-4">
+            <label for="korName" class="block text-gray-700 text-sm font-bold mb-2">Korean Name:</label>
+            <input type="text" id="korName" name="korName" th:field="*{korName}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
 
-    <label for="engName">English Name:</label>
-    <input type="text" id="engName" name="engName" th:field="*{engName}" required />
-    <br/>
+        <div class="mb-4">
+            <label for="engName" class="block text-gray-700 text-sm font-bold mb-2">English Name:</label>
+            <input type="text" id="engName" name="engName" th:field="*{engName}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
 
-    <label for="status">Status:</label>
-    <select id="status" name="status" th:field="*{status}" required>
-        <option th:each="status : ${T(com.ll.hype.global.enums.StatusCode).values()}"
-                th:value="${status}"
-                th:text="${status}"></option>
-    </select>
-    <br/>
+        <div class="mb-4">
+            <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Status:</label>
+            <select id="status" name="status" th:field="*{status}" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                <option th:each="status : ${T(com.ll.hype.global.enums.StatusCode).values()}"
+                        th:value="${status}"
+                        th:text="${status}"></option>
+            </select>
+        </div>
 
-    <button type="submit">Submit</button>
-</form>
+        <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue">
+            Submit
+        </button>
+    </form>
+</div>
 </body>
 </html>

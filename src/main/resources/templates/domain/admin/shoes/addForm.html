@@ -1,72 +1,89 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html layout:decorate="~{global/adLayout}">
 <head>
-    <title>Title</title>
-    <meta http-equiv="Content-Type" content="text/html" ; charset="UTF-8">
+    <title>관리자 신발 생성 폼</title>
 </head>
 <body>
-<div>
-    <h1>Create Shoes</h1>
+<div layout:fragment="content" class="container mx-auto mt-8 p-4 bg-white rounded shadow-md">
+    <form th:action method="post" th:object="${shoesRequest}" class="max-w-md mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Create Shoes</h1>
 
-    <form th:action method="post" th:object="${shoesRequest}">
+        <div class="mb-4">
+            <label for="brand" class="block text-sm font-bold text-gray-700 mb-2">브랜드:</label>
+            <select id="brand" name="brand" th:field="*{brand}" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.korName}"></option>
+            </select>
+        </div>
 
-        <label for="brand">Brand:</label>
-        <select id="brand" name="brand" th:field="*{brand}" required>
-            <option th:each="brand : ${brands}"
-                    th:value="${brand.id}"
-                    th:text="${brand.korName}"></option>
-        </select>
-        <br/>
+        <div class="mb-4">
+            <label for="korName" class="block text-sm font-bold text-gray-700 mb-2">한글 이름:</label>
+            <input type="text" id="korName" name="korName" th:field="*{korName}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
 
-        <label for="korName">Korean Name:</label>
-        <input type="text" id="korName" name="korName" th:field="*{korName}" required/>
-        <br/>
+        <div class="mb-4">
+            <label for="engName" class="block text-sm font-bold text-gray-700 mb-2">영어 이름:</label>
+            <input type="text" id="engName" name="engName" th:field="*{engName}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
 
-        <label for="engName">English Name:</label>
-        <input type="text" id="engName" name="engName" th:field="*{engName}" required/>
-        <br/>
+        <div class="mb-4">
+            <label for="model" class="block text-sm font-bold text-gray-700 mb-2">모델:</label>
+            <input type="text" id="model" name="model" th:field="*{model}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
 
-        <label for="model">Model:</label>
-        <input type="text" id="model" name="model" th:field="*{model}" required/>
-        <br/>
+        <div class="mb-4">
+            <label for="price" class="block text-sm font-bold text-gray-700 mb-2">가격:</label>
+            <input type="number" id="price" name="price" th:field="*{price}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
 
-        <label for="price">Price:</label>
-        <input type="number" id="price" name="price" th:field="*{price}" required/>
-        <br/>
+        <div class="mb-4">
+            <label for="release" class="block text-sm font-bold text-gray-700 mb-2">출시일:</label>
+            <input type="date" id="release" name="release" th:field="*{release}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
 
-        <label for="release">Release:</label>
-        <input type="date" id="release" name="release" th:field="*{release}" required/>
-        <br/>
+        <div class="mb-4">
+            <label for="shoesCategory" class="block text-sm font-bold text-gray-700 mb-2">신발 카테고리:</label>
+            <select id="shoesCategory" name="shoesCategory" th:field="*{shoesCategory}" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                <option th:each="category : ${T(com.ll.hype.domain.shoes.shoes.entity.ShoesCategory).values()}"
+                        th:value="${category}"
+                        th:text="${category}"></option>
+            </select>
+        </div>
 
-        <label for="shoesCategory">Shoes Category:</label>
-        <select id="shoesCategory" name="shoesCategory" th:field="*{shoesCategory}" required>
-            <option th:each="category : ${T(com.ll.hype.domain.shoes.shoes.entity.ShoesCategory).values()}"
-                    th:value="${category}"
-                    th:text="${category}"></option>
-        </select>
-        <br/>
+        <div class="mb-4">
+            <label for="color" class="block text-sm font-bold text-gray-700 mb-2">색상:</label>
+            <input type="text" id="color" name="color" th:field="*{color}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
 
-        <label for="color">Color:</label>
-        <input type="text" id="color" name="color" th:field="*{color}" required/>
-        <br/>
+        <div class="mb-4">
+            <label for="gender" class="block text-sm font-bold text-gray-700 mb-2">성별:</label>
+            <select id="gender" name="gender" th:field="*{gender}" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                <option th:each="gender : ${T(com.ll.hype.global.enums.Gender).values()}"
+                        th:value="${gender}"
+                        th:text="${gender}"></option>
+            </select>
+        </div>
 
-        <label for="gender">Gender:</label>
-        <select id="gender" name="gender" th:field="*{gender}" required>
-            <option th:each="gender : ${T(com.ll.hype.global.enums.Gender).values()}"
-                    th:value="${gender}"
-                    th:text="${gender}"></option>
-        </select>
-        <br/>
+        <div class="mb-4">
+            <label for="status" class="block text-sm font-bold text-gray-700 mb-2">상태:</label>
+            <select id="status" name="status" th:field="*{status}" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                <option value="ENABLE">활성화</option>
+                <option value="DISABLE">비활성화</option>
+                <!-- 필요한 만큼 옵션을 추가하세요 -->
+            </select>
+        </div>
 
-        <label for="status">Status:</label>
-        <select id="status" name="status" th:field="*{status}" required>
-            <option value="ENABLE">Enable</option>
-            <option value="DISABLE">Disable</option>
-            <!-- Add more options as needed -->
-        </select>
-        <br/>
-
-        <button type="submit">Create Shoes</button>
+        <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue">
+            Submit
+        </button>
     </form>
 </div>
 </body>
