@@ -6,13 +6,18 @@
     <div class="flex flex-col justify-center">
         <div class="flex mb-[20px] space-x-8">
             <div>고객센터</div>
-            <div>마이페이지</div>
+            <a href="/mypage/profile">마이페이지</a>
             <div>관심</div>
             <div>알림</div>
-            <div>로그인</div>
+            <div sec:authorize="isAnonymous()" >
+                <a th:href="@{/member/login}">로그인</a>
+            </div>
+            <div sec:authorize="isAuthenticated()" >
+                <a th:href="@{/member/logout}">로그아웃</a>
+            </div>
         </div>
         <div class="flex space-x-4 justify-end">
-            <div>HOME</div>
+            <a href="/">HOME</a>
             <div>SHOP</div>
             <div>BOARD</div>
             <div>SEARCH</div>
