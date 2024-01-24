@@ -24,8 +24,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class SalesRequest
-        extends BaseEntity {
+public class SalesRequest extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Shoes shoes;
