@@ -1,15 +1,15 @@
-<html layout:decorate="~{global/usrLayout}" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8">
     <title>HYPE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 </head>
 <body>
-<div layout:fragment="content">
+<div>
     <div class="responsive-two-column-grid">
         <div class="column_img">
-        사진
+        상품 이미지
         </div>
         <div class="column">
             <div class="price_info">
@@ -48,9 +48,9 @@
                 <!--관심상품-->
             </div>
             <div class="">
-                <a class="brand" th:href="@{/brand}"><!--브랜드이름-->
-                    <p class="brand_eng_name" th:text="${brand.engName}"></p>
-                    <p class="brand_kor_name" th:text="${brand.korName}"></p>
+                <a class="brand" th:href="@{#}">브랜드 이름
+                    <p class="brand_eng_name" th:text="${shoes.brand.engName}"></p>
+                    <p class="brand_kor_name" th:text="${shoes.brand.korName}"></p>
                 </a>
             </div>
             <div class="chart">
