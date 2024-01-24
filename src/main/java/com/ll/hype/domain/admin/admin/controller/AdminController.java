@@ -21,13 +21,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class AdminController {
     private final AdminService adminService;
-    //============== Main ==============
+
+    //============== Main Start ==============
+    // Admin home
     @GetMapping("/main")
     public String home() {
         return "domain/admin/main";
     }
+    //============== Main End ==============
+
 
     //============== Brand Start ==============
+    // Brand home
+    @GetMapping("/main/brand")
+    public String brandHome() {
+        return "domain/admin/brand/main";
+    }
+
     // 관리자 브랜드 생성 폼
     @GetMapping("/brand/create")
     public String createBrandForm(BrandRequest brandRequest) {
@@ -48,11 +58,15 @@ public class AdminController {
         model.addAttribute("brands", brands);
         return "domain/admin/brand/list";
     }
-
     //============== Brand End ==============
 
 
     //============== Shoes Start ==============
+    // Shoes home
+    @GetMapping("/main/shoes")
+    public String shoesHome() {
+        return "domain/admin/shoes/main";
+    }
     @GetMapping("/shoes/create")
     public String createShoesForm(ShoesRequest shoesRequest, Model model) {
         model.addAttribute("brands", adminService.brandFindEnable());
@@ -71,7 +85,6 @@ public class AdminController {
         model.addAttribute("shoes", shoes);
         return "domain/admin/shoes/list";
     }
-
     //============== Shoes End ==============
 
 }

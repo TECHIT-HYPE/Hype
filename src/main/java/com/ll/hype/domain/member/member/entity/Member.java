@@ -59,4 +59,11 @@ public class Member extends BaseEntity {
     public void updateRole(MemberRole role) {
         this.role = role;
     }
+
+    public void modifyProfile(String encodedPassword, String nickname, String phoneNumber, Integer shoesSize) {
+        this.password = encodedPassword;
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
+        this.shoesSize = shoesSize;
+    }
 }
