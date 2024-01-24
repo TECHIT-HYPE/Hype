@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>신발 검색</title>
+</head>
+<body>
+
+<h2>신발 검색</h2>
+
+<form th:action method="post">
+  <label for="keyword">검색어:</label>
+  <input type="text" id="keyword" name="keyword" required>
+  <button type="submit">검색</button>
+</form>
+
+</body>
+</html>
