@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>신발 목록</title>
+</head>
+<body>
+
+<h2>신발 목록</h2>
+
+<!-- 검색 결과가 있을 경우에만 표시 -->
+<!--<div th:if="${not #lists.isEmpty(shoes)}">-->
+    <table border="1">
+        <thead>
+        <tr>
+            <th>신발 한글 이름</th>
+            <th>신발 영어 이름</th>
+            <th>브랜드 한글 이름</th>
+            <th>브랜드 영어 이름</th>
+            <!-- 기타 필요한 컬럼들을 추가하세요 -->
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 검색 결과를 반복문을 사용하여 표시 -->
+        <tr th:each="shoes : ${shoes}">
+            <td th:text="${shoes.korName}"></td>
+            <td th:text="${shoes.engName}"></td>
+            <td th:text="${shoes.brand.korName}"></td>
+            <td th:text="${shoes.brand.engName}"></td>
+            <!--            // 여기서 검색 할 목록..? 아무튼 shoesResponse에서 확인하기-->
+            <!-- 기타 필요한 컬럼들을 추가하세요 -->
+        </tr>
+        </tbody>
+    </table>
+<!--</div>-->
+<!---->
+<!-- 검색 결과가 없을 경우 메시지를 표시 -->
+<!--<div th:if="${#lists.isEmpty(shoes)}">-->
+<!--    <p>검색 결과가 없습니다.</p>-->
+<!--</div>-->
+
+</body>
+</html>
