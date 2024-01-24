@@ -1,6 +1,10 @@
 package com.ll.hype.domain.shoes.shoes.shoessearch;
 
+import com.ll.hype.domain.brand.brand.dto.BrandResponse;
+import com.ll.hype.domain.brand.brand.entity.Brand;
+import com.ll.hype.domain.brand.brand.repository.BrandRepository;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
+import com.ll.hype.domain.shoes.shoes.dto.ShoesSearchResponse;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,27 +17,39 @@ import java.util.List;
 @Service
 public class ShoesSearchService {
     private final ShoesRepository shoesRepository;
+    private final BrandRepository brandRepository;
 
     // 해야하는것 :  모델명 , 브랜드(한국, 영어 2개있다)
     // 신발 한국 이름 조회
-    public List<ShoesResponse> findByKeyword(String keyword) {
+    public ShoesSearchResponse findByKeyword(String keyword) {
+        // Shoes 검색 상품을 담는 배열
         List<ShoesResponse> shoess = new ArrayList<>();
-        List<Shoes> findByKorNames = shoesRepository.findByKorNameContainingIgnoreCase(keyword);
-        for (Shoes shoes : findByKorNames) {
+        List<Shoes> findByShoesKeyword = shoesRepository.findByShoesKeyword(keyword);
+
+        for (Shoes shoes : findByShoesKeyword) {
             shoess.add(ShoesResponse.of(shoes));
         }
-        return shoess;
+
+        // Brand 검색 상품을 담는 배열
+        List<BrandResponse> brands = new ArrayList<>();
+        List<Brand> findByBrandKeyword = brandRepository.findByBrandKeywordIgnoreCase(keyword);
+
+        for (Brand brand : findByBrandKeyword) {
+            brands.add(BrandResponse.of(brand));
+        }
+
+        return ShoesSearchResponse.of(shoess, brands);
     }
 
      //신발 영어 이름 조회
-    public List<ShoesResponse> findByEngword(String keyword) {
-        List<ShoesResponse> shoess = new ArrayList<>();
-        List<Shoes> findByEngNames = shoesRepository.findByEngNameContainingIgnoreCase(keyword);
-        for (Shoes shoes : findByEngNames) {
-            shoess.add(ShoesResponse.of(shoes));
-        }
-        return shoess;
-    }
+//    public List<ShoesResponse> findByEngword(String keyword) {
+//        List<ShoesResponse> shoess = new ArrayList<>();
+//        List<Shoes> findByEngNames = shoesRepository.findByEngNameContainingIgnoreCase(keyword);
+//        for (Shoes shoes : findByEngNames) {
+//            shoess.add(ShoesResponse.of(shoes));
+//        }
+//        return shoess;
+//    }
 
 }
 

@@ -1,6 +1,7 @@
 package com.ll.hype.domain.shoes.shoes.shoessearch;
 
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
+import com.ll.hype.domain.shoes.shoes.dto.ShoesSearchResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -26,10 +27,9 @@ public class ShoesSearchController {
 
     @PostMapping("/search")
     public String shoesSearch(@RequestParam(value = "keyword") String keyword,Model model) {
-        List<ShoesResponse> findByKeywordShoes = shoesSearchService.findByKeyword(keyword);
-        shoesSearchService.findByEngword(keyword);
-        model.addAttribute("shoes", findByKeywordShoes);
+        ShoesSearchResponse data = shoesSearchService.findByKeyword(keyword);
+        model.addAttribute("data", data);
         return "domain/shoes/shoessearch/list";
     }
-
 }
+
