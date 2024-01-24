@@ -7,6 +7,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,4 +30,13 @@ public class CustomerQ extends BaseEntity {
 
     private String questionTitle;
     private String questionContent;
+
+    @OneToMany(mappedBy = "question")
+    private List<CustomerA> answers = new ArrayList<>();
+
+    public void update(CustomerQ customerQ) {
+        this.questionTitle = customerQ.getQuestionTitle();
+        this.questionContent = customerQ.getQuestionContent();
+        this.questionCategory = customerQ.getQuestionCategory();
+    }
 }
