@@ -45,10 +45,6 @@ public class UserPrincipal implements UserDetails {
         return member.getEmail();
     }
 
-    public String getNickname() {
-        return member.getNickname();
-    }
-
     @Override
     public boolean isAccountNonExpired() {
         return true;

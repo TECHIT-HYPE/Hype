@@ -1,11 +1,11 @@
 <html layout:decorate="~{global/usrLayout}">
 <head>
-    <title>회원가입</title>
+    <title>마이페이지</title>
 </head>
 <body>
 <div layout:fragment="content" class="container mx-auto mt-8 p-4 bg-white rounded shadow-md">
-    <form th:action method="post" th:object="${joinRequest}" class="max-w-md mx-auto">
-        <h1 class="text-3xl font-bold mb-4">Join</h1>
+    <form th:action method="post" th:object="${modifyRequest}" class="max-w-md mx-auto">
+        <h1 class="text-3xl font-bold mb-4">Profile</h1>
         <!-- error message -->
         <div class="mb-4" th:if="${#fields.hasAnyErrors()}">
             <div class="block text-gray-700 text-sm font-bold mb-2" th:each="err : ${#fields.allErrors()}">
@@ -15,7 +15,7 @@
         <!-- existing code -->
         <div class="mb-4">
             <label for="email" class="block text-gray-700 text-sm font-bold mb-2">이메일:</label>
-            <input type="email" id="email" name="email" th:field="*{email}" required
+            <input type="email" id="email" name="email" th:field="*{email}" readonly
                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
         </div>
 
@@ -33,7 +33,7 @@
 
         <div class="mb-4">
             <label for="name" class="block text-gray-700 text-sm font-bold mb-2">이름:</label>
-            <input type="text" id="name" name="name" th:field="*{name}" required
+            <input type="text" id="name" name="name" th:field="*{name}" readonly
                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
         </div>
 
@@ -51,17 +51,14 @@
 
         <div class="mb-4">
             <label for="birthday" class="block text-gray-700 text-sm font-bold mb-2">생일:</label>
-            <input type="date" id="birthday" name="birthday" th:field="*{birthday}" required
+            <input type="date" id="birthday" name="birthday" th:field="*{birthday}" readonly
                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
         </div>
 
         <div class="mb-4">
             <label for="gender" class="block text-gray-700 text-sm font-bold mb-2">성별:</label>
-            <select id="gender" name="gender" th:field="*{gender}" required
-                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
-                <option value="">&#45;&#45; 선택 &#45;&#45;</option>
-                <option th:each="gender : ${genderList}" th:value="${gender}" th:text="${gender}" />
-            </select>
+            <input type="text" id="gender" name="gender" th:field="*{gender}" readonly
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
         </div>
 
         <div class="mb-4">
@@ -74,7 +71,7 @@
         </div>
 
         <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue">
-            가입
+            수정
         </button>
     </form>
 </div>

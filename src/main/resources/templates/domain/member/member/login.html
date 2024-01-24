@@ -1,30 +1,40 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html layout:decorate="~{global/usrLayout}">
 <head>
-    <title>Title</title>
-    <meta http-equiv="Content-Type" content="text/html" ; charset="UTF-8">
+    <title>로그인</title>
 </head>
 <body>
-
-<form th:action="@{/member/login}" method="post" th:object="${loginRequest}" >
-
-    <div th:if="${param.error}">
-        <div class="alert alert-danger">
-            이메일 또는 비밀번호를 확인해 주세요.
+<div layout:fragment="content" class="container mx-auto mt-8 p-4 bg-white rounded shadow-md">
+    <form th:action method="post" th:object="${loginRequest}" class="max-w-md mx-auto">
+        <h1 class="text-3xl font-bold mb-4">Login</h1>
+        <!-- error message -->
+        <div class="mb-4" th:if="${param.error}">
+            <div class="block text-gray-700 text-sm font-bold mb-2">
+                이메일 또는 비밀번호를 확인해 주세요.
+            </div>
         </div>
-    </div>
+        <!-- existing code -->
+        <div class="mb-4">
+            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">이메일:</label>
+            <input type="email" id="email" name="email" th:field="*{email}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
 
-    <label for="email">email:</label>
-    <input type="email" id="email" name="email" th:field="*{email}" />
+        <div class="mb-4">
+            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">비밀번호:</label>
+            <input type="password" id="password" name="password" th:field="*{password}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
 
-    <br/>
+        <button type="submit" class="mb-4 w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue">
+            로그인
+        </button>
 
-    <label for="password">password:</label>
-    <input type="password" id="password" name="password" th:field="*{password}" />
-
-    <br/>
-    <button type="submit">Submit</button>
-</form>
-
+        <button type="button" onclick="location.href='/member/join'"
+                class="mb-4 w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
+        >
+            회원가입
+        </button>
+    </form>
+</div>
 </body>
 </html>
