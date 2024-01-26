@@ -1,11 +1,11 @@
-package com.ll.hype.domain.customer.customer.entity;
+package com.ll.hype.domain.customer.answer.entity;
 
+import com.ll.hype.domain.customer.question.entity.CustomerQ;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

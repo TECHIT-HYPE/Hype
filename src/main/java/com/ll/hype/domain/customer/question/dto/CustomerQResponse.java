@@ -1,8 +1,7 @@
-package com.ll.hype.domain.customer.customer.dto;
+package com.ll.hype.domain.customer.question.dto;
 
-import com.ll.hype.domain.brand.brand.dto.BrandResponse;
-import com.ll.hype.domain.customer.customer.entity.CustomerQ;
-import com.ll.hype.domain.customer.customer.entity.QuestionCategory;
+import com.ll.hype.domain.customer.question.entity.CustomerQ;
+import com.ll.hype.domain.customer.question.entity.QuestionCategory;
 import com.ll.hype.domain.member.member.entity.Member;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

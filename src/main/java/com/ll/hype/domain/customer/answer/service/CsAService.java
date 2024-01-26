@@ -1,4 +1,4 @@
-package com.ll.hype.domain.customer.customer.service;
+package com.ll.hype.domain.customer.answer.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

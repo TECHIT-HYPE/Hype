@@ -1,5 +1,6 @@
-package com.ll.hype.domain.customer.customer.entity;
+package com.ll.hype.domain.customer.question.entity;
 
+import com.ll.hype.domain.customer.answer.entity.CustomerA;
 import com.ll.hype.global.jpa.BaseEntity;
 import com.ll.hype.domain.member.member.entity.Member;
 import jakarta.persistence.Entity;
@@ -38,5 +39,9 @@ public class CustomerQ extends BaseEntity {
         this.questionTitle = customerQ.getQuestionTitle();
         this.questionContent = customerQ.getQuestionContent();
         this.questionCategory = customerQ.getQuestionCategory();
+    }
+
+    public void addMember(Member member) {
+        this.member = member;
     }
 }

@@ -1,4 +1,4 @@
-package com.ll.hype.domain.customer.customer.entity;
+package com.ll.hype.domain.customer.question.entity;
 
 public enum QuestionCategory {
     COMMON("COMMON"),
