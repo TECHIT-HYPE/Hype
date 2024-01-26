@@ -1,11 +1,11 @@
-<html layout:decorate="~{global/usrLayout}">
+<html layout:decorate="~{domain/member/mypage/myPageLayout}">
 <head>
     <title>마이페이지</title>
 </head>
 <body>
-<div layout:fragment="content" class="container mx-auto mt-8 p-4 bg-white rounded shadow-md">
+<div layout:fragment="my_page_content" >
     <form th:action method="post" th:object="${modifyRequest}" class="max-w-md mx-auto">
-        <h1 class="text-3xl font-bold mb-4">Profile</h1>
+        <h1 class="text-3xl font-bold mb-4">로그인 정보</h1>
         <!-- error message -->
         <div class="mb-4" th:if="${#fields.hasAnyErrors()}">
             <div class="block text-gray-700 text-sm font-bold mb-2" th:each="err : ${#fields.allErrors()}">
