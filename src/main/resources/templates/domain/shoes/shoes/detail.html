@@ -42,12 +42,15 @@
             </div>
             <div class="purchase_info">
                 <!--즉시 구매가 즉시 판매가, 구매버튼 판매버튼-->
+                <a th:href="@{/sale/select/{id}(id=${shoes.id})}" class="btn">구매 진행</a>
+                <a th:href="@{/sale/select/{id}(id=${shoes.id})}" class="btn">판매 진행</a>
+
                 <!--내 사이즈 가격, 가장 저렴한 사이즈 가격-->
             </div>
             <div class="wishlist">
                 <!--관심상품-->
             </div>
-            <div class="">
+            <div class="brand_info">
                 <a class="brand" th:href="@{#}">브랜드 이름
                     <p class="brand_eng_name" th:text="${shoes.brand.engName}"></p>
                     <p class="brand_kor_name" th:text="${shoes.brand.korName}"></p>
