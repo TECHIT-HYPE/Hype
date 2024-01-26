@@ -11,6 +11,25 @@
 <body class="bg-gray-200 min-h-screen flex justify-center items-center">
 
 <div class="grid grid-cols-3 gap-4">
+  <div class="container">
+
+    <div class="item-image-container">
+      <img src="" alt="Product Image">
+    </div>
+
+    <div class="item-info-container">
+      <div class="name-container">
+        <span th:text="shoes.korName">
+          kor-name
+        </span>
+        <span th:text="shoes.engName">
+          eng-name
+        </span>
+      </div>
+    </div>
+
+  </div>
+  <!-- meeting -->
   <!-- 가로 3줄, 세로 7줄의 버튼 생성 -->
   <button class="button bg-white text-black text-sm p-4 rounded-lg border border-gray-300 w-20">220</button>
   <button class="button bg-white text-black text-sm p-4 rounded-lg border border-gray-300 w-20">225</button>
