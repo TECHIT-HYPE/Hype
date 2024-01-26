@@ -22,21 +22,21 @@ import java.time.LocalDate;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderRequest extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
-    private Shoes shoes;
+    private Shoes shoes; //신발
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private ShoesSize shoesSize;
+    private ShoesSize shoesSize; // 신발 사이즈
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    private Member member; // 구매자
 
-    private Long price;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private Long price; // 가격
+    private LocalDate startDate; // 구매 입찰 시작
+    private LocalDate endDate; // 구매 입찰 만료 기간
 
     @OneToOne
-    private Address address;
+    private Address address; //주소
 
     @Enumerated(value = EnumType.STRING)
-    private Status status;
+    private Status status; // 거래 상태 거래중 거래완료
 }
