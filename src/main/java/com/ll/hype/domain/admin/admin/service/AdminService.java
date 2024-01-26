@@ -4,6 +4,9 @@ import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.dto.BrandResponse;
 import com.ll.hype.domain.brand.brand.entity.Brand;
 import com.ll.hype.domain.brand.brand.repository.BrandRepository;
+import com.ll.hype.domain.customer.question.dto.CustomerQResponse;
+import com.ll.hype.domain.customer.question.entity.CustomerQ;
+import com.ll.hype.domain.customer.question.repository.CsQRepository;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminService {
     private final BrandRepository brandRepository;
     private final ShoesRepository shoesRepository;
+    private final CsQRepository csQRepository;
 
     //============== Brand Start ==============
     // Brand 저장
@@ -50,14 +54,17 @@ public class AdminService {
 
     // Brand 공개 여부 - 공개
     public void brandEnable(Long id) {
-        Brand brand = brandRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 브랜드가 없습니다."));
+        Brand brand = brandRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("조회된 브랜드가 없습니다."));
         brand.updateStatus(StatusCode.ENABLE);
     }
 
     // Brand 공개 여부 - 비공개
     public void brandDisable(Long id) {
-        Brand brand = brandRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 브랜드가 없습니다."));
+        Brand brand = brandRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("조회된 브랜드가 없습니다."));
 
+        // TODO
         // shoesRepository.findByBrandKorName();
         // :: repo에 method 생성해야함
         brand.updateStatus(StatusCode.DISABLE);
@@ -83,4 +90,23 @@ public class AdminService {
         return severalShoes;
     }
     //============== Shoes End ==============
+
+
+    //============== CS Question Start ==============
+    // Question 상세 조회
+    public CustomerQResponse findQuestion(Long id) {
+        CustomerQ question = csQRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("조회된 문의가 없습니다."));
+        return CustomerQResponse.of(question);
+    }
+
+    // Question 전체 조회
+    public List<CustomerQResponse> findQuestionAll() {
+        List<CustomerQResponse> questions = new ArrayList<>();
+        for (CustomerQ customerQ : csQRepository.findAll()) {
+            questions.add(CustomerQResponse.of(customerQ));
+        }
+        return questions;
+    }
+    //============== CS End Start ==============
 }

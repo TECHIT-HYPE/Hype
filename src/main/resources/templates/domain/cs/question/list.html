@@ -1,0 +1,36 @@
+<html layout:decorate="~{global/usrLayout}">
+<head>
+    <title>문의사항 목록</title>
+</head>
+<body>
+<div layout:fragment="content" class="container mx-auto mt-8 p-4 bg-white rounded shadow-md">
+    <h1 class="text-2xl font-bold mb-4">Question List</h1>
+
+    <table class="min-w-full bg-white border border-gray-300">
+        <thead>
+        <tr>
+            <th class="py-2 px-4 border-b">ID</th>
+            <th class="py-2 px-4 border-b">Member</th>
+            <th class="py-2 px-4 border-b">Title</th>
+            <th class="py-2 px-4 border-b">Content</th>
+            <th class="py-2 px-4 border-b">Category</th>
+            <th class="py-2 px-4 border-b">Create Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Loop through the list of CustomerQResponse objects -->
+        <tr th:each="question : ${questions}">
+            <td class="py-2 px-4 border-b" th:text="${question.id}"></td>
+            <td class="py-2 px-4 border-b" th:text="${question.member.name}"></td>
+            <td class="py-2 px-4 border-b">
+                <a th:href="@{|/cs/question/detail/${question.id}|}" th:text="${question.questionTitle}"></a>
+            </td>
+            <td class="py-2 px-4 border-b" th:text="${question.questionContent}"></td>
+            <td class="py-2 px-4 border-b" th:text="${question.questionCategory}"></td>
+            <td class="py-2 px-4 border-b" th:text="${question.createDate}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

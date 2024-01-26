@@ -29,7 +29,6 @@ public class ShoesRequest {
     private Gender gender;
     private StatusCode status;
 
-
     public static Shoes toEntity(ShoesRequest shoesRequest) {
         return Shoes.builder()
                 .brand(shoesRequest.getBrand())

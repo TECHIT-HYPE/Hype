@@ -1,0 +1,32 @@
+<html layout:decorate="~{global/usrLayout}">
+<head>
+  <title>문의사항 목록</title>
+</head>
+<body>
+<div layout:fragment="content" class="container mx-auto mt-8 p-4 bg-white rounded shadow-md">
+  <h2 class="text-2xl font-semibold mb-4">Update Question</h2>
+
+  <!-- Form to update the question -->
+  <form th:object="${customerQRequest}" th:action="@{/cs/question/update}" method="post">
+    <input type="hidden" th:field="${question.id}"/>
+
+    <!-- Add other form fields based on your requirements -->
+    <div class="mb-4">
+      <label for="questionTitle" class="block text-sm font-medium text-gray-600">Question Title</label>
+      <input type="text" id="questionTitle" name="questionTitle" th:field="${question.questionTitle}"
+             class="mt-1 p-2 block w-full border rounded-md"/>
+    </div>
+
+    <div class="mb-4">
+      <label for="questionContent" class="block text-sm font-medium text-gray-600">Question Content</label>
+      <textarea id="questionContent" name="questionContent" th:field="${question.questionContent}"
+                class="mt-1 p-2 block w-full border rounded-md"></textarea>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="bg-blue-500 text-white p-2 rounded-md">수정</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

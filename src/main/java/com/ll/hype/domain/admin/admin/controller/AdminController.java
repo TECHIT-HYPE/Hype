@@ -3,6 +3,7 @@ package com.ll.hype.domain.admin.admin.controller;
 import com.ll.hype.domain.admin.admin.service.AdminService;
 import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.dto.BrandResponse;
+import com.ll.hype.domain.customer.question.dto.CustomerQResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import java.util.List;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -87,4 +89,22 @@ public class AdminController {
     }
     //============== Shoes End ==============
 
+
+    //============== CS Question Start ==============
+    // Question Detail
+    @GetMapping("/cs/question/detail/{id}")
+    public String questionDetail(@PathVariable Long id, Model model) {
+        CustomerQResponse question = adminService.findQuestion(id);
+        model.addAttribute("question", question);
+        return "domain/admin/question/detail";
+    }
+
+    // Question All List
+    @GetMapping("/cs/question/list")
+    public String questionFindAll(Model model) {
+        List<CustomerQResponse> findAll = adminService.findQuestionAll();
+        model.addAttribute("questions", findAll);
+        return "domain/admin/question/list";
+    }
+    //============== CS Question End ==============
 }
