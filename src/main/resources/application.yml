@@ -11,6 +11,11 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password:
+  s3:
+    accessKey: IPw9LKx9C7f8y1VN32kP
+    secretKey: VMZkSDkfxuGgVnetHIuFHAAAjZMVjwXoXI3UpuRA
+    bucket: hypeimagebucket
+    testBucket: hypetestbucket
   jpa:
     hibernate:
       ddl-auto: create
@@ -19,6 +24,7 @@ spring:
         show_sql: true
         format_sql: true
         use_sql_comments: true
+        dialect: org.hibernate.dialect.H2Dialect
 logging:
   level:
     com.ll.sb20231114: DEBUG

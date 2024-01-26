@@ -21,6 +21,7 @@ public class ImageBridgeService {
     private final ImageBridgeRepository imageBridgeRepository;
     private final ImageService imageService;
 
+    //imageTy
     public ImageBridge save(ImageType imageType, long typeId, List<MultipartFile> files) {
         List<Image> images = new ArrayList<>();
         for (MultipartFile file : files) {
