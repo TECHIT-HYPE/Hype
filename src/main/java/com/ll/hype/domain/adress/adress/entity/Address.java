@@ -24,5 +24,4 @@ public class Address extends BaseEntity {
     private String address;
     private String detailAddress;
     private String extraAddress;
-
 }
