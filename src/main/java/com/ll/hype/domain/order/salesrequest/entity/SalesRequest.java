@@ -24,24 +24,23 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class SalesRequest
-        extends BaseEntity {
+public class SalesRequest extends BaseEntity {
+//판매 입찰 요청
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Shoes shoes; //신발 정보
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Shoes shoes;
+    private ShoesSize shoesSize; //신발 사이즈 정보
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private ShoesSize shoesSize;
+    private Member member; //판매 입찰 등록인
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
-
-    private Long price;
+    private Long price; //입찰가
     private LocalDate startDate;
     private LocalDate endDate;
 
     @OneToOne
-    private Address address;
+    private Address address; //반송주소
 
     @Enumerated(value = EnumType.STRING)
     private Status status;

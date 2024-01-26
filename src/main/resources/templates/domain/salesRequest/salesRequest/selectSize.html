@@ -1,0 +1,59 @@
+<html layout:decorate="~{global/usrLayout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신발 사이즈 및 가격</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* 그리드 컨테이너 스타일 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 4열로 정렬 */
+            gap: 10px; /* 그리드 아이템 사이의 간격 설정 */
+            justify-items: center; /* 가로 중앙 정렬 */
+        }
+
+        /* 그리드 아이템 스타일 */
+        .grid-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <form th:action method="post" th:object="${salesReqRequest}">
+        <div class="container mx-auto mt-5">
+            <div class="header text-center mb-5">
+                <!--이미지-->
+                <p class="text-l" th:text="${shoes.model}"></p>
+                <p class="text-l" th:text="${shoes.korName}"></p>
+                <p class="text-l" th:text="${shoes.engName}"></p>
+            </div>
+            <div class="grid-container">
+                <th:block th:each="shoesSize : ${shoesSizeList}">
+                    <div class="grid-item">
+                        <button class="w-32 h-12 rounded-md border border-black bg-white text-black hover:bg-gray-200">
+                            [[${shoesSize.size}]] <br>
+
+                            <span th:if="${shoesSize.exists == true}">
+                            <!--오더리퀘스트에 사이즈가 있으면 가격을 출력-->
+                                <!--판매는 높은 가격순으로...-->
+                                [[${shoesSize.price}]] <br>
+                            </span>
+                            <span th:unless="${shoesSize.exists == true}">
+                                판매 입찰
+                            </span>
+
+                        </button>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
+
