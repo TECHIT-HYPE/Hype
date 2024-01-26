@@ -10,8 +10,8 @@ import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.entity.MemberRole;
 import com.ll.hype.domain.member.member.repository.MemberRepository;
 import com.ll.hype.domain.member.member.service.MemberService;
-import com.ll.hype.domain.order.orderrequest.entity.OrderRequest;
-import com.ll.hype.domain.order.orderrequest.repository.OrderRequestRepository;
+import com.ll.hype.domain.order.buy.entity.Buy;
+import com.ll.hype.domain.order.buy.repository.BuyRepository;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesCategory;
@@ -49,7 +49,7 @@ public class NotProd {
     private final MemberRepository memberRepository;
     private final ShoesSizeRepository shoesSizeRepository;
     private final ShoesRepository shoesRepository;
-    private final OrderRequestRepository orderRequestRepository;
+    private final BuyRepository orderRequestRepository;
     private final AddressRepository addressRepository;
 
     @Bean
@@ -162,7 +162,7 @@ public class NotProd {
 
         addressRepository.save(address2);
 
-        OrderRequest orderRequest = OrderRequest.builder()
+        Buy orderRequest = Buy.builder()
                 .shoes(shoes)
                 .shoesSize(shoesSize)
                 .member(findMember)
@@ -182,7 +182,7 @@ public class NotProd {
 
         shoesSizeRepository.save(shoesSize2);
 
-        OrderRequest orderRequest2 = OrderRequest.builder()
+        Buy orderRequest2 = Buy.builder()
                 .shoes(shoes)
                 .shoesSize(shoesSize2)
                 .member(findMember)

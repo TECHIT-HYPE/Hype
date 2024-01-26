@@ -1,6 +1,6 @@
-package com.ll.hype.domain.order.orderrequest.controller;
+package com.ll.hype.domain.order.buy.controller;
 
-import com.ll.hype.domain.order.orderrequest.service.OrderRequestService;
+import com.ll.hype.domain.order.buy.service.BuyService;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @RequestMapping("/order")
 @Controller
-public class OrderRequestController {
+public class BuyController {
 
-    private final OrderRequestService orderRequestService;
+    private final BuyService buyService;
 
     @GetMapping("/shoes/{shoesId}")
     public String viewOrderRequestPage(
@@ -28,7 +28,7 @@ public class OrderRequestController {
             Model model
     ) {
 
-        ShoesResponse findShoes = orderRequestService.findByShoesId(shoesId);
+        ShoesResponse findShoes = buyService.findByShoesId(shoesId);
         model.addAttribute("shoes", findShoes);
 
         return "/domain/order/order";

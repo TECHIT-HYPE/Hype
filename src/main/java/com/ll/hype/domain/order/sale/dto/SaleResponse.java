@@ -1,16 +1,11 @@
-package com.ll.hype.domain.order.salesrequest.dto;
+package com.ll.hype.domain.order.sale.dto;
 
 import com.ll.hype.domain.adress.adress.entity.Address;
-import com.ll.hype.domain.brand.brand.entity.Brand;
 import com.ll.hype.domain.member.member.entity.Member;
-import com.ll.hype.domain.order.salesrequest.entity.SalesRequest;
+import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
-import com.ll.hype.domain.shoes.shoes.entity.ShoesCategory;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
-import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.enums.Status;
-import com.ll.hype.global.enums.StatusCode;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SalesReqResponse {
+public class SaleResponse {
     private long id;
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
@@ -37,8 +32,8 @@ public class SalesReqResponse {
     private Status status;
     private String account;
 
-    public static SalesReqResponse of(SalesRequest salesRequest) {
-        return SalesReqResponse.builder()
+    public static SaleResponse of(Sale salesRequest) {
+        return SaleResponse.builder()
                 .id(salesRequest.getId())
                 .createDate(salesRequest.getCreateDate())
                 .modifyDate(salesRequest.getModifyDate())

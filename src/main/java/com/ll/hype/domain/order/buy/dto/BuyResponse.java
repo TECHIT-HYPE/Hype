@@ -1,8 +1,8 @@
-package com.ll.hype.domain.order.orderrequest.dto;
+package com.ll.hype.domain.order.buy.dto;
 
 import com.ll.hype.domain.adress.adress.entity.Address;
 import com.ll.hype.domain.member.member.entity.Member;
-import com.ll.hype.domain.order.orderrequest.entity.OrderRequest;
+import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.global.enums.Status;
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderReqResponse {
+public class BuyResponse {
     private long id;
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
@@ -31,8 +31,8 @@ public class OrderReqResponse {
     private Address address;
     private Status status;
 
-    public static OrderReqResponse of(OrderRequest orderRequest) {
-        return OrderReqResponse.builder()
+    public static BuyResponse of(Buy orderRequest) {
+        return BuyResponse.builder()
                 .id(orderRequest.getId())
                 .createDate(orderRequest.getCreateDate())
                 .modifyDate(orderRequest.getModifyDate())

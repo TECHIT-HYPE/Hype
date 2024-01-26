@@ -1,35 +1,32 @@
-package com.ll.hype.domain.order.salesrequest.controller;
+package com.ll.hype.domain.order.sale.controller;
 
-import com.ll.hype.domain.order.orderrequest.dto.OrderReqResponse;
-import com.ll.hype.domain.order.orderrequest.service.OrderRequestService;
-import com.ll.hype.domain.order.salesrequest.dto.SalesReqRequest;
-import com.ll.hype.domain.order.salesrequest.dto.SalesReqResponse;
-import com.ll.hype.domain.order.salesrequest.service.SalesRequestService;
+import com.ll.hype.domain.order.buy.dto.BuyResponse;
+import com.ll.hype.domain.order.buy.service.BuyService;
+import com.ll.hype.domain.order.sale.dto.SaleRequest;
+import com.ll.hype.domain.order.sale.service.SaleService;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesSizeDTO;
-import com.ll.hype.domain.shoes.shoes.entity.Shoes;
-import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.domain.shoes.shoes.service.ShoesService;
 import com.ll.hype.global.util.ShoesSizeGenerator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RequiredArgsConstructor
 @RequestMapping("/sale")
 @Controller
-public class SalesRequestController {
+public class SaleController {
 
     private final ShoesService shoesService;
-    private final OrderRequestService orderRequestService;
-    private final SalesRequestService salesRequestService;
+    private final BuyService buyService;
+    private final SaleService saleService;
 
     //사이즈 선택
     //신발고유번호, 이름, 이미지, 사이즈 노출
@@ -38,13 +35,14 @@ public class SalesRequestController {
         ShoesResponse shoesResponse = shoesService.findById(id);
         model.addAttribute("shoes", shoesResponse);
 
-        List<OrderReqResponse> orderRequestList = orderRequestService.findByShoesId(id);
+        List<BuyResponse> orderRequestList = buyService.findByShoes(id);
+
         model.addAttribute("orderRequest", orderRequestList);
 
         List<ShoesSizeDTO> list = ShoesSizeGenerator.getSizes().stream()
                 .map(size -> {
 
-                    for (OrderReqResponse order : orderRequestList) {
+                    for (BuyResponse order : orderRequestList) {
                         if (order.getShoesSize().getSize() == size) {
                             return ShoesSizeDTO.builder()
                                     .size(size)
@@ -65,7 +63,7 @@ public class SalesRequestController {
 
 //        ShoesResponse findOne = shoesService.findById(id);
 //        model.addAttribute("shoes", findOne);
-//        OrderReqResponse orderReqResponse = orderRequestService.findById(id);
+//        BuyResponse orderReqResponse = orderRequestService.findById(id);
 //        model.addAttribute("orderRequest", orderReqResponse);
 //        model.addAttribute("shoesSizeList", ShoesSizeGenerator.getSizes());
 //        return "domain/salesRequest/salesRequest/selectSize";
@@ -78,13 +76,13 @@ public class SalesRequestController {
     }
     //판매 약관 동의
     @GetMapping("/approval")
-    public String approveForm(SalesReqRequest salesReqRequest) {
+    public String approveForm(SaleRequest salesReqRequest) {
 
         return "domain/salesRequest/salesRequest/approve";
     }
     //판매 약관 동의 처리
     @PostMapping("/approval")
-    public String approve(SalesReqRequest salesReqRequest) {
+    public String approve(SaleRequest salesReqRequest) {
 
         return "domain/selectSize";
     }
@@ -94,8 +92,8 @@ public class SalesRequestController {
 
     //판매 결정 및 정보 입력
     @PostMapping("select/{id}/{shoesSize}")
-    public String saveSalesRequest (SalesReqRequest salesReqRequest, Model model) {
-        salesRequestService.saveSalesRequest(salesReqRequest);
+    public String saveSalesRequest (SaleRequest salesReqRequest, Model model) {
+        saleService.saveSalesRequest(salesReqRequest);
         return "redirect:/";
     }
 }

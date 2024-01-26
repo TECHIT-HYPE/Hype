@@ -1,15 +1,11 @@
-package com.ll.hype.domain.order.salesrequest.dto;
+package com.ll.hype.domain.order.sale.dto;
 
 import com.ll.hype.domain.adress.adress.entity.Address;
-import com.ll.hype.domain.brand.brand.entity.Brand;
 import com.ll.hype.domain.member.member.entity.Member;
-import com.ll.hype.domain.order.salesrequest.entity.SalesRequest;
+import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
-import com.ll.hype.domain.shoes.shoes.entity.ShoesCategory;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
-import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.enums.Status;
-import com.ll.hype.global.enums.StatusCode;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,7 +15,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SalesReqRequest {
+public class SaleRequest {
     private Shoes shoes;
     private ShoesSize shoesSize;
     private Member member;
@@ -30,8 +26,8 @@ public class SalesReqRequest {
     private Status status;
     private String account;
 
-    public static SalesRequest toEntity(SalesReqRequest salesReqRequest) {
-        return SalesRequest.builder()
+    public static Sale toEntity(SaleRequest salesReqRequest) {
+        return Sale.builder()
                 .shoes(salesReqRequest.getShoes())
                 .shoesSize(salesReqRequest.getShoesSize())
                 .member(salesReqRequest.getMember())
