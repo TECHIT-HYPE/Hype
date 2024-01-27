@@ -20,8 +20,6 @@ import com.ll.hype.domain.shoes.shoes.entity.ShoesCategory;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesSizeRepository;
-import com.ll.hype.domain.wishlist.wishlist.entity.Wishlist;
-import com.ll.hype.domain.wishlist.wishlist.repository.WishlistRepository;
 import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.enums.Status;
 import com.ll.hype.global.enums.StatusCode;
@@ -57,7 +55,7 @@ public class NotProd {
     private final BuyRepository orderRequestRepository;
     private final AddressRepository addressRepository;
     private final SaleRepository saleRepository;
-    private final WishlistRepository wishlistRepository;
+    //private final WishlistRepository wishlistRepository;
 
     @Bean
     @Order(3)
@@ -230,46 +228,46 @@ public class NotProd {
         .status(Status.BIDDING)
         .account("1234-5678-999999-10")
         .build();
-saleRepository.save(saleRequest);
+        saleRepository.save(saleRequest);
 
-Sale saleRequest2 = Sale.builder()
-        .shoes(shoes)
-        .shoesSize(shoesSize2)
-        .member(findMember)
-        .price(400000L)
-        .startDate(LocalDate.of(2024,1,26)) // 다른 시작 날짜
-        .endDate(LocalDate.of(2024,2,5)) // 다른 종료 날짜
-        .address(address2.getFullAddress())
-        .status(Status.BIDDING)
-        .account("1234-5678-999999-10")
-        .build();
-saleRepository.save(saleRequest2);
+        Sale saleRequest2 = Sale.builder()
+                .shoes(shoes)
+                .shoesSize(shoesSize2)
+                .member(findMember)
+                .price(400000L)
+                .startDate(LocalDate.of(2024,1,26)) // 다른 시작 날짜
+                .endDate(LocalDate.of(2024,2,5)) // 다른 종료 날짜
+                .address(address2.getFullAddress())
+                .status(Status.BIDDING)
+                .account("1234-5678-999999-10")
+                .build();
+        saleRepository.save(saleRequest2);
 
-Sale saleRequest3 = Sale.builder()
-        .shoes(shoes)
-        .shoesSize(shoesSize2)
-        .member(findMember)
-        .price(400000L)
-        .startDate(LocalDate.of(2024,1,1)) // 다른 시작 날짜
-        .endDate(LocalDate.of(2024,1,31)) // 다른 종료 날짜
-        .address(address2.getFullAddress())
-        .status(Status.EXPIRED)
-        .account("1234-5678-999999-10")
-        .build();
-saleRepository.save(saleRequest3);
+        Sale saleRequest3 = Sale.builder()
+                .shoes(shoes)
+                .shoesSize(shoesSize2)
+                .member(findMember)
+                .price(400000L)
+                .startDate(LocalDate.of(2024,1,1)) // 다른 시작 날짜
+                .endDate(LocalDate.of(2024,1,31)) // 다른 종료 날짜
+                .address(address2.getFullAddress())
+                .status(Status.EXPIRED)
+                .account("1234-5678-999999-10")
+                .build();
+        saleRepository.save(saleRequest3);
 
-Wishlist wishlist = Wishlist.builder()
-        .member(userMember)
-        .shoes(shoes)
-        .shoesSize(230)
-        .build();
-wishlistRepository.save(wishlist);
-
-Wishlist wishlist2 = Wishlist.builder()
-        .member(userMember)
-        .shoes(shoes)
-        .shoesSize(250)
-        .build();
-wishlistRepository.save(wishlist2);
+//        Wishlist wishlist = Wishlist.builder()
+//                .member(userMember)
+//                .shoes(shoes)
+//                .shoesSize(230)
+//                .build();
+//        wishlistRepository.save(wishlist);
+//
+//        Wishlist wishlist2 = Wishlist.builder()
+//                .member(userMember)
+//                .shoes(shoes)
+//                .shoesSize(250)
+//                .build();
+//        wishlistRepository.save(wishlist2);
     }
 }
