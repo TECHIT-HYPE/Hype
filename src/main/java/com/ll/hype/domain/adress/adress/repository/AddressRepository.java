@@ -1,4 +1,4 @@
-package com.ll.hype.domain.adress.adress.entity.repository;
+package com.ll.hype.domain.adress.adress.repository;
 
 import com.ll.hype.domain.adress.adress.entity.Address;
 import org.springframework.data.jpa.repository.JpaRepository;

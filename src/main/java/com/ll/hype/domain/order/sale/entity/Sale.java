@@ -1,23 +1,18 @@
 package com.ll.hype.domain.order.sale.entity;
 
-import com.ll.hype.domain.adress.adress.entity.Address;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.global.enums.Status;
 import com.ll.hype.global.jpa.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import java.time.LocalDate;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -39,11 +34,10 @@ public class Sale extends BaseEntity {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @OneToOne
-    private Address address; //반송주소
+    private String address; // 반송주소
 
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
-    private String account; // 판매요청에서만 값이 존재
+    private String account; // ex) 신한은행 1002-123455-5555--88, 판매요청에만 컬럼 존재
 }
