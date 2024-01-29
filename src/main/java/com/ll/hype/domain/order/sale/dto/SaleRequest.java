@@ -26,17 +26,17 @@ public class SaleRequest {
     private Status status;
     private String account;
 
-    public static Sale toEntity(SaleRequest salesReqRequest) {
+    public static Sale toEntity(SaleRequest saleRequest) {
         return Sale.builder()
-                .shoes(salesReqRequest.getShoes())
-                .shoesSize(salesReqRequest.getShoesSize())
-                .member(salesReqRequest.getMember())
-                .price(salesReqRequest.getPrice())
-                .startDate(salesReqRequest.getStartDate())
-                .endDate(salesReqRequest.getEndDate())
-                .address(salesReqRequest.getAddress())
-                .status(salesReqRequest.getStatus())
-                .account(salesReqRequest.getAccount())
+                .shoes(saleRequest.getShoes())
+                .shoesSize(saleRequest.getShoesSize())
+                .member(saleRequest.getMember())
+                .price(saleRequest.getPrice())
+                .startDate(saleRequest.getStartDate())
+                .endDate(saleRequest.getEndDate())
+                .address(saleRequest.getAddress())
+                .status(saleRequest.getStatus())
+                .account(saleRequest.getAccount())
                 .build();
     }
 }

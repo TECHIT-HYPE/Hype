@@ -25,16 +25,16 @@ public class BuyRequest {
     private Address address;
     private Status status;
 
-    public static Buy toEntity(BuyRequest orderReqRequest) {
+    public static Buy toEntity(BuyRequest buyRequest) {
         return Buy.builder()
-                .shoes(orderReqRequest.getShoes())
-                .shoesSize(orderReqRequest.getShoesSize())
-                .member(orderReqRequest.getMember())
-                .price(orderReqRequest.getPrice())
-                .startDate(orderReqRequest.getStartDate())
-                .endDate(orderReqRequest.getEndDate())
-                .address(orderReqRequest.getAddress())
-                .status(orderReqRequest.getStatus())
+                .shoes(buyRequest.getShoes())
+                .shoesSize(buyRequest.getShoesSize())
+                .member(buyRequest.getMember())
+                .price(buyRequest.getPrice())
+                .startDate(buyRequest.getStartDate())
+                .endDate(buyRequest.getEndDate())
+                .address(buyRequest.getAddress())
+                .status(buyRequest.getStatus())
                 .build();
     }
 }
