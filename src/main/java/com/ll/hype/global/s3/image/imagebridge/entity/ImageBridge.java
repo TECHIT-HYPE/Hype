@@ -10,9 +10,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -28,6 +30,11 @@ public class ImageBridge extends BaseEntity {
 
     private long typeId;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Image> images;
+    @Builder.Default
+    @OneToMany(mappedBy = "imageBridge", cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
+
+    public void updateImages(List<Image> images) {
+        this.images = images;
+    }
 }

@@ -1,6 +1,5 @@
 package com.ll.hype.domain.order.buy.dto;
 
-import com.ll.hype.domain.adress.adress.entity.Address;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
@@ -28,7 +27,7 @@ public class BuyResponse {
     private Long price;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Address address;
+    private String address;
     private Status status;
 
     public static BuyResponse of(Buy buy) {
