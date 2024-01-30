@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>신발 사이즈 및 가격</title>
+    <title>HYPE</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
     <style>
         /* 그리드 컨테이너 스타일 */
@@ -24,7 +24,8 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <form th:action method="post" th:object="${salesReqRequest}">
+    <div class="flex justify-center">판매하기</div>
+    <form th:action method="post" th:object="${saleRequest}" id="sizeForm">
         <div class="container mx-auto mt-5">
             <div class="header text-center mb-5">
                 <!--이미지-->
@@ -35,23 +36,29 @@
             <div class="grid-container">
                 <th:block th:each="shoesSize : ${shoesSizeList}">
                     <div class="grid-item">
-                        <button class="w-32 h-12 rounded-md border border-black bg-white text-black hover:bg-gray-200">
-                            [[${shoesSize.size}]] <br>
-
+                        <button type="submit" class="w-32 h-12 rounded-md border border-black bg-white text-black hover:bg-gray-200"
+                                th:attr="data-size=${shoesSize.size}" onclick="submitForm(this)">
+                            <input type="hidden" name="selectedSize" id="selectedSize" th:value="${shoesSize.size}"/>
+                            [[${shoesSize.size}]] <br></input>
                             <span th:if="${shoesSize.exists == true}">
-                            <!--오더리퀘스트에 사이즈가 있으면 가격을 출력-->
                                 <!--판매는 높은 가격순으로...-->
                                 [[${shoesSize.price}]] <br>
                             </span>
                             <span th:unless="${shoesSize.exists == true}">
                                 판매 입찰
                             </span>
-
                         </button>
                     </div>
                 </th:block>
             </div>
         </div>
+        <script th:inline="javascript">
+            function submitForm(button){
+                var selectedSize = button.getAttribute("data-size");
+                document.getElementById('selectedSize').value = selectedSize;
+                document.getElementById('sizeForm').submit();
+            }
+        </script>
     </form>
 </div>
 </body>

@@ -10,4 +10,5 @@ import java.util.List;
 public interface BuyRepository extends JpaRepository<Buy, Long> {
     List<Buy> findByShoesId(Long id);
 
+    Buy findByShoesIdAndShoesSize_Size(long id, int shoesSize);
 }

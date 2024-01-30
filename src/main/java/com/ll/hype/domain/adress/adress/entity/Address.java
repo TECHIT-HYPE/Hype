@@ -22,6 +22,9 @@ public class Address extends BaseEntity {
     private Member member;
 
     @NotNull
+    private String addressName;
+
+    @NotNull
     private String postcode;
 
     @NotNull
@@ -31,6 +34,8 @@ public class Address extends BaseEntity {
     private String detailAddress;
 
     private String extraAddress;
+
+    private boolean isPrimary; // 대표주소 여부
 
     public String getFullAddress() {
         String fullAddress = postcode + " " + address + " " + detailAddress;

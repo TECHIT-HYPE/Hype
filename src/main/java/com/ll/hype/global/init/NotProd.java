@@ -192,32 +192,60 @@ public class NotProd {
 
         Address address = Address.builder()
                 .member(findMember)
+                .addressName("관리자 집 지번")
                 .postcode("07685")
                 .address("서울시 강서구 화곡동 993-15")
                 .detailAddress("502호")
                 .extraAddress(null)
+                .isPrimary(true)
                 .build();
 
         addressRepository.save(address);
 
         Address address2 = Address.builder()
                 .member(findMember)
+                .addressName("관리자 집 도로명")
                 .postcode("07685")
                 .address("서울 강서구 화곡로55길 33-14")
                 .detailAddress("502호")
                 .extraAddress("(화곡동, 훼밀리빌)")
+                .isPrimary(false)
                 .build();
 
         addressRepository.save(address2);
 
+        Address address3 = Address.builder()
+                .member(userMember)
+                .addressName("TEST 집 지번")
+                .postcode("123456")
+                .address("경기도 화성시 오산동 17-115")
+                .detailAddress("1001동 1002호")
+                .extraAddress(null)
+                .isPrimary(true)
+                .build();
+
+        addressRepository.save(address3);
+
+        Address address4 = Address.builder()
+                .member(userMember)
+                .addressName("TEST 집 도로명")
+                .postcode("123456")
+                .address("경기도 화성시 동탄대로 17")
+                .detailAddress("1001동 1002호")
+                .extraAddress("(오산동, 푸르지오 아파트 2차)")
+                .isPrimary(false)
+                .build();
+
+        addressRepository.save(address4);
+
         Buy orderRequest = Buy.builder()
                 .shoes(shoes)
                 .shoesSize(shoesSize)
-                .member(findMember)
+                .member(userMember)
                 .price(125000L)
-                .startDate(LocalDate.of(2024, 1, 25))
-                .endDate(LocalDate.of(2024, 1, 30))
-                .address(address.getFullAddress())
+                .startDate(LocalDate.of(2024,1,25))
+                .endDate(LocalDate.of(2024,1,30))
+                .address(address3.getFullAddress())
                 .status(Status.BIDDING)
                 .build();
 
@@ -233,11 +261,11 @@ public class NotProd {
         Buy orderRequest2 = Buy.builder()
                 .shoes(shoes)
                 .shoesSize(shoesSize2)
-                .member(findMember)
+                .member(userMember)
                 .price(150000L)
-                .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
-                .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
-                .address(address2.getFullAddress())
+                .startDate(LocalDate.of(2024,1,26)) // 다른 시작 날짜
+                .endDate(LocalDate.of(2024,2,5)) // 다른 종료 날짜
+                .address(address4.getFullAddress())
                 .status(Status.BIDDING)
                 .build();
         orderRequestRepository.save(orderRequest2);
