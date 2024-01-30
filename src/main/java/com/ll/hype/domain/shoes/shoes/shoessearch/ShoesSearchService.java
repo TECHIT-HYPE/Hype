@@ -7,6 +7,8 @@ import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesSearchResponse;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
+import com.ll.hype.global.s3.image.ImageType;
+import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.List;
 public class ShoesSearchService {
     private final ShoesRepository shoesRepository;
     private final BrandRepository brandRepository;
+    private final ImageBridgeComponent imageBridgeComponent;
 
     // 해야하는것 :  모델명 , 브랜드(한국, 영어 2개있다)
     // 신발 한국 이름 조회
@@ -35,13 +38,14 @@ public class ShoesSearchService {
         List<Brand> findByBrandKeyword = brandRepository.findByBrandKeywordIgnoreCase(keyword);
 
         for (Brand brand : findByBrandKeyword) {
-            brands.add(BrandResponse.of(brand));
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.BRAND, brand.getId());
+            brands.add(BrandResponse.of(brand, fullPath));
         }
 
         return ShoesSearchResponse.of(shoess, brands);
     }
 
-     //신발 영어 이름 조회
+    //신발 영어 이름 조회
 //    public List<ShoesResponse> findByEngword(String keyword) {
 //        List<ShoesResponse> shoess = new ArrayList<>();
 //        List<Shoes> findByEngNames = shoesRepository.findByEngNameContainingIgnoreCase(keyword);

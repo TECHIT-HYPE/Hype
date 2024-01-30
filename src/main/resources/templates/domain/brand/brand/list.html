@@ -9,7 +9,7 @@
     <table class="w-full border-collapse border border-gray-300">
         <thead>
         <tr>
-            <th class="p-3 border-b">ID</th>
+            <th class="p-3 border-b">Image</th>
             <th class="p-3 border-b">Create Date</th>
             <th class="p-3 border-b">Modify Date</th>
             <th class="p-3 border-b">Korean Name</th>
@@ -19,7 +19,13 @@
         </thead>
         <tbody>
         <tr th:each="brand : ${brands}" class="hover:bg-gray-100">
-            <td class="p-3 border-b" th:text="${brand.id}"></td>
+            <td class="p-3 border-b">
+                <ul>
+                    <li th:each="path : ${brand.fullPath}" >
+                        <img th:src="${path}" class="w-20"/>
+                    </li>
+                </ul>
+            </td>
             <td class="p-3 border-b" th:text="${brand.createDate}"></td>
             <td class="p-3 border-b" th:text="${brand.modifyDate}"></td>
             <td class="p-3 border-b" th:text="${brand.korName}"></td>
