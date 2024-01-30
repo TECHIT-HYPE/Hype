@@ -35,10 +35,7 @@
 
                 <!-- 사용자가 로그인한 사용자인 경우 -->
                 <div th:if="${profileDto.id eq principal.id}">
-                    <button class="cta" onclick="location.href='/image/upload'">사진등록</button>
-                    <button class="modi" onclick="popup('.modal-info')">
-                        <i class="fas fa-cog"></i>
-                    </button>
+                    <!-- 버튼 제거 -->
                 </div>
 
                 <!-- 다른 사용자인 경우 -->
@@ -65,13 +62,7 @@
 </section>
 
 <!-- 로그아웃, 회원정보변경 모달 -->
-<div class="modal-info" th:onclick="modalInfo()">
-    <div class="modal">
-        <button th:onclick="|location.href='/user/update/${principal.id}'|">회원정보 변경</button>
-        <button th:onclick="|location.href='/logout'|">로그아웃</button>
-        <button onclick="closePopup('.modal-info')">취소</button>
-    </div>
-</div>
+<!-- 해당 부분 제거 -->
 <!-- 로그아웃, 회원정보변경 모달 end -->
 
 <script src="/js/profile.js"></script>
@@ -80,3 +71,4 @@
 
 </body>
 </html>
+

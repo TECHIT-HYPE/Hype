@@ -5,10 +5,10 @@ import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.image.repository.ImageRepository;
 import com.ll.hype.global.s3.image.imagebridge.entity.ImageBridge;
 import com.ll.hype.global.s3.image.imagebridge.repository.ImageBridgeRepository;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -18,13 +18,15 @@ public class SocialProfileDto {
     private Long id;
     private String nickname;
     private String profileImage;
-    private ImageType type;
-    private long typeId;
-    public SocialProfileDto EntityToDto(Member member) {
-        ImageBridge imageBridge = ImageBridgeRepository.findByTypeAndTypeId()
+    private static ImageBridgeRepository imageBridgeRepository;
+
+    public static SocialProfileDto entityToDto(Member member) {
+        Optional<ImageBridge> imageBridge = imageBridgeRepository.findByTypeAndTypeId(ImageType.MEMBER, member.getId());
+
         return SocialProfileDto.builder()
                 .id(member.getId())
                 .nickname(member.getNickname())
                 .profileImage()
+                .build();
     }
 }
