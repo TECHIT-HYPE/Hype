@@ -1,11 +1,11 @@
 package com.ll.hype.domain.adress.adress.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.ll.hype.domain.adress.adress.entity.Address;
+import com.ll.hype.domain.member.member.entity.Member;
+import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,4 +19,18 @@ public class AddressRequest {
     private String detailAddress;
 
     private String extraAddress;
+
+    private boolean isPrimary;
+
+    public static Address toEntity(AddressRequest addressRequest, Member member) {
+        return Address.builder()
+                .member(member)
+                .addressName(addressRequest.addressName)
+                .postcode(addressRequest.postcode)
+                .address(addressRequest.address)
+                .detailAddress(addressRequest.detailAddress)
+                .extraAddress(addressRequest.extraAddress)
+                .isPrimary(addressRequest.isPrimary)
+                .build();
+    }
 }

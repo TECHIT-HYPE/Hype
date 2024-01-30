@@ -1,5 +1,6 @@
 package com.ll.hype.domain.member.mypage.controller;
 
+import com.ll.hype.domain.adress.adress.dto.AddressRequest;
 import com.ll.hype.domain.adress.adress.dto.AddressResponse;
 import com.ll.hype.domain.adress.adress.service.AddressService;
 import com.ll.hype.domain.member.member.entity.Member;
@@ -101,5 +102,24 @@ public class MyPageController {
 
         model.addAttribute("myAddressList", myAddressList);
         return "domain/member/mypage/address";
+    }
+
+    @GetMapping("/newAddress")
+    public String createAddressForm(@AuthenticationPrincipal UserPrincipal userPrincipal, AddressRequest addressRequest, Model model) {
+        return "domain/member/mypage/addressForm";
+    }
+
+    @PostMapping("/newAddress")
+    public String createAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                @Valid AddressRequest addressRequest,
+                                BindingResult bindingResult,
+                                Model model) {
+        if (bindingResult.hasErrors()) {
+            return "domain/member/mypage/addressForm";
+        }
+
+        addressService.createAddress(userPrincipal, addressRequest);
+
+        return "redirect:/mypage/addressList";
     }
 }
