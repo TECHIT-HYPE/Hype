@@ -12,11 +12,11 @@
     <div class="flex justify-center">판매동의</div>
         <div class="container mx-auto mt-5">
             <div class="header text-center mb-5">
-                <!--이미지-->
+<!--                이미지-->
                 <p class="text-l" th:text="${buyResponse.shoes.model}"></p>
                 <p class="text-l" th:text="${buyResponse.shoes.korName}"></p>
                 <p class="text-l" th:text="${buyResponse.shoes.engName}"></p>
-                <p class="text-l" th:text="${buyResponse.shoesSize.size}"></p>
+                <p class="text-l" th:text="${selectedSize}">사이즈</p>
 
                 <hr>
             </div>
@@ -56,10 +56,10 @@
                 </script>
             </div>
 
-            <div class="">
-                <input type="hidden" name="selectedSize" th:value="${buyResponse.shoesSize.size}">
-                <input type="hidden" name="selectedPrice" th:value="${buyResponse.price}">
-            </div>
+<!--            <div class="">-->
+<!--                <input type="hidden" name="selectedSize" th:value="${buyResponse.shoesSize.size}">-->
+<!--                <input type="hidden" name="selectedPrice" th:value="${buyResponse.price}">-->
+<!--            </div>-->
         </div>
 </div>
 </body>

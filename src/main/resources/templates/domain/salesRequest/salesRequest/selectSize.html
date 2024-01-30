@@ -6,60 +6,71 @@
     <title>HYPE</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* 그리드 컨테이너 스타일 */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 4열로 정렬 */
-            gap: 10px; /* 그리드 아이템 사이의 간격 설정 */
-            justify-items: center; /* 가로 중앙 정렬 */
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            justify-items: center;
         }
 
-        /* 그리드 아이템 스타일 */
         .grid-item {
             display: flex;
             justify-content: center;
             align-items: center;
         }
+
+        /*input[type="radio"] {*/
+        /*    display: none;*/
+        /*}*/
+        /*label {*/
+        /*    background-color: #4caf50;*/
+        /*    color: white;*/
+        /*    padding: 10px;*/
+        /*    cursor: pointer;*/
+        /*    border-radius: 5px;*/
+        /*}*/
+        /*input[type="radio"]:checked + label {*/
+        /*    background-color: #45a049;*/
+        /*}*/
     </style>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="flex justify-center">판매하기</div>
-    <form th:action method="post" th:object="${saleRequest}" id="sizeForm">
-        <div class="container mx-auto mt-5">
-            <div class="header text-center mb-5">
-                <!--이미지-->
-                <p class="text-l" th:text="${shoes.model}"></p>
-                <p class="text-l" th:text="${shoes.korName}"></p>
-                <p class="text-l" th:text="${shoes.engName}"></p>
-            </div>
+    <div class="container mx-auto mt-5">
+        <div class="header text-center mb-5">
+            <!--이미지-->
+            <p class="text-l" th:text="${shoes.model}"></p>
+            <p class="text-l" th:text="${shoes.korName}"></p>
+            <p class="text-l" th:text="${shoes.engName}"></p>
+        </div>
+        <form th:action method="post">
             <div class="grid-container">
                 <th:block th:each="shoesSize : ${shoesSizeList}">
                     <div class="grid-item">
-                        <button type="submit" class="w-32 h-12 rounded-md border border-black bg-white text-black hover:bg-gray-200"
-                                th:attr="data-size=${shoesSize.size}" onclick="submitForm(this)">
-                            <input type="hidden" name="selectedSize" id="selectedSize" th:value="${shoesSize.size}"/>
-                            [[${shoesSize.size}]] <br></input>
+                        <input type="radio" id="selectedSize" name="selectedSize" th:value="${shoesSize.size}">
+                        <label for="selectedSize">
+                            [[${shoesSize.size}]] <br>
                             <span th:if="${shoesSize.exists == true}">
-                                <!--판매는 높은 가격순으로...-->
                                 [[${shoesSize.price}]] <br>
                             </span>
                             <span th:unless="${shoesSize.exists == true}">
                                 판매 입찰
                             </span>
-                        </button>
+                        </label>
                     </div>
                 </th:block>
+                <br><br>
+                <input type="submit" value="Submit">
+                <div class="hiddenItem">
+<!--                    ??-->
+<!--                    <input type="hidden" name="selectedSize" th:value="${shoesSize.size}">-->
+<!--                    <input type="hidden" name="selectedPrice" th:value="${shoesSize.price}">-->
+<!--                    selectedBuyId-->
+                </div>
             </div>
-        </div>
-        <script th:inline="javascript">
-            function submitForm(button){
-                var selectedSize = button.getAttribute("data-size");
-                document.getElementById('selectedSize').value = selectedSize;
-                document.getElementById('sizeForm').submit();
-            }
-        </script>
-    </form>
+        </form>
+    </div>
 </div>
 </body>
 </html>
