@@ -30,19 +30,19 @@ public class BuyResponse {
     private String address;
     private Status status;
 
-    public static BuyResponse of(Buy orderRequest) {
+    public static BuyResponse of(Buy buy) {
         return BuyResponse.builder()
-                .id(orderRequest.getId())
-                .createDate(orderRequest.getCreateDate())
-                .modifyDate(orderRequest.getModifyDate())
-                .shoes(orderRequest.getShoes())
-                .shoesSize(orderRequest.getShoesSize())
-                .member(orderRequest.getMember())
-                .price(orderRequest.getPrice())
-                .startDate(orderRequest.getStartDate())
-                .endDate(orderRequest.getEndDate())
-                .address(orderRequest.getAddress())
-                .status(orderRequest.getStatus())
+                .id(buy.getId())
+                .createDate(buy.getCreateDate())
+                .modifyDate(buy.getModifyDate())
+                .shoes(buy.getShoes())
+                .shoesSize(buy.getShoesSize())
+                .member(buy.getMember())
+                .price(buy.getPrice())
+                .startDate(buy.getStartDate())
+                .endDate(buy.getEndDate())
+                .address(buy.getAddress())
+                .status(buy.getStatus())
                 .build();
     }
 }

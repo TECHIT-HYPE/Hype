@@ -36,4 +36,9 @@ public class BuyService {
         }
         return orderRequestList;
     }
+
+    public BuyResponse findByShoesIdAndShoesSize(long id, int shoesSize) {
+        Buy buy = buyRepository.findByShoesIdAndShoesSize_Size(id, shoesSize);
+        return BuyResponse.of(buy);
+    }
 }
