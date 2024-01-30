@@ -5,6 +5,7 @@ import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,8 +21,24 @@ public class Address extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    @NotNull
     private String postcode;
+
+    @NotNull
     private String address;
+
+    @NotNull
     private String detailAddress;
+
     private String extraAddress;
+
+    public String getFullAddress() {
+        String fullAddress = postcode + " " + address + " " + detailAddress;
+
+        if (extraAddress != null) {
+            fullAddress += (" " + extraAddress);
+        }
+
+        return fullAddress;
+    }
 }
