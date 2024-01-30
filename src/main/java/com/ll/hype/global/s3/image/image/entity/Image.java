@@ -18,7 +18,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Image extends BaseEntity {
     private String keyName;
-    private int index;
     @ManyToOne(fetch = FetchType.LAZY)
     ImageBridge imageBridge;
 
