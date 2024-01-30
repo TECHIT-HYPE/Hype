@@ -3,12 +3,13 @@ package com.ll.hype.domain.member.mypage.controller;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.service.MemberService;
 import com.ll.hype.domain.member.mypage.dto.ModifyRequest;
+import com.ll.hype.domain.member.mypage.dto.MyWishlistDto;
+import com.ll.hype.domain.wishlist.wishlist.service.WishlistService;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import com.ll.hype.global.util.ShoesSizeGenerator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -25,8 +27,8 @@ import java.util.Objects;
 @RequestMapping("/mypage")
 public class MyPageController {
     private final MemberService memberService;
+    private final WishlistService wishlistService;
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public String profileForm(@AuthenticationPrincipal UserPrincipal userPrincipal, ModifyRequest modifyRequest, Model model) {
 
@@ -80,5 +82,13 @@ public class MyPageController {
     private String loadAndReturnProfileForm(Model model) {
         model.addAttribute("shoesSizeList", ShoesSizeGenerator.getSizes());
         return "domain/member/mypage/profile";
+    }
+
+    @GetMapping("/wishlist")
+    public String myWishlistForm(@AuthenticationPrincipal UserPrincipal userPrincipal, Model model) {
+        List<MyWishlistDto> wishlist = wishlistService.getMyWishlist(userPrincipal.getMember().getId());
+
+        model.addAttribute("wishlist", wishlist);
+        return "domain/member/mypage/wishlist";
     }
 }

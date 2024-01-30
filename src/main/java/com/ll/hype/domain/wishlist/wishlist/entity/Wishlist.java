@@ -1,7 +1,7 @@
 package com.ll.hype.domain.wishlist.wishlist.entity;
 
 import com.ll.hype.domain.member.member.entity.Member;
-import com.ll.hype.domain.shoes.shoes.entity.Shoes;
+import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,7 +22,5 @@ public class Wishlist extends BaseEntity {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Shoes shoes;
-
-    private int shoesSize;
+    private ShoesSize shoesSize;
 }

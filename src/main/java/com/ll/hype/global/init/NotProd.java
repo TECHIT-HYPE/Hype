@@ -2,7 +2,7 @@ package com.ll.hype.global.init;
 
 import com.ll.hype.domain.admin.admin.service.AdminService;
 import com.ll.hype.domain.adress.adress.entity.Address;
-import com.ll.hype.domain.adress.adress.entity.repository.AddressRepository;
+import com.ll.hype.domain.adress.adress.repository.AddressRepository;
 import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.repository.BrandRepository;
 import com.ll.hype.domain.member.member.dto.JoinRequest;
@@ -12,12 +12,16 @@ import com.ll.hype.domain.member.member.repository.MemberRepository;
 import com.ll.hype.domain.member.member.service.MemberService;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
+import com.ll.hype.domain.order.sale.entity.Sale;
+import com.ll.hype.domain.order.sale.repository.SaleRepository;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesCategory;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesSizeRepository;
+import com.ll.hype.domain.wishlist.wishlist.entity.Wishlist;
+import com.ll.hype.domain.wishlist.wishlist.repository.WishlistRepository;
 import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.enums.Status;
 import com.ll.hype.global.enums.StatusCode;
@@ -25,16 +29,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +46,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 @Slf4j
 @Profile("!prod")
@@ -65,6 +64,8 @@ public class NotProd {
     private final ShoesRepository shoesRepository;
     private final BuyRepository orderRequestRepository;
     private final AddressRepository addressRepository;
+    private final SaleRepository saleRepository;
+    private final WishlistRepository wishlistRepository;
 
     @Bean
     @Order(3)
@@ -76,6 +77,10 @@ public class NotProd {
 
     @Transactional
     public void work1() throws IOException {
+        if (memberService.existsByEmail("admin@admin.com")) {
+            return;
+        }
+
         JoinRequest member = JoinRequest.builder()
                 .email("admin@admin.com")
                 .password("1234")
@@ -92,9 +97,25 @@ public class NotProd {
         Member findMember = memberRepository.findByEmail("admin@admin.com").get();
         findMember.updateRole(MemberRole.ADMIN);
 
+        JoinRequest member2 = JoinRequest.builder()
+                .email("test@test.com")
+                .password("test")
+                .passwordConfirm("test")
+                .name("테스트")
+                .nickname("test")
+                .phoneNumber("010-0000-1111")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .gender(Gender.FEMALE)
+                .shoesSize(230)
+                .build();
+        memberService.join(member2);
+        Member userMember = memberRepository.findByEmail("test@test.com")
+                .orElseThrow(() -> new IllegalArgumentException("NotProd userMember 생성 중 조회 오류 발생"));
+        userMember.updateRole(MemberRole.MEMBER);
 
         // ===== 이미지 객체 불러오기 시작 =====
-        File file = new File(getClass().getClassLoader().getResource("img/KakaoTalk_Photo_2022-09-07-14-41-27.jpeg").getFile());
+        File file = new File(
+                getClass().getClassLoader().getResource("img/KakaoTalk_Photo_2022-09-07-14-41-27.jpeg").getFile());
         InputStream stream = new FileInputStream(file);
         MultipartFile mockMultipartFile = new MockMultipartFile("file", file.getName(), MediaType.TEXT_HTML_VALUE,
                 stream);
@@ -102,7 +123,6 @@ public class NotProd {
         List<MultipartFile> files = new ArrayList<>();
         files.add(mockMultipartFile);
         // ===== 이미지 객체 불러오기 끝 =====
-
 
         IntStream.rangeClosed(1, 2).forEach(i -> {
             BrandRequest brandRequest =
@@ -172,20 +192,20 @@ public class NotProd {
 
         Address address = Address.builder()
                 .member(findMember)
-                .postcode("07355")
-                .address("서울시 강서구")
-                .detailAddress("화곡동 993-15")
-                .extraAddress("501호")
+                .postcode("07685")
+                .address("서울시 강서구 화곡동 993-15")
+                .detailAddress("502호")
+                .extraAddress(null)
                 .build();
 
         addressRepository.save(address);
 
         Address address2 = Address.builder()
                 .member(findMember)
-                .postcode("07355")
-                .address("서울시 강서구")
-                .detailAddress("화곡동 993-15")
-                .extraAddress("502호")
+                .postcode("07685")
+                .address("서울 강서구 화곡로55길 33-14")
+                .detailAddress("502호")
+                .extraAddress("(화곡동, 훼밀리빌)")
                 .build();
 
         addressRepository.save(address2);
@@ -197,7 +217,7 @@ public class NotProd {
                 .price(125000L)
                 .startDate(LocalDate.of(2024, 1, 25))
                 .endDate(LocalDate.of(2024, 1, 30))
-                .address(address)
+                .address(address.getFullAddress())
                 .status(Status.BIDDING)
                 .build();
 
@@ -217,9 +237,86 @@ public class NotProd {
                 .price(150000L)
                 .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
-                .address(address2)
+                .address(address2.getFullAddress())
                 .status(Status.BIDDING)
                 .build();
         orderRequestRepository.save(orderRequest2);
+
+        Sale saleRequest = Sale.builder()
+                .shoes(shoes)
+                .shoesSize(shoesSize)
+                .member(findMember)
+                .price(300000L)
+                .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
+                .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
+                .address(address2.getFullAddress())
+                .status(Status.BIDDING)
+                .account("1234-5678-999999-10")
+                .build();
+        saleRepository.save(saleRequest);
+
+        Sale saleRequest2 = Sale.builder()
+                .shoes(shoes)
+                .shoesSize(shoesSize2)
+                .member(findMember)
+                .price(400000L)
+                .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
+                .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
+                .address(address2.getFullAddress())
+                .status(Status.BIDDING)
+                .account("1234-5678-999999-10")
+                .build();
+        saleRepository.save(saleRequest2);
+
+        Sale saleRequest3 = Sale.builder()
+                .shoes(shoes)
+                .shoesSize(shoesSize2)
+                .member(findMember)
+                .price(400000L)
+                .startDate(LocalDate.of(2024, 1, 1)) // 다른 시작 날짜
+                .endDate(LocalDate.of(2024, 1, 31)) // 다른 종료 날짜
+                .address(address2.getFullAddress())
+                .status(Status.EXPIRED)
+                .account("1234-5678-999999-10")
+                .build();
+        saleRepository.save(saleRequest3);
+
+        Wishlist wishlist = Wishlist.builder()
+                .member(userMember)
+                .shoesSize(shoesSize)
+                .build();
+        wishlistRepository.save(wishlist);
+
+        Wishlist wishlist2 = Wishlist.builder()
+                .member(userMember)
+                .shoesSize(shoesSize2)
+                .build();
+        wishlistRepository.save(wishlist2);
+
+        ShoesSize shoesSize3 = ShoesSize.builder()
+                .shoes(shoes)
+                .size(245)
+                .build();
+
+        shoesSizeRepository.save(shoesSize3);
+
+        Wishlist wishlist3 = Wishlist.builder()
+                .member(userMember)
+                .shoesSize(shoesSize3)
+                .build();
+        wishlistRepository.save(wishlist3);
+
+        Sale saleRequest4 = Sale.builder()
+                .shoes(shoes)
+                .shoesSize(shoesSize2)
+                .member(findMember)
+                .price(500000L)
+                .startDate(LocalDate.of(2024, 1, 1)) // 다른 시작 날짜
+                .endDate(LocalDate.of(2024, 2, 20)) // 다른 종료 날짜
+                .address(address2.getFullAddress())
+                .status(Status.BIDDING)
+                .account("1234-5678-999999-10")
+                .build();
+        saleRepository.save(saleRequest4);
     }
 }
