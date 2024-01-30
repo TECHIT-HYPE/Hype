@@ -6,6 +6,7 @@ import com.ll.hype.domain.brand.brand.dto.BrandResponse;
 import com.ll.hype.domain.customer.question.dto.CustomerQResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
+import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Slf4j
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class AdminController {
     private final AdminService adminService;
+    private final ImageBridgeComponent imageBridgeService;
 
     //============== Main Start ==============
     // Admin home
@@ -48,8 +52,9 @@ public class AdminController {
 
     // 관리자 브랜드 생성
     @PostMapping("/brand/create")
-    public String createBrand(BrandRequest brandRequest) {
-        adminService.saveBrand(brandRequest);
+    public String createBrand(BrandRequest brandRequest,
+                              @RequestParam(value = "files") List<MultipartFile> files) {
+        adminService.saveBrand(brandRequest, files);
         return "redirect:/admin/brand/list";
     }
 
@@ -69,6 +74,7 @@ public class AdminController {
     public String shoesHome() {
         return "domain/admin/shoes/main";
     }
+
     @GetMapping("/shoes/create")
     public String createShoesForm(ShoesRequest shoesRequest, Model model) {
         model.addAttribute("brands", adminService.brandFindEnable());
@@ -76,8 +82,8 @@ public class AdminController {
     }
 
     @PostMapping("/shoes/create")
-    public String createShoes(ShoesRequest shoesRequest) {
-        adminService.saveShoes(shoesRequest);
+    public String createShoes(ShoesRequest shoesRequest, @RequestParam("sizes") List<Integer> sizes) {
+        adminService.saveShoes(shoesRequest, sizes);
         return "redirect:/admin/shoes/list";
     }
 
