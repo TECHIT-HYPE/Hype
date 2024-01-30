@@ -21,10 +21,20 @@ import com.ll.hype.domain.shoes.shoes.repository.ShoesSizeRepository;
 import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.enums.Status;
 import com.ll.hype.global.enums.StatusCode;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +42,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 @Slf4j
 @Profile("!prod")
@@ -61,7 +75,7 @@ public class NotProd {
     }
 
     @Transactional
-    public void work1() {
+    public void work1() throws IOException {
         JoinRequest member = JoinRequest.builder()
                 .email("admin@admin.com")
                 .password("1234")
@@ -78,7 +92,19 @@ public class NotProd {
         Member findMember = memberRepository.findByEmail("admin@admin.com").get();
         findMember.updateRole(MemberRole.ADMIN);
 
-        IntStream.rangeClosed(1, 30).forEach(i -> {
+
+        // ===== 이미지 객체 불러오기 시작 =====
+        File file = new File(getClass().getClassLoader().getResource("img/KakaoTalk_Photo_2022-09-07-14-41-27.jpeg").getFile());
+        InputStream stream = new FileInputStream(file);
+        MultipartFile mockMultipartFile = new MockMultipartFile("file", file.getName(), MediaType.TEXT_HTML_VALUE,
+                stream);
+
+        List<MultipartFile> files = new ArrayList<>();
+        files.add(mockMultipartFile);
+        // ===== 이미지 객체 불러오기 끝 =====
+
+
+        IntStream.rangeClosed(1, 2).forEach(i -> {
             BrandRequest brandRequest =
                     BrandRequest.builder()
                             .korName("나이키" + i)
@@ -86,7 +112,7 @@ public class NotProd {
                             .status(StatusCode.ENABLE)
                             .build();
 
-            adminService.saveBrand(brandRequest);
+            adminService.saveBrand(brandRequest, files);
         });
 
         BrandRequest brandRequest =
@@ -96,7 +122,9 @@ public class NotProd {
                         .status(StatusCode.ENABLE)
                         .build();
 
-        adminService.saveBrand(brandRequest);
+        adminService.saveBrand(brandRequest, files);
+
+        List<Integer> sizes = List.of(220, 230, 240, 250, 260, 270);
 
         IntStream.rangeClosed(1, 100).forEach(i -> {
             ShoesRequest shoesRequest =
@@ -108,30 +136,30 @@ public class NotProd {
                             .model("NikeModel" + i)
                             .status(StatusCode.ENABLE)
                             .shoesCategory(ShoesCategory.RUNNING)
-                            .release(LocalDate.of(2024,1,24))
+                            .release(LocalDate.of(2024, 1, 24))
                             .price(1000 + i)
                             .color("yellow")
                             .build();
 
-            adminService.saveShoes(shoesRequest);
+            adminService.saveShoes(shoesRequest, sizes);
         });
 
         IntStream.rangeClosed(1, 100).forEach(i -> {
             ShoesRequest shoesRequest =
                     ShoesRequest.builder()
-                            .brand(brandRepository.findById(31L).get())
+                            .brand(brandRepository.findById(1L).get())
                             .korName("아디다스 쌈바" + i)
                             .engName("ADIDAS SAMBA" + i)
                             .gender(Gender.MALE)
                             .model("ADIDAS SAMBA" + i)
                             .status(StatusCode.ENABLE)
                             .shoesCategory(ShoesCategory.RUNNING)
-                            .release(LocalDate.of(2024,1,24))
+                            .release(LocalDate.of(2024, 1, 24))
                             .price(1000 + i)
                             .color("yellow")
                             .build();
 
-            adminService.saveShoes(shoesRequest);
+            adminService.saveShoes(shoesRequest, sizes);
         });
 
         Shoes shoes = shoesRepository.findById(1L).get();
@@ -167,8 +195,8 @@ public class NotProd {
                 .shoesSize(shoesSize)
                 .member(findMember)
                 .price(125000L)
-                .startDate(LocalDate.of(2024,1,25))
-                .endDate(LocalDate.of(2024,1,30))
+                .startDate(LocalDate.of(2024, 1, 25))
+                .endDate(LocalDate.of(2024, 1, 30))
                 .address(address)
                 .status(Status.BIDDING)
                 .build();
@@ -187,8 +215,8 @@ public class NotProd {
                 .shoesSize(shoesSize2)
                 .member(findMember)
                 .price(150000L)
-                .startDate(LocalDate.of(2024,1,26)) // 다른 시작 날짜
-                .endDate(LocalDate.of(2024,2,5)) // 다른 종료 날짜
+                .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
+                .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
                 .address(address2)
                 .status(Status.BIDDING)
                 .build();
