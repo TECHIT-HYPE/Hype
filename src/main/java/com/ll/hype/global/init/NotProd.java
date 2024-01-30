@@ -1,8 +1,8 @@
 package com.ll.hype.global.init;
 
 import com.ll.hype.domain.admin.admin.service.AdminService;
-import com.ll.hype.domain.adress.adress.entity.Address;
-import com.ll.hype.domain.adress.adress.repository.AddressRepository;
+import com.ll.hype.domain.address.address.entity.Address;
+import com.ll.hype.domain.address.address.repository.AddressRepository;
 import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.repository.BrandRepository;
 import com.ll.hype.domain.member.member.dto.JoinRequest;

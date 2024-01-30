@@ -1,4 +1,4 @@
-package com.ll.hype.domain.adress.adress.entity;
+package com.ll.hype.domain.address.address.entity;
 
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.global.jpa.BaseEntity;

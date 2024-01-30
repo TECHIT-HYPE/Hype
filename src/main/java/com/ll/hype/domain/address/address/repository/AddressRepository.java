@@ -1,6 +1,6 @@
-package com.ll.hype.domain.adress.adress.repository;
+package com.ll.hype.domain.address.address.repository;
 
-import com.ll.hype.domain.adress.adress.entity.Address;
+import com.ll.hype.domain.address.address.entity.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

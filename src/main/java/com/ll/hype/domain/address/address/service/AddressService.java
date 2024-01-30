@@ -1,9 +1,9 @@
-package com.ll.hype.domain.adress.adress.service;
+package com.ll.hype.domain.address.address.service;
 
-import com.ll.hype.domain.adress.adress.dto.AddressRequest;
-import com.ll.hype.domain.adress.adress.dto.AddressResponse;
-import com.ll.hype.domain.adress.adress.entity.Address;
-import com.ll.hype.domain.adress.adress.repository.AddressRepository;
+import com.ll.hype.domain.address.address.dto.AddressRequest;
+import com.ll.hype.domain.address.address.dto.AddressResponse;
+import com.ll.hype.domain.address.address.entity.Address;
+import com.ll.hype.domain.address.address.repository.AddressRepository;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
