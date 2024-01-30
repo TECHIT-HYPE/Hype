@@ -46,4 +46,13 @@ public class Address extends BaseEntity {
 
         return fullAddress;
     }
+
+    public void change(String addressName, String postcode, String address, String detailAddress, String extraAddress, boolean primary) {
+        this.addressName = addressName;
+        this.postcode = postcode;
+        this.address = address;
+        this.detailAddress = detailAddress;
+        this.extraAddress = extraAddress;
+        this.isPrimary = primary;
+    }
 }

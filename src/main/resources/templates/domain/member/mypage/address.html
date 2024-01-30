@@ -22,7 +22,7 @@
             </div>
             <div class="flex flex-col items-end justify-between">
                 <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md text-left">
-                    <span class="text-sm leading-6">주소 수정</span>
+                    <a class="text-sm leading-6" th:href="|/mypage/${item.id}/modifyAddress|">주소 수정</a>
                 </button>
 <!--                |/sale/${item.saleId}/delete|-->
                 <a class="text-xs leading-5 text-gray-500 underline"

@@ -2,6 +2,7 @@ package com.ll.hype.domain.member.mypage.controller;
 
 import com.ll.hype.domain.adress.adress.dto.AddressRequest;
 import com.ll.hype.domain.adress.adress.dto.AddressResponse;
+import com.ll.hype.domain.adress.adress.entity.Address;
 import com.ll.hype.domain.adress.adress.service.AddressService;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.service.MemberService;
@@ -17,9 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -113,12 +112,49 @@ public class MyPageController {
     public String createAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                 @Valid AddressRequest addressRequest,
                                 BindingResult bindingResult,
-                                Model model) {
+                                Model model
+    ) {
         if (bindingResult.hasErrors()) {
             return "domain/member/mypage/addressForm";
         }
 
         addressService.createAddress(userPrincipal, addressRequest);
+
+        return "redirect:/mypage/addressList";
+    }
+
+    @GetMapping("/{id}/modifyAddress")
+    public String modifyAddressForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                    @PathVariable long id,
+                                    AddressRequest addressRequest,
+                                    Model model
+    ) {
+        Address address = addressService.findById(id).get();
+
+        addressRequest.setAddressName(address.getAddressName());
+        addressRequest.setPostcode(address.getPostcode());
+        addressRequest.setAddress(address.getAddress());
+        addressRequest.setDetailAddress(address.getDetailAddress());
+        addressRequest.setExtraAddress(address.getExtraAddress());
+        addressRequest.setPrimary(address.isPrimary());
+
+        model.addAttribute("addressRequest", addressRequest);
+
+        return "domain/member/mypage/modifyAddress";
+    }
+
+    @PostMapping("/{id}/modifyAddress")
+    public String modifyAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                @PathVariable long id,
+                                AddressRequest addressRequest,
+                                BindingResult bindingResult,
+                                Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            return "domain/member/mypage/modifyAddress";
+        }
+
+        addressService.modifyAddress(id, addressRequest, userPrincipal.getMember().getId());
 
         return "redirect:/mypage/addressList";
     }

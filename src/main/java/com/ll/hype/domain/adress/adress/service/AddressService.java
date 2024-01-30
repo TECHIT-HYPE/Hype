@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +37,27 @@ public class AddressService {
         }
 
         addressRepository.save(address);
+    }
+
+    public Optional<Address> findById(Long id) {
+        return addressRepository.findById(id);
+    }
+
+    @Transactional
+    public void modifyAddress(Long id, AddressRequest addressRequest, Long memberId) {
+
+        // 대표주소 추가 시 기존 대표주소 false 처리
+        if (addressRequest.isPrimary()) {
+            addressRepository.updateIsPrimary(memberId);
+        }
+
+        Address address = addressRepository.findById(id).get();
+
+        address.change(addressRequest.getAddressName(),
+                addressRequest.getPostcode(),
+                addressRequest.getAddress(),
+                addressRequest.getDetailAddress(),
+                addressRequest.getExtraAddress(),
+                addressRequest.isPrimary());
     }
 }
