@@ -4,7 +4,7 @@ import com.ll.hype.domain.member.member.dto.JoinRequest;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.entity.MemberRole;
 import com.ll.hype.domain.member.member.repository.MemberRepository;
-import com.ll.hype.domain.member.mypage.dto.ModifyRequest;
+import com.ll.hype.domain.member.member.dto.ModifyRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

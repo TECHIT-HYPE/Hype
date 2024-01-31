@@ -1,4 +1,4 @@
-package com.ll.hype.domain.member.mypage.dto;
+package com.ll.hype.domain.wishlist.wishlist.dto;
 
 import lombok.*;
 

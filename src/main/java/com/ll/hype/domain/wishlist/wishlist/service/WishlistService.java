@@ -1,7 +1,7 @@
 package com.ll.hype.domain.wishlist.wishlist.service;
 
 import com.ll.hype.domain.member.member.entity.Member;
-import com.ll.hype.domain.member.mypage.dto.MyWishlistDto;
+import com.ll.hype.domain.wishlist.wishlist.dto.MyWishlistDto;
 import com.ll.hype.domain.wishlist.wishlist.entity.Wishlist;
 import com.ll.hype.domain.wishlist.wishlist.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
