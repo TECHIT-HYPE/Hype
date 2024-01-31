@@ -21,7 +21,7 @@
                 <hr>
             </div>
             <div>
-                <form id="termsForm">
+                <form id="termsForm" th:action method="post">
                     <div>
                         <input type="checkbox" id="term1" name="terms" onchange="checkTerms()">
                         <label for="term1">판매하려는 상품이 맞습니다.</label>
@@ -43,6 +43,9 @@
                         <label for="term5">HYPE의 최신 이용정책을 모두 확인하였으며, 판매를 계속합니다.</label>
                     </div>
                     <div>
+                        <input type="hidden" name="selectedSize" th:value="${selectedSize}" />
+                        <input type="hidden" name="highestBidId" th:value="${highestBidId}" />
+
                         <button type="submit" id="submitButton" disabled>판매 계속</button>
                     </div>
                 </form>
@@ -55,11 +58,6 @@
                     }
                 </script>
             </div>
-
-<!--            <div class="">-->
-<!--                <input type="hidden" name="selectedSize" th:value="${buyResponse.shoesSize.size}">-->
-<!--                <input type="hidden" name="selectedPrice" th:value="${buyResponse.price}">-->
-<!--            </div>-->
         </div>
 </div>
 </body>
