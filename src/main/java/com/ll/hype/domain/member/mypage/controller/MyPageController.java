@@ -130,8 +130,7 @@ public class MyPageController {
                                     AddressRequest addressRequest,
                                     Model model
     ) {
-        Address address = addressService.findById(id).get();
-
+        Address address = addressService.findById(id).orElseThrow(() -> new RuntimeException("해당 게시물을 찾을 수 없습니다."));
         if (!addressService.canAccess(userPrincipal.getMember(), address))
             throw new AccessDeniedException("접근 권한이 없습니다.");
 
@@ -167,8 +166,7 @@ public class MyPageController {
     public String deleteAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                 @PathVariable long id
     ) {
-        Address address = addressService.findById(id).get();
-
+        Address address = addressService.findById(id).orElseThrow(() -> new RuntimeException("해당 게시물을 찾을 수 없습니다."));
         if (!addressService.canAccess(userPrincipal.getMember(), address))
             throw new AccessDeniedException("접근 권한이 없습니다.");
 
