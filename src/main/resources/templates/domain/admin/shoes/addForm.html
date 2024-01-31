@@ -81,6 +81,17 @@
             </select>
         </div>
 
+        <div class="mb-4">
+            <label class="block text-sm font-bold text-gray-700 mb-2">사이즈:</label>
+            <th:block th:each="size : ${T(com.ll.hype.global.util.ShoesSizeGenerator).getSizes()}">
+                <div class="flex items-center">
+                    <input type="checkbox" id="sizes" name="sizes" th:value="${size}"
+                           class="mr-2 focus:outline-none focus:border-blue-500"/>
+                    <label th:for="${'size-' + size}" th:text="${size}" class="text-sm"></label>
+                </div>
+            </th:block>
+        </div>
+
         <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue">
             Submit
         </button>
