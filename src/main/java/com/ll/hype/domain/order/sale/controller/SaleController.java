@@ -3,6 +3,7 @@ package com.ll.hype.domain.order.sale.controller;
 import com.ll.hype.domain.order.buy.dto.BuyResponse;
 import com.ll.hype.domain.order.buy.service.BuyService;
 import com.ll.hype.domain.order.sale.dto.SaleRequest;
+import com.ll.hype.domain.order.sale.dto.SaleResponse;
 import com.ll.hype.domain.order.sale.service.SaleService;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesSizeDTO;
@@ -27,6 +28,12 @@ public class SaleController {
     private final ShoesService shoesService;
     private final BuyService buyService;
     private final SaleService saleService;
+
+    // TODO
+    //
+    // 신발리스트 / 상세(1~3장) / 사이즈 선택 / 약관 동의 / 입찰, 즉시거래 / 거래체결
+    // 신발 이미지 추가
+    //
 
     //사이즈 선택
     //신발고유번호, 이름, 이미지, 사이즈 노출
@@ -76,6 +83,8 @@ public class SaleController {
     public String approveForm(@ModelAttribute("selectedSize") int selectedSize,
                               @ModelAttribute("highestBidId") long highestBidId,
                               Model model) {
+        System.out.println("approveForm: Selected Size: " + selectedSize);
+        System.out.println("approveForm: Highest Bid ID: " + highestBidId);
 
         BuyResponse buyResponse = buyService.findById(highestBidId);
         model.addAttribute("buyResponse", buyResponse);
@@ -85,22 +94,57 @@ public class SaleController {
 
     //판매 약관 동의 처리
     @PostMapping("/approval")
-    public String approve() {
+    public String approve(@RequestParam("selectedSize") int selectedSize,
+                          @RequestParam("highestBidId") long highestBidId,
+                          @RequestParam Map<String, String> allParams,
+                          RedirectAttributes redirectAttributes) {
 
-        return "redirect:/sale/pricing";
+        boolean allTermsAgreed = allParams.entrySet().stream()
+                .filter(e -> e.getKey().startsWith("term"))
+                .allMatch(e -> e.getValue().equals("on"));
+        System.out.println("approve: All terms agreed: " + allTermsAgreed);
+
+        if (allTermsAgreed) {
+            redirectAttributes.addFlashAttribute("selectedSize", selectedSize);
+            redirectAttributes.addFlashAttribute("highestBidId", highestBidId);
+            return "redirect:/sale/pricing";
+        } else {
+            return "redirect:/sale/approval";
+        }
     }
 
     //신발 정보 및 예상 정산 금액 표시, 판매 입찰 생성 기능
     @GetMapping("/pricing")
-    public String pricing(BuyResponse buyResponse, Model model) {
+    public String pricing(@ModelAttribute("selectedSize") int selectedSize,
+                          @ModelAttribute("highestBidId") long highestBidId,
+                          Model model) {
+//        SaleResponse saleResponse = saleService.findById(highestBidId);
+
+        BuyResponse buyResponse = buyService.findById(highestBidId);
         model.addAttribute("buyResponse", buyResponse);
+        System.out.println("[SaleController.pricing] selectedSize : " + selectedSize);
+
         return "domain/salesRequest/salesRequest/pricing";
     }
 
+    @PostMapping("/pricing")
+    public String pricing(@RequestParam("selectedSize") int selectedSize,
+                          @RequestParam("highestBidId") long highestBidId,
+                          @RequestParam Map<String, String> allParams,
+                          RedirectAttributes redirectAttributes) {
 
-    //판매 결정 및 정보 입력
-    @PostMapping("select/{id}/{shoesSize}")
-    public String saveSalesRequest (SaleRequest saleRequest, Model model) {
+        return "redirect:/sale/{id}/{shoesSize}";
+    }
+
+    @GetMapping("/{id}/{shoesSize}")
+    public String saveSaleForm(SaleRequest saleRequest, Model model) {
+        saleService.saveSalesRequest(saleRequest);
+        return "domain/salesRequest/salesRequest/saveSale";
+    }
+
+    //판매 결정 및 정보 입력//
+    @PostMapping("/select/{id}/{shoesSize}")
+    public String saveSale(SaleRequest saleRequest, Model model) {
         saleService.saveSalesRequest(saleRequest);
         return "redirect:/";
     }
