@@ -10,22 +10,46 @@
 <body>
 <div layout:fragment="content">
     <div class="flex justify-center">판매 입찰하기</div>
-    <div class="container mx-auto mt-5">
-        <div class="header text-center mb-5">
-            <!--이미지-->
-            <p class="text-l" th:text="${buyResponse.shoes.model}"></p>
-            <p class="text-l" th:text="${buyResponse.shoes.korName}"></p>
-            <p class="text-l" th:text="${buyResponse.shoes.engName}"></p>
-            <p class="text-l" th:text="${buyResponse.shoesSize.size}"></p>
-            <hr>
-            <p>즉시 구매가</p>
-            <p class="text-l" th:text="${saleResponse.price}"></p>
-            <p>즉시 판매가</p>
-            <p class="text-l" th:text="${buyResponse.price}"></p>
+        <div class="container mx-auto mt-5">
+            <div class="header text-center mb-5">
+                <!--이미지-->
+                <p class="text-l" th:text="${buyResponse.shoes.model}"></p>
+                <p class="text-l" th:text="${buyResponse.shoes.korName}"></p>
+                <p class="text-l" th:text="${buyResponse.shoes.engName}"></p>
+                <p class="text-l" th:text="${buyResponse.shoesSize.size}"></p>
+                <hr>
+                <table>
+                    <tr>
+                        <th>즉시 구매가</th>
+                        <th>즉시 판매가</th>
+                    </tr>
+                    <tr>
+<!--                        <td th:text="${saleResponse.price}"></td>-->
+                        <td th:text="${buyResponse.price}"></td>
+                    </tr>
+                </table>
+                <hr>
+                <div>
+                    <p>판매 희망가</p>
+                    <p>(판매 희망가 입력)</p>
+<!--                <input type="number" min="${buyResponse.price}" th:field="*{price}"/>-->
+                    <hr>
+                    <p>수수료 -9,900원</p>
+                    <p>배송비 선불・판매자 부담</p>
 
+                    <p>입찰 마감기한</p>
+                    <div>
+                        <p>(마감기한 설정 버튼)</p>
+<!--                   마감기한 설정 버튼 -->
+                    </div>
+                    <hr>
+                    <p>정산 예정 금액 ( 예정 금액 )</p>
 
+                    <button type="submit">판매 입찰하기</button>
+
+                </div>
+            </div>
         </div>
-    </div>
 </div>
 </body>
 </html>
