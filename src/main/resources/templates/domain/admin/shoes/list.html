@@ -9,7 +9,7 @@
     <table class="w-full border-collapse border border-gray-300">
         <thead>
         <tr>
-            <th class="p-3 border-b">ID</th>
+            <th class="p-3 border-b">Image</th>
             <th class="p-3 border-b">Create Date</th>
             <th class="p-3 border-b">Modify Date</th>
             <th class="p-3 border-b">Brand</th>
@@ -26,7 +26,13 @@
         </thead>
         <tbody th:each="shoes : ${shoes}" class="hover:bg-gray-100">
         <tr>
-            <td class="p-3 border-b" th:text="${shoes.id}"></td>
+            <td class="p-3 border-b">
+                <ul>
+                    <li th:each="path : ${shoes.fullPath}" >
+                        <img th:src="${path}" class="w-20"/>
+                    </li>
+                </ul>
+            </td>
             <td class="p-3 border-b" th:text="${shoes.createDate}"></td>
             <td class="p-3 border-b" th:text="${shoes.modifyDate}"></td>
             <td class="p-3 border-b" th:text="${shoes.brand.korName}"></td>

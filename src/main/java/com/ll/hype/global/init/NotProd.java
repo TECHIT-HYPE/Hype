@@ -114,11 +114,9 @@ public class NotProd {
         userMember.updateRole(MemberRole.MEMBER);
 
         // ===== 이미지 객체 불러오기 시작 =====
-        File file = new File(
-                getClass().getClassLoader().getResource("img/KakaoTalk_Photo_2022-09-07-14-41-27.jpeg").getFile());
+        File file = new File(getClass().getClassLoader().getResource("img/KakaoTalk_Photo_2022-09-07-14-41-27.jpeg").getFile());
         InputStream stream = new FileInputStream(file);
-        MultipartFile mockMultipartFile = new MockMultipartFile("file", file.getName(), MediaType.TEXT_HTML_VALUE,
-                stream);
+        MultipartFile mockMultipartFile = new MockMultipartFile("file", file.getName(), MediaType.TEXT_HTML_VALUE, stream);
 
         List<MultipartFile> files = new ArrayList<>();
         files.add(mockMultipartFile);
@@ -146,7 +144,7 @@ public class NotProd {
 
         List<Integer> sizes = List.of(220, 230, 240, 250, 260, 270);
 
-        IntStream.rangeClosed(1, 100).forEach(i -> {
+        IntStream.rangeClosed(1, 3).forEach(i -> {
             ShoesRequest shoesRequest =
                     ShoesRequest.builder()
                             .brand(brandRepository.findById(1L).get())
@@ -161,10 +159,10 @@ public class NotProd {
                             .color("yellow")
                             .build();
 
-            adminService.saveShoes(shoesRequest, sizes);
+            adminService.saveShoes(shoesRequest, sizes, files);
         });
 
-        IntStream.rangeClosed(1, 100).forEach(i -> {
+        IntStream.rangeClosed(1, 3).forEach(i -> {
             ShoesRequest shoesRequest =
                     ShoesRequest.builder()
                             .brand(brandRepository.findById(1L).get())
@@ -179,7 +177,7 @@ public class NotProd {
                             .color("yellow")
                             .build();
 
-            adminService.saveShoes(shoesRequest, sizes);
+            adminService.saveShoes(shoesRequest, sizes, files);
         });
 
         Shoes shoes = shoesRepository.findById(1L).get();

@@ -1,6 +1,7 @@
 package com.ll.hype.global.s3.image.imagebridge.component;
 
 
+import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.image.entity.Image;
 import com.ll.hype.global.s3.image.image.component.ImageComponent;
@@ -9,6 +10,7 @@ import com.ll.hype.global.s3.image.imagebridge.entity.ImageBridge;
 import com.ll.hype.global.s3.image.imagebridge.repository.ImageBridgeRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -57,9 +59,13 @@ public class ImageBridgeComponent {
      * @return List<String> fullPaths
      */
     public List<String> findOneFullPath(ImageType imageType, long typeId) {
-        ImageBridge imageBridge = imageBridgeRepository.findByTypeAndTypeId(imageType, typeId)
-                .orElseThrow(() -> new IllegalArgumentException("조회된 데이터가 없습니다."));
+        Optional<ImageBridge> byTypeAndTypeId = imageBridgeRepository.findByTypeAndTypeId(imageType, typeId);
 
+        if (byTypeAndTypeId.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        ImageBridge imageBridge = byTypeAndTypeId.get();
         List<String> imageFullPaths = new ArrayList<>();
         String fullPath = imageComponent.convertPath(imageBridge.getImages().get(0));
         imageFullPaths.add(fullPath);
@@ -75,9 +81,13 @@ public class ImageBridgeComponent {
      * @return List<String> fullPaths
      */
     public List<String> findAllFullPath(ImageType imageType, long typeId) {
-        ImageBridge imageBridge = imageBridgeRepository.findByTypeAndTypeId(imageType, typeId)
-                .orElseThrow(() -> new IllegalArgumentException("조회된 데이터가 없습니다."));
+        Optional<ImageBridge> byTypeAndTypeId = imageBridgeRepository.findByTypeAndTypeId(imageType, typeId);
 
+        if (byTypeAndTypeId.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        ImageBridge imageBridge = byTypeAndTypeId.get();
         List<String> imageFullPaths = new ArrayList<>();
 
         for (Image image : imageBridge.getImages()) {
@@ -86,5 +96,11 @@ public class ImageBridgeComponent {
         }
 
         return imageFullPaths;
+    }
+
+    public void delete(ImageType imageType, Long typeId) {
+        ImageBridge imageBridge = imageBridgeRepository.findByTypeAndTypeId(imageType, typeId)
+                .orElseThrow(() -> new IllegalArgumentException("조회된 데이터가 없습니다."));
+        imageBridgeRepository.delete(imageBridge);
     }
 }
