@@ -2,6 +2,8 @@ package com.ll.hype.domain.shoes.shoes.controller;
 
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.service.ShoesService;
+import com.ll.hype.global.s3.image.ImageType;
+import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -17,7 +19,6 @@ import java.util.List;
 @RequestMapping("/shoes")
 @Controller
 public class ShoesController {
-
     private final ShoesService shoesService;
 
     //신발 상세
