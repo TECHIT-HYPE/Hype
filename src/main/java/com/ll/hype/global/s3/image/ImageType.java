@@ -5,7 +5,8 @@ public enum ImageType {
     REVIEW("REVIEW"),
     SOCIAL("SOCIAL"),
     QUESTION("QUESTION"),
-    BRAND("BRAND");
+    BRAND("BRAND"),
+    SHOES("SHOES");
 
     private String value;
 
