@@ -19,10 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -150,7 +147,7 @@ public class MyPageController {
         return "domain/member/mypage/modifyAddress";
     }
 
-    @PostMapping("/{id}/modifyAddress")
+    @PutMapping("/{id}/modifyAddress")
     public String modifyAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                 @PathVariable long id,
                                 AddressRequest addressRequest,
@@ -162,6 +159,20 @@ public class MyPageController {
         }
 
         addressService.modifyAddress(id, addressRequest, userPrincipal.getMember().getId());
+
+        return "redirect:/mypage/addressList";
+    }
+
+    @DeleteMapping("/{id}/deleteAddress")
+    public String deleteAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                @PathVariable long id
+    ) {
+        Address address = addressService.findById(id).get();
+
+        if (!addressService.canAccess(userPrincipal.getMember(), address))
+            throw new AccessDeniedException("접근 권한이 없습니다.");
+
+        addressService.deleteAddress(address);
 
         return "redirect:/mypage/addressList";
     }

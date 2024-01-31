@@ -4,7 +4,8 @@
 </head>
 <body>
 <div layout:fragment="my_page_content">
-    <form th:action method="post" th:object="${addressRequest}" class="max-w-md mx-auto">
+    <form th:action method="POST" th:object="${addressRequest}" class="max-w-md mx-auto">
+        <input type="hidden" name="_method" value="PUT">
         <div class="flex justify-between mb-4">
             <h2 class="text-2xl font-bold">주소 변경</h2>
             <button type="button" class="bg-blue-500 text-white p-3 rounded-md text-left text-sm leading-6"

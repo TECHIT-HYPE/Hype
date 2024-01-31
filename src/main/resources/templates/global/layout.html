@@ -3,12 +3,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- 제이쿼리 불러오기 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="/resource/global.css">
+    <script src="/resource/global.js"></script>
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body class="h-screen">
 
 <script src="https://cdn.tailwindcss.com"></script>
-
-<link rel="stylesheet" href="/resource/global.css">
 
 <th:block layout:fragment="header"></th:block>
 

@@ -65,4 +65,9 @@ public class AddressService {
     public boolean canAccess(Member member, Address address) {
         return address.getMember().equals(member);
     }
+
+    @Transactional
+    public void deleteAddress(Address address) {
+        addressRepository.delete(address);
+    }
 }

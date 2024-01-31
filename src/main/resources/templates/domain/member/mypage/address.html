@@ -24,9 +24,8 @@
                 <button type="button" class="bg-blue-500 text-white p-3 rounded-md text-left text-sm leading-6"
                         th:onclick="|location.href='/mypage/${item.id}/modifyAddress'|">주소 수정
                 </button>
-<!--                |/sale/${item.saleId}/delete|-->
-                <a class="text-xs leading-5 text-gray-500 underline"
-                   onclick="return confirm('정말로 삭제하시겠습니까?');"> 삭제 </a>
+                <a method="DELETE" class="text-xs leading-5 text-gray-500 underline"
+                   onclick="return confirm('정말로 삭제하시겠습니까?');" th:href="|/mypage/${item.id}/deleteAddress|"> 삭제 </a>
             </div>
         </li>
     </ul>

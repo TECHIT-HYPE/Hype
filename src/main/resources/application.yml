@@ -3,6 +3,10 @@ server:
 spring:
   thymeleaf:
     cache: false
+  mvc:
+    hidden-method:
+      filter:
+        enabled: true
   threads:
     virtual:
       enabled: true
