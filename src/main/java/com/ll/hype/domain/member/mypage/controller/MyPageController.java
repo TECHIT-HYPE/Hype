@@ -8,6 +8,7 @@ import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.service.MemberService;
 import com.ll.hype.domain.member.mypage.dto.ModifyRequest;
 import com.ll.hype.domain.member.mypage.dto.MyWishlistDto;
+import com.ll.hype.domain.wishlist.wishlist.entity.Wishlist;
 import com.ll.hype.domain.wishlist.wishlist.service.WishlistService;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import com.ll.hype.global.util.ShoesSizeGenerator;
@@ -94,6 +95,19 @@ public class MyPageController {
 
         model.addAttribute("wishlist", wishlist);
         return "domain/member/mypage/wishlist";
+    }
+
+    @DeleteMapping("/wishlist/{id}/delete")
+    public String deleteWishlist(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                @PathVariable long id
+    ) {
+        Wishlist wishlist = wishlistService.findById(id).orElseThrow(() -> new RuntimeException("해당 게시물을 찾을 수 없습니다."));
+        if (!wishlistService.canAccess(userPrincipal.getMember(), wishlist))
+            throw new AccessDeniedException("접근 권한이 없습니다.");
+
+        wishlistService.deleteWishlist(wishlist);
+
+        return "redirect:/mypage/wishlist";
     }
 
     @GetMapping("/addressList")

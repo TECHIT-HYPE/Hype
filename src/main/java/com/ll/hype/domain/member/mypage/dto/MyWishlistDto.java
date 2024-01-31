@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MyWishlistDto {
+    private Long id;
     private Long brandId;
     private Long shoesId;
     private Long shoesSizeId;
