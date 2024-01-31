@@ -110,7 +110,7 @@ public class MyPageController {
         return "redirect:/mypage/wishlist";
     }
 
-    @GetMapping("/addressList")
+    @GetMapping("/address")
     public String myAddressListForm(@AuthenticationPrincipal UserPrincipal userPrincipal, Model model) {
         List<AddressResponse> myAddressList = addressService.getMyAddressList(userPrincipal.getMember().getId());
 
@@ -118,12 +118,12 @@ public class MyPageController {
         return "domain/member/mypage/address";
     }
 
-    @GetMapping("/newAddress")
+    @GetMapping("/address/create")
     public String createAddressForm(@AuthenticationPrincipal UserPrincipal userPrincipal, AddressRequest addressRequest, Model model) {
         return "domain/member/mypage/addAddress";
     }
 
-    @PostMapping("/newAddress")
+    @PostMapping("/address/create")
     public String createAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                 @Valid AddressRequest addressRequest,
                                 BindingResult bindingResult,
@@ -135,10 +135,10 @@ public class MyPageController {
 
         addressService.createAddress(userPrincipal, addressRequest);
 
-        return "redirect:/mypage/addressList";
+        return "redirect:/mypage/address";
     }
 
-    @GetMapping("/{id}/modifyAddress")
+    @GetMapping("/address/{id}/modify")
     public String modifyAddressForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                     @PathVariable long id,
                                     AddressRequest addressRequest,
@@ -160,7 +160,7 @@ public class MyPageController {
         return "domain/member/mypage/modifyAddress";
     }
 
-    @PutMapping("/{id}/modifyAddress")
+    @PutMapping("/address/{id}/modify")
     public String modifyAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                 @PathVariable long id,
                                 AddressRequest addressRequest,
@@ -173,10 +173,10 @@ public class MyPageController {
 
         addressService.modifyAddress(id, addressRequest, userPrincipal.getMember().getId());
 
-        return "redirect:/mypage/addressList";
+        return "redirect:/mypage/address";
     }
 
-    @DeleteMapping("/{id}/deleteAddress")
+    @DeleteMapping("/address/{id}/delete")
     public String deleteAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                 @PathVariable long id
     ) {
@@ -186,6 +186,6 @@ public class MyPageController {
 
         addressService.deleteAddress(address);
 
-        return "redirect:/mypage/addressList";
+        return "redirect:/mypage/address";
     }
 }
