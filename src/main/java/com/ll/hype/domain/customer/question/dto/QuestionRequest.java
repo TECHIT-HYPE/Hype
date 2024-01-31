@@ -13,12 +13,12 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerQRequest {
+public class QuestionRequest {
     private String questionTitle;
     private String questionContent;
     private QuestionCategory questionCategory;
 
-    public static CustomerQ toEntity(CustomerQRequest CustomerQRequest) {
+    public static CustomerQ toEntity(QuestionRequest CustomerQRequest) {
         return CustomerQ.builder()
                 .questionTitle(CustomerQRequest.getQuestionTitle())
                 .questionContent(CustomerQRequest.getQuestionContent())

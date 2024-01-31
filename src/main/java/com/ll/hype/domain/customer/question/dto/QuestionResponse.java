@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerQResponse {
+public class QuestionResponse {
     private long id;
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
@@ -26,8 +26,8 @@ public class CustomerQResponse {
     private List<CustomerA> answers;
     private List<String> fullPath;
 
-    public static CustomerQResponse of(CustomerQ customerQ) {
-        return CustomerQResponse.builder()
+    public static QuestionResponse of(CustomerQ customerQ) {
+        return QuestionResponse.builder()
                 .id(customerQ.getId())
                 .createDate(customerQ.getCreateDate())
                 .modifyDate(customerQ.getModifyDate())
@@ -39,8 +39,8 @@ public class CustomerQResponse {
                 .build();
     }
 
-    public static CustomerQResponse of(CustomerQ customerQ, List<String> fullPath) {
-        return CustomerQResponse.builder()
+    public static QuestionResponse of(CustomerQ customerQ, List<String> fullPath) {
+        return QuestionResponse.builder()
                 .id(customerQ.getId())
                 .createDate(customerQ.getCreateDate())
                 .modifyDate(customerQ.getModifyDate())
