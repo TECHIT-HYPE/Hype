@@ -25,10 +25,13 @@ public class SocialProfileController {
             UserPrincipal userPrincipal = (UserPrincipal) ((Authentication) principal).getPrincipal();
             Member loggedInUser = userPrincipal.getMember();
 
-            model.addAttribute("loggedInUser", loggedInUser);
+            model.addAttribute("principal", loggedInUser);
 
             SocialProfileDto socialProfileDto = socialProfileService.findById(id);
-            
+
+            model.addAttribute("profileDto", socialProfileDto);
+            return "/domain/social/social/socialprofile";
         }
+        return "redirect:/member/login";
     }
 }

@@ -24,6 +24,7 @@ public class SocialProfileService {
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
             SocialProfileDto socialProfileDto = new SocialProfileDto().entityToDto(member);
+
             return socialProfileDto;
         } else {
             // 처리할 로직이나 에러 핸들링을 추가할 수 있습니다.
