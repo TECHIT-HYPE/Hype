@@ -7,6 +7,7 @@ import com.ll.hype.domain.customer.question.dto.CustomerQResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
+import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class AdminController {
     private final AdminService adminService;
-    private final ImageBridgeComponent imageBridgeService;
 
     //============== Main Start ==============
     // Admin home
@@ -34,6 +34,7 @@ public class AdminController {
     public String home() {
         return "domain/admin/main";
     }
+
     //============== Main End ==============
 
 
@@ -82,8 +83,10 @@ public class AdminController {
     }
 
     @PostMapping("/shoes/create")
-    public String createShoes(ShoesRequest shoesRequest, @RequestParam("sizes") List<Integer> sizes) {
-        adminService.saveShoes(shoesRequest, sizes);
+    public String createShoes(ShoesRequest shoesRequest,
+                              @RequestParam("sizes") List<Integer> sizes,
+                              @RequestParam(value = "files") List<MultipartFile> files) {
+        adminService.saveShoes(shoesRequest, sizes, files);
         return "redirect:/admin/shoes/list";
     }
 
@@ -96,10 +99,11 @@ public class AdminController {
     //============== Shoes End ==============
 
 
-    //============== CS Question Start ==============
+    //============== CS Question & Answer Start ==============
     // Question Detail
     @GetMapping("/cs/question/detail/{id}")
-    public String questionDetail(@PathVariable Long id, Model model) {
+    public String questionDetail(@PathVariable Long id,
+                                 Model model) {
         CustomerQResponse question = adminService.findQuestion(id);
         model.addAttribute("question", question);
         return "domain/admin/question/detail";
@@ -112,5 +116,27 @@ public class AdminController {
         model.addAttribute("questions", findAll);
         return "domain/admin/question/list";
     }
-    //============== CS Question End ==============
+
+    // Answer Create
+    @PostMapping("/cs/qeestion/answer/create/{id}")
+    public String answerCreate(@PathVariable("id") Long id,
+                               @RequestParam("content") String content,
+                               Model model,
+                               Principal principal) {
+        String email = principal.getName();
+        adminService.createAnswer(id, content, email);
+
+        CustomerQResponse question = adminService.findQuestion(id);
+        model.addAttribute("question", question);
+        return "redirect:/admin/cs/question/detail/%s".formatted(id);
+    }
+
+    // Answer Delete
+    @PostMapping("/cs/qeestion/answer/delete/{id}")
+    public String answerDelete(@PathVariable("id") Long id) {
+        log.info("[answerDelete] : " + id);
+        CustomerQResponse customerQResponse = adminService.deleteAnswer(id);
+        return "redirect:/admin/cs/question/detail/%s".formatted(customerQResponse.getId());
+    }
+    //============== CS Question & Answer End ==============
 }

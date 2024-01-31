@@ -3,7 +3,7 @@
   <title>문의사항 목록</title>
 </head>
 <body>
-<div layout:fragment="content" class="container mx-auto mt-8 p-4 bg-white rounded shadow-md">
+<div layout:fragment="content" class="container mx-auto mt-8 p-4 bg-white rounded shadow-md" enctype="multipart/form-data">
   <h2 class="text-2xl font-semibold mb-4">Update Question</h2>
 
   <!-- Form to update the question -->
@@ -22,6 +22,12 @@
       <textarea id="questionContent" name="questionContent" th:field="${question.questionContent}"
                 class="mt-1 p-2 block w-full border rounded-md"></textarea>
     </div>
+
+    <ul>
+      <li th:each="path : ${question.fullPath}">
+        <img th:src="${path}" class="w-20"/>
+      </li>
+    </ul>
 
     <div class="mt-4">
       <button type="submit" class="bg-blue-500 text-white p-2 rounded-md">수정</button>

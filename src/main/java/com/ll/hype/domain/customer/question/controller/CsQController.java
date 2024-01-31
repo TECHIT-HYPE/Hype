@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,9 +34,11 @@ public class CsQController {
     }
 
     @PostMapping("/question/create")
-    public String questionSave(CustomerQRequest customerQRequest, Principal principal) {
+    public String questionSave(CustomerQRequest customerQRequest,
+                               Principal principal,
+                               @RequestParam(value = "files") List<MultipartFile> files) {
         String email = principal.getName();
-        csQService.questionSave(customerQRequest, email);
+        csQService.questionSave(customerQRequest, email, files);
         return "redirect:/cs/main";
     }
 
@@ -47,7 +50,10 @@ public class CsQController {
         return "domain/cs/question/list";
     }
     @GetMapping("/question/update/{id}")
-    public String questionUpdateForm(@PathVariable("id") Long id, Model model, Principal principal,CustomerQRequest customerQRequest) {
+    public String questionUpdateForm(@PathVariable("id") Long id,
+                                     Model model,
+                                     Principal principal,
+                                     CustomerQRequest customerQRequest) {
         String email = principal.getName();
         CustomerQResponse findQuestion = csQService.findOne(id, email);
         model.addAttribute("question", findQuestion);
