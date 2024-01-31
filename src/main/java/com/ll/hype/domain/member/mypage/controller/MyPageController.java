@@ -1,5 +1,7 @@
 package com.ll.hype.domain.member.mypage.controller;
 
+import com.ll.hype.domain.adress.adress.dto.AddressResponse;
+import com.ll.hype.domain.adress.adress.service.AddressService;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.service.MemberService;
 import com.ll.hype.domain.member.mypage.dto.ModifyRequest;
@@ -28,6 +30,7 @@ import java.util.Objects;
 public class MyPageController {
     private final MemberService memberService;
     private final WishlistService wishlistService;
+    private final AddressService addressService;
 
     @GetMapping("/profile")
     public String profileForm(@AuthenticationPrincipal UserPrincipal userPrincipal, ModifyRequest modifyRequest, Model model) {
@@ -90,5 +93,13 @@ public class MyPageController {
 
         model.addAttribute("wishlist", wishlist);
         return "domain/member/mypage/wishlist";
+    }
+
+    @GetMapping("/addressList")
+    public String myAddressListForm(@AuthenticationPrincipal UserPrincipal userPrincipal, Model model) {
+        List<AddressResponse> myAddressList = addressService.getMyAddressList(userPrincipal.getMember().getId());
+
+        model.addAttribute("myAddressList", myAddressList);
+        return "domain/member/mypage/address";
     }
 }

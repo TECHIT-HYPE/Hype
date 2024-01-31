@@ -31,20 +31,20 @@ public class SaleResponse {
     private Status status;
     private String account;
 
-    public static SaleResponse of(Sale salesRequest) {
+    public static SaleResponse of(Sale sale) {
         return SaleResponse.builder()
-                .id(salesRequest.getId())
-                .createDate(salesRequest.getCreateDate())
-                .modifyDate(salesRequest.getModifyDate())
-                .shoes(salesRequest.getShoes())
-                .shoesSize(salesRequest.getShoesSize())
-                .member(salesRequest.getMember())
-                .price(salesRequest.getPrice())
-                .startDate(salesRequest.getStartDate())
-                .endDate(salesRequest.getEndDate())
-                .address(salesRequest.getAddress())
-                .status(salesRequest.getStatus())
-                .account(salesRequest.getAccount())
+                .id(sale.getId())
+                .createDate(sale.getCreateDate())
+                .modifyDate(sale.getModifyDate())
+                .shoes(sale.getShoes())
+                .shoesSize(sale.getShoesSize())
+                .member(sale.getMember())
+                .price(sale.getPrice())
+                .startDate(sale.getStartDate())
+                .endDate(sale.getEndDate())
+                .address(sale.getAddress())
+                .status(sale.getStatus())
+                .account(sale.getAccount())
                 .build();
     }
 }
