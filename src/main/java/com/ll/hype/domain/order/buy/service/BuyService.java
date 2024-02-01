@@ -8,7 +8,12 @@ import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
 import com.ll.hype.domain.shoes.shoes.service.ShoesService;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +42,28 @@ public class BuyService {
         return orderRequestList;
     }
 
-    public BuyResponse findByShoesIdAndShoesSize(long id, int shoesSize) {
-        Buy buy = buyRepository.findByShoesIdAndShoesSize_Size(id, shoesSize);
-        return BuyResponse.of(buy);
+    //신발 사이즈 별로 그룹화, 그룹 내 높은가격순, 입찰순으로 정렬
+    public Map<Integer, Optional<BuyResponse>> getHighestBidsGroupedBySize(long id) {
+        List<BuyResponse> bids = findByShoes(id);
+        return bids.stream()
+                .collect(Collectors.groupingBy(
+                        buyResponse -> buyResponse.getShoesSize().getSize(),
+                        Collectors.maxBy(Comparator.comparing(BuyResponse::getPrice)
+                                .thenComparing(BuyResponse::getCreateDate))
+                ));
     }
+
+//    public List<BuyResponse> findByShoesIdAndShoesSize(long id, int shoesSize) {
+//        List<BuyResponse> sizeList = new ArrayList<>();
+//        for (Buy buy : buyRepository.findByShoesIdAndShoesSize_Size(id, shoesSize)) {
+//            sizeList.add(BuyResponse.of(buy));
+//        }
+//        return sizeList;
+//    }
+//
+//    public BuyResponse findHighestBidByShoesAndSize(Long id, int shoesSize) {
+//        Buy buy = buyRepository.findHighestBidByShoesAndSize(id, shoesSize);
+//        return BuyResponse.of(buy);
+//    }
+
 }

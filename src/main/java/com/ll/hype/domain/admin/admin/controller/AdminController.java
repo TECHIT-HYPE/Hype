@@ -3,14 +3,14 @@ package com.ll.hype.domain.admin.admin.controller;
 import com.ll.hype.domain.admin.admin.service.AdminService;
 import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.dto.BrandResponse;
-import com.ll.hype.domain.customer.question.dto.CustomerQResponse;
+import com.ll.hype.domain.customer.question.dto.QuestionResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
-import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.metamodel.model.domain.internal.MapMember;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +36,10 @@ public class AdminController {
     }
 
     //============== Main End ==============
+
+    //============== Member Start ==============
+
+    //============== Member End ==============
 
 
     //============== Brand Start ==============
@@ -104,7 +108,7 @@ public class AdminController {
     @GetMapping("/cs/question/detail/{id}")
     public String questionDetail(@PathVariable Long id,
                                  Model model) {
-        CustomerQResponse question = adminService.findQuestion(id);
+        QuestionResponse question = adminService.findQuestion(id);
         model.addAttribute("question", question);
         return "domain/admin/question/detail";
     }
@@ -112,7 +116,7 @@ public class AdminController {
     // Question All List
     @GetMapping("/cs/question/list")
     public String questionFindAll(Model model) {
-        List<CustomerQResponse> findAll = adminService.findQuestionAll();
+        List<QuestionResponse> findAll = adminService.findQuestionAll();
         model.addAttribute("questions", findAll);
         return "domain/admin/question/list";
     }
@@ -126,7 +130,7 @@ public class AdminController {
         String email = principal.getName();
         adminService.createAnswer(id, content, email);
 
-        CustomerQResponse question = adminService.findQuestion(id);
+        QuestionResponse question = adminService.findQuestion(id);
         model.addAttribute("question", question);
         return "redirect:/admin/cs/question/detail/%s".formatted(id);
     }
@@ -134,8 +138,7 @@ public class AdminController {
     // Answer Delete
     @PostMapping("/cs/qeestion/answer/delete/{id}")
     public String answerDelete(@PathVariable("id") Long id) {
-        log.info("[answerDelete] : " + id);
-        CustomerQResponse customerQResponse = adminService.deleteAnswer(id);
+        QuestionResponse customerQResponse = adminService.deleteAnswer(id);
         return "redirect:/admin/cs/question/detail/%s".formatted(customerQResponse.getId());
     }
     //============== CS Question & Answer End ==============
