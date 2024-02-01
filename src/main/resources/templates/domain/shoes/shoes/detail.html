@@ -1,11 +1,6 @@
-<html layout:decorate="~{global/usrLayout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
-
+<html layout:decorate="~{global/usrLayout}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HYPE</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
-
+    <title>신발 상세페이지</title>
 </head>
 <body>
 <div layout:fragment="content">
@@ -45,7 +40,10 @@
                 </div>
                 <div class="purchase_info">
                     <!--즉시 구매가 즉시 판매가, 구매버튼 판매버튼-->
-                    <a th:href="@{/sale/select/{id}(id=${shoes.id})}" class="btn">구매 진행</a>
+                    <form th:action="@{|/buy/shoes|}" method="post">
+                        <input type="hidden" id="shoesId" name="shoesId" th:value="${shoes.id}">
+                        <input type="submit" value="구매진행 ||">
+                    </form>
                     <a th:href="@{/sale/select/{id}(id=${shoes.id})}" class="btn">판매 진행</a>
 
                     <!--내 사이즈 가격, 가장 저렴한 사이즈 가격-->
