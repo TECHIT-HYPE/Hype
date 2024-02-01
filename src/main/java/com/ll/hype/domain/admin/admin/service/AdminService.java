@@ -98,10 +98,11 @@ public class AdminService {
 
         for (Integer size : sizes) {
             ShoesSize shoesSize = ShoesSize.builder()
-                    .shoes(shoes)
                     .size(size)
                     .build();
-            shoesSizeRepository.save(shoesSize);
+
+
+            shoes.addSize(shoesSizeRepository.save(shoesSize));
         }
 
         imageBridgeComponent.save(ImageType.SHOES, shoes.getId(), files);
