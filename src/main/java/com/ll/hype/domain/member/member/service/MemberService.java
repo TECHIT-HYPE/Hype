@@ -5,10 +5,15 @@ import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.entity.MemberRole;
 import com.ll.hype.domain.member.member.repository.MemberRepository;
 import com.ll.hype.domain.member.member.dto.ModifyRequest;
+import com.ll.hype.global.s3.image.ImageType;
+import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,13 +21,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ImageBridgeComponent imageBridgeComponent;
 
     @Transactional
-    public void join(JoinRequest joinRequest) {
+    public void join(JoinRequest joinRequest, List<MultipartFile> files) {
         Member member = JoinRequest.toEntity(joinRequest);
         member.changeToEncodedPassword(passwordEncoder.encode(member.getPassword()));
         member.updateRole(MemberRole.MEMBER);
         memberRepository.save(member);
+        imageBridgeComponent.save(ImageType.MEMBER, member.getId(), files);
     }
 
     public boolean confirmPassword(String password, String passwordConfirm) {

@@ -1,8 +1,8 @@
 package com.ll.hype.global.init;
 
-import com.ll.hype.domain.admin.admin.service.AdminService;
 import com.ll.hype.domain.address.address.entity.Address;
 import com.ll.hype.domain.address.address.repository.AddressRepository;
+import com.ll.hype.domain.admin.admin.service.AdminService;
 import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.repository.BrandRepository;
 import com.ll.hype.domain.member.member.dto.JoinRequest;
@@ -25,14 +25,6 @@ import com.ll.hype.domain.wishlist.wishlist.repository.WishlistRepository;
 import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.enums.Status;
 import com.ll.hype.global.enums.StatusCode;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +38,15 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Profile("!prod")
@@ -81,6 +82,17 @@ public class NotProd {
             return;
         }
 
+        // ===== 이미지 객체 불러오기 시작 =====
+        File profileFile = new File(
+                getClass().getClassLoader().getResource("img/profile.webp").getFile());
+        InputStream profileStream = new FileInputStream(profileFile);
+        MultipartFile profileMockMultipartFile = new MockMultipartFile("file", profileFile.getName(), MediaType.TEXT_HTML_VALUE,
+                profileStream);
+
+        List<MultipartFile> profileFiles = new ArrayList<>();
+        profileFiles.add(profileMockMultipartFile);
+        // ===== 이미지 객체 불러오기 끝 =====
+
         JoinRequest member = JoinRequest.builder()
                 .email("admin@admin.com")
                 .password("1234")
@@ -93,7 +105,7 @@ public class NotProd {
                 .shoesSize(265)
                 .build();
 
-        memberService.join(member);
+        memberService.join(member, profileFiles);
         Member findMember = memberRepository.findByEmail("admin@admin.com").get();
         findMember.updateRole(MemberRole.ADMIN);
 
@@ -108,7 +120,7 @@ public class NotProd {
                 .gender(Gender.FEMALE)
                 .shoesSize(230)
                 .build();
-        memberService.join(member2);
+        memberService.join(member2, profileFiles);
         Member userMember = memberRepository.findByEmail("test@test.com")
                 .orElseThrow(() -> new IllegalArgumentException("NotProd userMember 생성 중 조회 오류 발생"));
         userMember.updateRole(MemberRole.MEMBER);
