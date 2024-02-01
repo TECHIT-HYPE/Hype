@@ -25,6 +25,7 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/cs/**")).authenticated()
                         .requestMatchers(new AntPathRequestMatcher("/member/**")).anonymous()
                         .requestMatchers(new AntPathRequestMatcher("/mypage/**")).authenticated()
+                        .requestMatchers(new AntPathRequestMatcher("/social/**")).authenticated()
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
                 .csrf((csrf) -> csrf
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))

@@ -19,3 +19,5 @@ function modalClose() {
     $(".modal-subscribe").css("display", "none");
     location.reload();
 }
+
+

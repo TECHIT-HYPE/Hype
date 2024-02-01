@@ -1,37 +1,48 @@
 package com.ll.hype.domain.social.profile.controller;
 
-import com.ll.hype.domain.member.member.entity.Member;
-import com.ll.hype.domain.social.profile.dto.SocialProfileDto;
+import com.ll.hype.domain.social.profile.dto.SocialProfileResponse;
 import com.ll.hype.domain.social.profile.service.SocialProfileService;
 import com.ll.hype.global.security.authentication.UserPrincipal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
+import java.util.List;
 
+@Slf4j
 @Controller
 @RequestMapping("/social/profile")
 public class SocialProfileController {
     @Autowired
     private SocialProfileService socialProfileService;
-    @GetMapping("/{id}")
-    public String getProfilePage(@PathVariable Long id, Model model, Principal principal) {
-        if (principal != null) {
-            UserPrincipal userPrincipal = (UserPrincipal) ((Authentication) principal).getPrincipal();
-            Member loggedInUser = userPrincipal.getMember();
 
-            model.addAttribute("principal", loggedInUser);
-
-            SocialProfileDto socialProfileDto = socialProfileService.findById(id);
-
-            model.addAttribute("profileDto", socialProfileDto);
-            return "/domain/social/social/socialprofile";
-        }
-        return "redirect:/member/login";
+    @GetMapping("")
+    public String profileDefault(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        Long principalId = userPrincipal != null ? userPrincipal.getMember().getId() : null;
+        return "redirect:/social/profile/%s".formatted(principalId);
     }
+
+    @GetMapping("/{id}")
+    public String getProfilePage(@PathVariable Long id, Model model) {
+        SocialProfileResponse socialProfileResponse = socialProfileService.findById(id);
+
+        // 경준님 화이팅
+
+        // principalId를 model에 추가
+        model.addAttribute("principal", id);
+        model.addAttribute("profileDto", socialProfileResponse);
+        return "/domain/social/social/socialprofile/socialprofile";
+    }
+    @PutMapping("/{id}")
+    public String updateProfileImage(@PathVariable Long id, List<MultipartFile> multipartFiles) {
+        socialProfileService.updateProfileImage(id, multipartFiles);
+        return "redirect:/social/profile/{id}";
+    }
+
+
+
 }

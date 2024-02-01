@@ -26,22 +26,23 @@
 <body th:class="${principal != null} ? 'authenticated' : ''">
 
 <!-- principalId 담아두는 곳 -->
-<input type="hidden" id="principalId" th:value="${principal.id}" />
+<input type="hidden" id="principalId" th:value="${principal}" />
 
 <header class="header">
     <div class="container">
         <a href="/" class="logo">
-            <img th:src="@{/images/logo.jpg}" alt="">
+<!--            <img th:src="@{/img/logo.jpg}" alt="">-->
         </a>
         <nav class="navi">
             <ul class="navi-list">
                 <li class="navi-item"><a th:href="@{/}">
                     <i class="fas fa-home"></i>
                 </a></li>
-                <li class="navi-item"><a th:href="@{/image/popular}">
-                    <i class="far fa-compass"></i>
-                </a></li>
-                <li class="navi-item"><a th:href="@{/user/{id}(id=${principal.id})}">
+<!--                <li class="navi-item">-->
+<!--                    <a th:href="@{/image/popular}">-->
+<!--                    <i class="far fa-compass"></i>-->
+<!--                </a></li>-->
+                <li class="navi-item"><a th:href="@{|/user/${principal}|}">
                     <i class="far fa-user"></i>
                 </a></li>
             </ul>
