@@ -3,6 +3,7 @@ package com.ll.hype.domain.shoes.shoes.dto;
 import com.ll.hype.domain.brand.brand.entity.Brand;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesCategory;
+import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.enums.StatusCode;
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ public class ShoesResponse {
     private String color;
     private Gender gender;
     private StatusCode status;
+    private List<ShoesSize> sizes;
     private List<String> fullPath;
 
     public static ShoesResponse of(Shoes shoes) {
@@ -48,6 +50,7 @@ public class ShoesResponse {
                 .color(shoes.getColor())
                 .gender(shoes.getGender())
                 .status(shoes.getStatus())
+                .sizes(shoes.getSizes())
                 .build();
     }
 
@@ -66,6 +69,7 @@ public class ShoesResponse {
                 .color(shoes.getColor())
                 .gender(shoes.getGender())
                 .status(shoes.getStatus())
+                .sizes(shoes.getSizes())
                 .fullPath(fullPath)
                 .build();
     }
