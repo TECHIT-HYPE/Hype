@@ -31,6 +31,7 @@ public class ImageComponent {
 
     /**
      * 이미지와 타입 전달 시 이미지 엔티티 생성 및 버킷에 저장
+     *
      * @param multipartFile
      * @param type
      * @return Image
@@ -40,13 +41,13 @@ public class ImageComponent {
             throw new IllegalArgumentException("저장할 파일이 없습니다.");
         }
 
-        String fileName = type + "/" +getUuidFileName(multipartFile);
+        String fileName = type + "/" + getUuidFileName(multipartFile);
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getSize());
         objectMetadata.setContentType(multipartFile.getContentType());
 
-        try{
+        try {
             InputStream inputStream = multipartFile.getInputStream();
 
             amazonS3Client.putObject(
@@ -64,6 +65,7 @@ public class ImageComponent {
 
     /**
      * Image 객체의 keyname을 통해 이미지의 fullPath를 생성하여 반환한다.
+     *
      * @param image
      * @return String (ImageFullPath)
      */
@@ -73,11 +75,10 @@ public class ImageComponent {
 
     /**
      * 이미지 객체 전달 시 엔티티 삭제 및 버킷에서 이미지를 삭제한다.
+     *
      * @param image
-     * @return boolean
      */
-    @Transactional
-    public boolean delete(Image image) {
+    public void delete(Image image) {
         String decodedKeyName = URLDecoder.decode(image.getKeyName(), StandardCharsets.UTF_8);
 
         // 파일 존재 여부 확인
@@ -86,8 +87,6 @@ public class ImageComponent {
         }
 
         amazonS3Client.deleteObject(defaultBucketName, decodedKeyName);
-        imageRepository.delete(image);
-        return true;
     }
 
     // 각 파일의 파일명을 고유하게 처리하도록 UUID를 통해 파일명 생성

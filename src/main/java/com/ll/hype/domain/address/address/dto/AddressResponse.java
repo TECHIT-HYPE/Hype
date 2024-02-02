@@ -1,6 +1,6 @@
-package com.ll.hype.domain.adress.adress.dto;
+package com.ll.hype.domain.address.address.dto;
 
-import com.ll.hype.domain.adress.adress.entity.Address;
+import com.ll.hype.domain.address.address.entity.Address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

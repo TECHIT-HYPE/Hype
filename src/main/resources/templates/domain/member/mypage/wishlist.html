@@ -23,9 +23,8 @@
                     <span class="text-sl font-semibold leading-6" th:if="${item.instantPrice != null}" th:text="|${#numbers.formatDecimal(item.instantPrice, 0, 'COMMA', 0, 'POINT')}원|"></span>
                     <span class="text-sl font-semibold leading-6" th:unless="${item.instantPrice != null}" th:text="'-'"></span>
                 </button>
-<!--                |/sale/${item.saleId}/delete|-->
-                <a class="text-xs leading-5 text-gray-500 underline"
-                   onclick="return confirm('정말로 삭제하시겠습니까?');"> 삭제 </a>
+                <a method="DELETE" class="text-xs leading-5 text-gray-500 underline"
+                   onclick="return confirm('정말로 삭제하시겠습니까?');" th:href="|/mypage/wishlist/${item.id}/delete|"> 삭제 </a>
             </div>
         </li>
     </ul>

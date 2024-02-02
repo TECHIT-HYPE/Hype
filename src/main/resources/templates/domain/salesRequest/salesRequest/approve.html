@@ -1,27 +1,23 @@
 <html layout:decorate="~{global/usrLayout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HYPE</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
-
+    <title>판매 약관 동의</title>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="flex justify-center">판매동의</div>
         <div class="container mx-auto mt-5">
             <div class="header text-center mb-5">
-                <!--이미지-->
+<!--                이미지-->
                 <p class="text-l" th:text="${buyResponse.shoes.model}"></p>
                 <p class="text-l" th:text="${buyResponse.shoes.korName}"></p>
                 <p class="text-l" th:text="${buyResponse.shoes.engName}"></p>
-                <p class="text-l" th:text="${buyResponse.shoesSize.size}"></p>
+                <p class="text-l" th:text="${selectedSize}">사이즈</p>
 
                 <hr>
             </div>
             <div>
-                <form id="termsForm">
+                <form id="termsForm" th:action method="post">
                     <div>
                         <input type="checkbox" id="term1" name="terms" onchange="checkTerms()">
                         <label for="term1">판매하려는 상품이 맞습니다.</label>
@@ -43,6 +39,9 @@
                         <label for="term5">HYPE의 최신 이용정책을 모두 확인하였으며, 판매를 계속합니다.</label>
                     </div>
                     <div>
+                        <input type="hidden" name="selectedSize" th:value="${selectedSize}" />
+                        <input type="hidden" name="highestBidId" th:value="${highestBidId}" />
+
                         <button type="submit" id="submitButton" disabled>판매 계속</button>
                     </div>
                 </form>
@@ -54,11 +53,6 @@
                         submitButton.disabled = !Array.from(checkboxes).every(checkbox => checkbox.checked);
                     }
                 </script>
-            </div>
-
-            <div class="">
-                <input type="hidden" name="selectedSize" th:value="${buyResponse.shoesSize.size}">
-                <input type="hidden" name="selectedPrice" th:value="${buyResponse.price}">
             </div>
         </div>
 </div>

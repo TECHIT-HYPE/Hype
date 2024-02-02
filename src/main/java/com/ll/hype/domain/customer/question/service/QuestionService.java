@@ -1,7 +1,7 @@
 package com.ll.hype.domain.customer.question.service;
 
-import com.ll.hype.domain.customer.question.dto.CustomerQRequest;
-import com.ll.hype.domain.customer.question.dto.CustomerQResponse;
+import com.ll.hype.domain.customer.question.dto.QuestionRequest;
+import com.ll.hype.domain.customer.question.dto.QuestionResponse;
 import com.ll.hype.domain.customer.question.entity.CustomerQ;
 import com.ll.hype.domain.customer.question.repository.CsQRepository;
 import com.ll.hype.domain.member.member.entity.Member;
@@ -14,19 +14,18 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
-public class CsQService {
+public class QuestionService {
     private final CsQRepository csQRepository;
     private final MemberRepository memberRepository;
     private final ImageBridgeComponent imageBridgeComponent;
 
     @Transactional
-    public CustomerQResponse questionSave(CustomerQRequest customerQRequest, String email, List<MultipartFile> files) {
-        CustomerQ customerQ = CustomerQRequest.toEntity(customerQRequest);
+    public QuestionResponse questionSave(QuestionRequest customerQRequest, String email, List<MultipartFile> files) {
+        CustomerQ customerQ = QuestionRequest.toEntity(customerQRequest);
 
         Member findMember = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 사용자가 없습니다."));
@@ -38,12 +37,12 @@ public class CsQService {
             imageBridgeComponent.save(ImageType.QUESTION, customerQ.getId(), files);
         }
 
-        return CustomerQResponse.of(customerQ);
+        return QuestionResponse.of(customerQ);
     }
 
     // 문의사항 수정
     @Transactional
-    public void questionUpdate(Long id, CustomerQRequest customerQRequest, String email) {
+    public void questionUpdate(Long id, QuestionRequest customerQRequest, String email) {
         CustomerQ findQuestion = csQRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 문의사항이 없습니다."));
 
@@ -55,7 +54,7 @@ public class CsQService {
             throw new IllegalArgumentException("답변이 달린 문의사항은 수정이 불가능합니다.");
         }
 
-        CustomerQ customerQ = CustomerQRequest.toEntity(customerQRequest);
+        CustomerQ customerQ = QuestionRequest.toEntity(customerQRequest);
         findQuestion.update(customerQ);
     }
 
@@ -75,7 +74,7 @@ public class CsQService {
     }
 
     // 문의사항 상세조회
-    public CustomerQResponse findOne(Long id, String userEmail) {
+    public QuestionResponse findOne(Long id, String userEmail) {
         CustomerQ question = csQRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 문의사항이 없습니다."));
 
@@ -84,12 +83,12 @@ public class CsQService {
         }
 
         List<String> fullPath = imageBridgeComponent.findAllFullPath(ImageType.QUESTION, question.getId());
-        return CustomerQResponse.of(question, fullPath);
+        return QuestionResponse.of(question, fullPath);
     }
 
     // 나의 문의사항 확인
-    public List<CustomerQResponse> findByMyList(String userEmail) {
-        List<CustomerQResponse> questions = new ArrayList<>();
+    public List<QuestionResponse> findByMyList(String userEmail) {
+        List<QuestionResponse> questions = new ArrayList<>();
 
         Member findMember = memberRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 사용자가 없습니다."));
@@ -97,7 +96,7 @@ public class CsQService {
         List<CustomerQ> findByQuestions = csQRepository.findByMember(findMember);
 
         for (CustomerQ csq : findByQuestions) {
-            questions.add(CustomerQResponse.of(csq));
+            questions.add(QuestionResponse.of(csq));
         }
 
         return questions;

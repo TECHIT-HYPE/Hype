@@ -1,7 +1,6 @@
 <html layout:decorate="~{global/usrLayout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
-
 <head>
-    <title>판매 입찰 사이즈 선택</title>
+    <title>구매 입찰 사이즈 선택</title>
     <style>
         .grid-container {
             display: grid;
@@ -19,10 +18,10 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="flex justify-center">판매하기</div>
+    <div class="flex justify-center">구매하기</div>
     <div class="container mx-auto mt-5">
-        <div class="header text-center mb-5">
-            <!--이미지-->
+        <div class="header text-center mb-5 flex">
+            <img th:src="${shoes.fullPath.get(0)}" class="w-20">
             <div>
                 <p class="text-l" th:text="${shoes.model}"></p>
                 <p class="text-l" th:text="${shoes.korName}"></p>
@@ -30,20 +29,16 @@
             </div>
         </div>
 
-        <form th:action method="post">
+        <form th:action="@{|/buy/shoes/size|}" method="post">
+            <input type="hidden" id="shoesId" name="shoesId" th:value="${shoes.id}">
             <div class="grid-container">
-                <th:block th:each="shoesSize : ${shoesSizeList}">
+                <th:block th:each="size : ${shoes.sizeMap.keySet()}">
                     <div class="grid-item">
-                        <input type="radio" id="selectedSize" name="selectedSize" th:value="${shoesSize.size}">
-                        <label for="selectedSize">
-                            [[${shoesSize.size}]] <br>
-                            <span th:if="${shoesSize.exists == true}">
-                                [[${shoesSize.price}]] <br>
-                            </span>
-                            <span th:unless="${shoesSize.exists == true}">
-                                판매 입찰
-                            </span>
-                        </label>
+                        <input type="radio" id="size" name="size" th:value="${size}">
+                        <div class="flex flex-col">
+                            <p th:text="${size}"></p>
+                            <p th:text="${shoes.sizeMap.get(size)}"></p>
+                        </div>
                     </div>
                 </th:block>
                 <br>

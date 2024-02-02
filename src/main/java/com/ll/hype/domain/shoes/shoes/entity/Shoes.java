@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -22,7 +23,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Shoes extends BaseEntity {
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Brand brand;
 
@@ -43,10 +43,16 @@ public class Shoes extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private StatusCode status; // 공개 비공개
 
+    @Builder.Default
     @OneToMany(mappedBy = "shoes", cascade = CascadeType.ALL)
     List<ShoesSize> sizes = new ArrayList<>();
 
     public void updateStatus(StatusCode status) {
         this.status = status;
+    }
+
+    public void addSize(ShoesSize shoesSize) {
+        shoesSize.addShoes(this);
+        sizes.add(shoesSize);
     }
 }

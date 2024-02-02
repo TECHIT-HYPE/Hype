@@ -6,8 +6,8 @@
 <div layout:fragment="my_page_content">
     <div class="flex justify-between mb-4">
         <h2 class="text-2xl font-bold">주소록</h2>
-        <button type="button" class="bg-blue-500 text-white p-3 rounded-md text-left">
-            <a class="text-sm leading-6" th:href="@{/mypage/newAddress}">새 주소</a>
+        <button type="button" class="bg-blue-500 text-white p-3 rounded-md text-left text-sm leading-6"
+                onclick="location.href='/mypage/address/create';">새 주소
         </button>
     </div>
 
@@ -21,12 +21,11 @@
                 </div>
             </div>
             <div class="flex flex-col items-end justify-between">
-                <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md text-left">
-                    <span class="text-sm leading-6">주소 수정</span>
+                <button type="button" class="bg-blue-500 text-white p-3 rounded-md text-left text-sm leading-6"
+                        th:onclick="|location.href='/mypage/address/${item.id}/modify'|">주소 수정
                 </button>
-<!--                |/sale/${item.saleId}/delete|-->
-                <a class="text-xs leading-5 text-gray-500 underline"
-                   onclick="return confirm('정말로 삭제하시겠습니까?');"> 삭제 </a>
+                <a method="DELETE" class="text-xs leading-5 text-gray-500 underline"
+                   onclick="return confirm('정말로 삭제하시겠습니까?');" th:href="|/mypage/address/${item.id}/delete|"> 삭제 </a>
             </div>
         </li>
     </ul>

@@ -6,11 +6,10 @@ import com.ll.hype.domain.brand.brand.entity.Brand;
 import com.ll.hype.domain.brand.brand.repository.BrandRepository;
 import com.ll.hype.domain.customer.answer.entity.CustomerA;
 import com.ll.hype.domain.customer.answer.repository.CsARepository;
-import com.ll.hype.domain.customer.question.dto.CustomerQResponse;
+import com.ll.hype.domain.customer.question.dto.QuestionResponse;
 import com.ll.hype.domain.customer.question.entity.CustomerQ;
 import com.ll.hype.domain.customer.question.repository.CsQRepository;
 import com.ll.hype.domain.member.member.entity.Member;
-import com.ll.hype.domain.member.member.entity.MemberRole;
 import com.ll.hype.domain.member.member.repository.MemberRepository;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
@@ -19,7 +18,6 @@ import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesSizeRepository;
 import com.ll.hype.global.enums.StatusCode;
-import com.ll.hype.global.exception.custom.UserMismatchException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import java.util.ArrayList;
@@ -100,10 +98,11 @@ public class AdminService {
 
         for (Integer size : sizes) {
             ShoesSize shoesSize = ShoesSize.builder()
-                    .shoes(shoes)
                     .size(size)
                     .build();
-            shoesSizeRepository.save(shoesSize);
+
+
+            shoes.addSize(shoesSizeRepository.save(shoesSize));
         }
 
         imageBridgeComponent.save(ImageType.SHOES, shoes.getId(), files);
@@ -125,27 +124,27 @@ public class AdminService {
 
     //============== CS Question Start ==============
     // Question 상세 조회
-    public CustomerQResponse findQuestion(Long id) {
+    public QuestionResponse findQuestion(Long id) {
         CustomerQ question = csQRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 문의가 없습니다."));
 
         List<String> fullPath = imageBridgeComponent.findAllFullPath(ImageType.QUESTION, question.getId());
 
-        return CustomerQResponse.of(question, fullPath);
+        return QuestionResponse.of(question, fullPath);
     }
 
     // Question 전체 조회
-    public List<CustomerQResponse> findQuestionAll() {
-        List<CustomerQResponse> questions = new ArrayList<>();
+    public List<QuestionResponse> findQuestionAll() {
+        List<QuestionResponse> questions = new ArrayList<>();
         for (CustomerQ customerQ : csQRepository.findAll()) {
             List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.QUESTION, customerQ.getId());
-            questions.add(CustomerQResponse.of(customerQ, fullPath));
+            questions.add(QuestionResponse.of(customerQ, fullPath));
         }
         return questions;
     }
 
     // Answer 생성
-    public CustomerQResponse createAnswer(Long id, String content, String email) {
+    public QuestionResponse createAnswer(Long id, String content, String email) {
         Member findMember = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 사용자가 없습니다."));
 
@@ -160,18 +159,18 @@ public class AdminService {
 
         csARepository.save(csA);
         customerQ.getAnswers().add(csA);
-        return CustomerQResponse.of(customerQ);
+        return QuestionResponse.of(customerQ);
     }
 
     // Answer 삭제
-    public CustomerQResponse deleteAnswer(Long id) {
+    public QuestionResponse deleteAnswer(Long id) {
         CustomerA customerA = csARepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 답변이 없습니다."));
 
         CustomerQ question = customerA.getQuestion();
         csARepository.delete(customerA);
 
-        return CustomerQResponse.of(question);
+        return QuestionResponse.of(question);
     }
     //============== CS End Start ==============
 }

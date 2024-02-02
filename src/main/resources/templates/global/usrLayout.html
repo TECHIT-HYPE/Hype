@@ -5,20 +5,20 @@
     <div class="flex items-center">HYPE</div>
     <div class="flex flex-col justify-center">
         <div class="flex mb-[20px] space-x-8">
-            <a href="/cs/main">고객센터</a>
-            <a href="/mypage/profile">마이페이지</a>
-            <div>관심</div>
+            <a href="/cs/main" class="text-black hover:text-blue-500">고객센터</a>
+            <a href="/mypage/profile" class="text-black hover:text-blue-500">마이페이지</a>
+            <a href="/mypage/wishlist">관심</a>
             <div>알림</div>
             <div sec:authorize="isAnonymous()" >
-                <a th:href="@{/member/login}">로그인</a>
+                <a th:href="@{/member/login}" class="text-black hover:text-blue-500">로그인</a>
             </div>
             <div sec:authorize="isAuthenticated()" >
-                <a th:href="@{/member/logout}">로그아웃</a>
+                <a th:href="@{/member/logout}" class="text-black hover:text-blue-500">로그아웃</a>
             </div>
         </div>
         <div class="flex space-x-4 justify-end">
-            <a href="/">HOME</a>
-            <div>SHOP</div>
+            <a href="/" class="text-black hover:text-blue-500">HOME</a>
+            <a href="/shoes/list" class="text-black hover:text-blue-500">SHOP</a>
             <div>BOARD</div>
             <div>SEARCH</div>
         </div>

@@ -1,67 +1,69 @@
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html layout:decorate="~{global/usrLayout}">
 <head>
-    <title>HYPE</title>
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <title>신발 상세페이지</title>
 </head>
 <body>
-<div>
-    <div class="responsive-two-column-grid">
-        <div class="column_img">
-        상품 이미지
-        </div>
-        <div class="column">
-            <div class="price_info">
-                <p>즉시 구매가</p>
-                <!--내 사이즈 즉시구매가-->
-                <!--가장 저렴한 즉시구매가-->
-                <!--내 사이즈 즉시구매 가능하면 내 사이즈 즉시 구매가 노출
-                    없으면 가장 저렴한 즉시 구매가 노출-->
+<div layout:fragment="content">
+    <div class="container mx-auto mt-5">
+        <div class="header text-center mb-5">
+            <div class="column_img">
+            상품 이미지
             </div>
-            <div class="name">
-                <p class="eng_name" th:text="${shoes.engName}"></p>
-                <p class="kor_name" th:text="${shoes.korName}"></p>
-            </div>
-            <div class="shoes_info">
-                <table>
-                    <tr>
-                        <th>최근거래가</th>
-                        <th>발매가</th>
-                        <th>모델번호</th>
-                        <th>출시일</th>
-                        <th>색상</th>
-                    </tr>
-                    <tr>
-                        <td th:text="${shoes.price}"></td>
-                        <td th:text="${shoes.model}"></td>
-                        <td th:text="${shoes.release}"></td>
-                        <td th:text="${shoes.color}"></td>
-                    </tr>
-                </table>
-            </div>
-            <div class="purchase_info">
-                <!--즉시 구매가 즉시 판매가, 구매버튼 판매버튼-->
-                <a th:href="@{/sale/select/{id}(id=${shoes.id})}" class="btn">구매 진행</a>
-                <a th:href="@{/sale/select/{id}(id=${shoes.id})}" class="btn">판매 진행</a>
+            <div class="column">
+                <div class="price_info">
+                    <p>즉시 구매가</p>
+                    <!--내 사이즈 즉시구매가-->
+                    <!--가장 저렴한 즉시구매가-->
+                    <!--내 사이즈 즉시구매 가능하면 내 사이즈 즉시 구매가 노출
+                        없으면 가장 저렴한 즉시 구매가 노출-->
+                </div>
+                <div class="name">
+                    <p class="eng_name" th:text="${shoes.engName}"></p>
+                    <p class="kor_name" th:text="${shoes.korName}"></p>
+                </div>
+                <div class="shoes_info">
+                    <table>
+                        <tr>
+                            <th>최근거래가</th>
+                            <th>발매가</th>
+                            <th>모델번호</th>
+                            <th>출시일</th>
+                            <th>색상</th>
+                        </tr>
+                        <tr>
+                            <td th:text="${shoes.price}"></td>
+                            <td th:text="${shoes.model}"></td>
+                            <td th:text="${shoes.release}"></td>
+                            <td th:text="${shoes.color}"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="purchase_info">
+                    <!--즉시 구매가 즉시 판매가, 구매버튼 판매버튼-->
+                    <form th:action="@{|/buy/shoes|}" method="post">
+                        <input type="hidden" id="shoesId" name="shoesId" th:value="${shoes.id}">
+                        <input type="submit" value="구매진행 ||">
+                    </form>
+                    <a th:href="@{/sale/select/{id}(id=${shoes.id})}" class="btn">판매 진행</a>
 
-                <!--내 사이즈 가격, 가장 저렴한 사이즈 가격-->
-            </div>
-            <div class="wishlist">
-                <!--관심상품등록-->
+                    <!--내 사이즈 가격, 가장 저렴한 사이즈 가격-->
+                </div>
+                <div class="wishlist">
+                    <!--관심상품등록-->
 
-            </div>
-            <div class="brand_info">
-                <a class="brand" th:href="@{#}">브랜드 이름
-                    <p class="brand_eng_name" th:text="${shoes.brand.engName}"></p>
-                    <p class="brand_kor_name" th:text="${shoes.brand.korName}"></p>
-                </a>
-            </div>
-            <div class="chart">
-                <!--시세-->
-            </div>
-            <div class="social">
-                <!--인스타-->
+                </div>
+                <div class="brand_info">
+                    <a class="brand" th:href="@{#}">브랜드 이름
+                        <p class="brand_eng_name" th:text="${shoes.brand.engName}"></p>
+                        <p class="brand_kor_name" th:text="${shoes.brand.korName}"></p>
+                    </a>
+                </div>
+                <div class="chart">
+                    <!--시세-->
+                </div>
+                <div class="social">
+                    <!--인스타-->
+                </div>
             </div>
         </div>
     </div>

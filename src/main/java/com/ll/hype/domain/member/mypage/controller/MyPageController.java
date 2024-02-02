@@ -1,24 +1,26 @@
 package com.ll.hype.domain.member.mypage.controller;
 
-import com.ll.hype.domain.adress.adress.dto.AddressResponse;
-import com.ll.hype.domain.adress.adress.service.AddressService;
+import com.ll.hype.domain.address.address.dto.AddressRequest;
+import com.ll.hype.domain.address.address.dto.AddressResponse;
+import com.ll.hype.domain.address.address.entity.Address;
+import com.ll.hype.domain.address.address.service.AddressService;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.service.MemberService;
-import com.ll.hype.domain.member.mypage.dto.ModifyRequest;
-import com.ll.hype.domain.member.mypage.dto.MyWishlistDto;
+import com.ll.hype.domain.member.member.dto.ModifyRequest;
+import com.ll.hype.domain.wishlist.wishlist.dto.MyWishlistDto;
+import com.ll.hype.domain.wishlist.wishlist.entity.Wishlist;
 import com.ll.hype.domain.wishlist.wishlist.service.WishlistService;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import com.ll.hype.global.util.ShoesSizeGenerator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -95,11 +97,95 @@ public class MyPageController {
         return "domain/member/mypage/wishlist";
     }
 
-    @GetMapping("/addressList")
+    @DeleteMapping("/wishlist/{id}/delete")
+    public String deleteWishlist(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                @PathVariable long id
+    ) {
+        Wishlist wishlist = wishlistService.findById(id).orElseThrow(() -> new RuntimeException("해당 게시물을 찾을 수 없습니다."));
+        if (!wishlistService.canAccess(userPrincipal.getMember(), wishlist))
+            throw new AccessDeniedException("접근 권한이 없습니다.");
+
+        wishlistService.deleteWishlist(wishlist);
+
+        return "redirect:/mypage/wishlist";
+    }
+
+    @GetMapping("/address")
     public String myAddressListForm(@AuthenticationPrincipal UserPrincipal userPrincipal, Model model) {
         List<AddressResponse> myAddressList = addressService.getMyAddressList(userPrincipal.getMember().getId());
 
         model.addAttribute("myAddressList", myAddressList);
         return "domain/member/mypage/address";
+    }
+
+    @GetMapping("/address/create")
+    public String createAddressForm(@AuthenticationPrincipal UserPrincipal userPrincipal, AddressRequest addressRequest, Model model) {
+        return "domain/member/mypage/addAddress";
+    }
+
+    @PostMapping("/address/create")
+    public String createAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                @Valid AddressRequest addressRequest,
+                                BindingResult bindingResult,
+                                Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            return "domain/member/mypage/addAddress";
+        }
+
+        addressService.createAddress(userPrincipal, addressRequest);
+
+        return "redirect:/mypage/address";
+    }
+
+    @GetMapping("/address/{id}/modify")
+    public String modifyAddressForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                    @PathVariable long id,
+                                    AddressRequest addressRequest,
+                                    Model model
+    ) {
+        Address address = addressService.findById(id).orElseThrow(() -> new RuntimeException("해당 게시물을 찾을 수 없습니다."));
+        if (!addressService.canAccess(userPrincipal.getMember(), address))
+            throw new AccessDeniedException("접근 권한이 없습니다.");
+
+        addressRequest.setAddressName(address.getAddressName());
+        addressRequest.setPostcode(address.getPostcode());
+        addressRequest.setAddress(address.getAddress());
+        addressRequest.setDetailAddress(address.getDetailAddress());
+        addressRequest.setExtraAddress(address.getExtraAddress());
+        addressRequest.setPrimary(address.isPrimary());
+
+        model.addAttribute("addressRequest", addressRequest);
+
+        return "domain/member/mypage/modifyAddress";
+    }
+
+    @PutMapping("/address/{id}/modify")
+    public String modifyAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                @PathVariable long id,
+                                AddressRequest addressRequest,
+                                BindingResult bindingResult,
+                                Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            return "domain/member/mypage/modifyAddress";
+        }
+
+        addressService.modifyAddress(id, addressRequest, userPrincipal.getMember().getId());
+
+        return "redirect:/mypage/address";
+    }
+
+    @DeleteMapping("/address/{id}/delete")
+    public String deleteAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                @PathVariable long id
+    ) {
+        Address address = addressService.findById(id).orElseThrow(() -> new RuntimeException("해당 게시물을 찾을 수 없습니다."));
+        if (!addressService.canAccess(userPrincipal.getMember(), address))
+            throw new AccessDeniedException("접근 권한이 없습니다.");
+
+        addressService.deleteAddress(address);
+
+        return "redirect:/mypage/address";
     }
 }

@@ -1,4 +1,4 @@
-package com.ll.hype.domain.member.mypage.dto;
+package com.ll.hype.domain.wishlist.wishlist.dto;
 
 import lombok.*;
 
@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MyWishlistDto {
+    private Long id;
     private Long brandId;
     private Long shoesId;
     private Long shoesSizeId;

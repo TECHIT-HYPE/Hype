@@ -1,0 +1,89 @@
+<html layout:decorate="~{global/usrLayout}">
+<head>
+    <title>구매입찰 상세페이지</title>
+
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="flex justify-center">구매 입찰하기</div>
+    <div class="container mx-auto mt-5">
+        <div class="header text-center mb-5">
+            <!--이미지-->
+            <!--<p class="text-l" th:text="${buyResponse.shoes.model}"></p>-->
+            <!--<p class="text-l" th:text="${buyResponse.shoes.korName}"></p>-->
+            <!--<p class="text-l" th:text="${buyResponse.shoes.engName}"></p>-->
+            <!--<p class="text-l" th:text="${buyResponse.shoesSize.size}"></p>-->
+            <hr>
+            <table>
+                <tr>
+                    <th>즉시 구매가 : 1000원</th>
+                </tr>
+                <tr>
+                    <!--<td th:text="${saleResponse.price}"></td>-->
+                    <!--<td th:text="${buyResponse.price}"></td>-->
+                </tr>
+            </table>
+            <hr>
+            <form th:action="@{|/buy/shoes/buy/create|}" method="post">
+                <input type="hidden" name="shoesId" th:value="${shoesId}"/>
+                <input type="hidden" name="size" th:value="${size}"/>
+
+                <p>구매 희망가</p>
+                <input type="number" id="price" name="price" placeholder="구매 희망가를 입력해 주세요." th:onchange="cal()">
+
+                <p id="commission">수수료: 0원</p>
+
+                <p>배송비 판매자 부담</p>
+
+                <p>입찰 마감기한</p>
+                <div class="flex space-x-4">
+                    <label class="inline-flex items-center">
+                        <input type="radio" class="form-radio" name="endDate" value="7" checked>
+                        <span class="ml-2">7일</span>
+                    </label>
+
+                    <label class="inline-flex items-center">
+                        <input type="radio" class="form-radio" name="endDate" value="14">
+                        <span class="ml-2">14일</span>
+                    </label>
+
+                    <label class="inline-flex items-center">
+                        <input type="radio" class="form-radio" name="endDate" value="21">
+                        <span class="ml-2">21일</span>
+                    </label>
+
+                    <label class="inline-flex items-center">
+                        <input type="radio" class="form-radio" name="endDate" value="28">
+                        <span class="ml-2">28일</span>
+                    </label>
+                </div>
+
+                <p id="totalPrice">총 : 0원</p>
+                <button type="submit">입찰</button>
+            </form>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        function cal() {
+            var purchasePrice = document.getElementById('price').value;
+            var commission = Math.round(purchasePrice * 0.05);
+            var totalPrice = parseInt(purchasePrice) + parseInt(commission);
+            document.getElementById('commission').innerText = '수수료: ' + commission + '원';
+            document.getElementById('totalPrice').innerText = '총 : ' + totalPrice + '원';
+            document.getElementById('totalPriceValue').value = totalPrice;
+        }
+
+        function setEndDate(days) {
+            var currentDate = new Date();
+            var endDate = new Date(currentDate);
+            endDate.setDate(currentDate.getDate() + days);
+
+            var formattedEndDate = endDate.toISOString().split('T')[0]; // 날짜만 추출
+
+            document.getElementById('hiddenEndDate').value = formattedEndDate;
+        }
+    </script>
+</div>
+</body>
+</html>

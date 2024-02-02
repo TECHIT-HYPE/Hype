@@ -1,4 +1,4 @@
-package com.ll.hype.domain.member.mypage.dto;
+package com.ll.hype.domain.member.member.dto;
 
 import com.ll.hype.global.enums.Gender;
 import jakarta.validation.constraints.NotBlank;
