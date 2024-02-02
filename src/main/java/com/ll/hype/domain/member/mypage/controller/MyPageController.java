@@ -4,9 +4,9 @@ import com.ll.hype.domain.address.address.dto.AddressRequest;
 import com.ll.hype.domain.address.address.dto.AddressResponse;
 import com.ll.hype.domain.address.address.entity.Address;
 import com.ll.hype.domain.address.address.service.AddressService;
+import com.ll.hype.domain.member.member.dto.ModifyRequest;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.service.MemberService;
-import com.ll.hype.domain.member.member.dto.ModifyRequest;
 import com.ll.hype.domain.wishlist.wishlist.dto.MyWishlistDto;
 import com.ll.hype.domain.wishlist.wishlist.entity.Wishlist;
 import com.ll.hype.domain.wishlist.wishlist.service.WishlistService;
@@ -48,6 +48,9 @@ public class MyPageController {
         modifyRequest.setGender(member.getGender());
         modifyRequest.setShoesSize(member.getShoesSize());
 
+        List<String> profilePhoto = memberService.getProfilePhoto(member.getId());
+
+        model.addAttribute("profilePhoto", profilePhoto);
         return loadAndReturnProfileForm(model);
     }
 

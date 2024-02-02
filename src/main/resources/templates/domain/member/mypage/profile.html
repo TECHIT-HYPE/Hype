@@ -70,6 +70,17 @@
             </select>
         </div>
 
+        <div class="mb-4" th:unless="${#lists.isEmpty(profilePhoto)}">
+            <label for="removePhoto" class="block text-gray-700 text-sm font-bold mb-2">기존 프로필 사진 삭제:</label>
+            <input type="checkbox" id="removePhoto" name="removePhoto" th:field="*{removePhoto}"/>
+        </div>
+
+        <ul>
+            <li th:each="path : ${profilePhoto}">
+                <img th:src="${path}" class="w-20"/>
+            </li>
+        </ul>
+
         <div class="mb-4">
             <label for="files" class="block text-gray-700 text-sm font-bold mb-2">프로필 사진:</label>
             <input type="file" id="files" name="files"

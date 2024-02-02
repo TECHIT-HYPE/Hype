@@ -60,6 +60,13 @@ public class MemberService {
 
         memberRepository.save(member);
 
+        // 프로필 사진 삭제를 체크하면 동작
+        if (modifyRequest.isRemovePhoto()) {
+            imageBridgeComponent.delete(ImageType.MEMBER, member.getId());
+            return;
+        }
+
+        // 프로필 사진 삭제를 체크하지 않고 파일을 등록한다면 동작
         if (!files.get(0).getOriginalFilename().isBlank()) {
             List<String> imageFullPaths = imageBridgeComponent.findAllFullPath(ImageType.MEMBER, member.getId());
 
@@ -69,5 +76,9 @@ public class MemberService {
 
             imageBridgeComponent.save(ImageType.MEMBER, member.getId(), files);
         }
+    }
+
+    public List<String> getProfilePhoto(Long memberId) {
+        return imageBridgeComponent.findAllFullPath(ImageType.MEMBER, memberId);
     }
 }
