@@ -37,12 +37,10 @@ public class SocialProfileController {
         model.addAttribute("profileDto", socialProfileResponse);
         return "/domain/social/social/socialprofile/socialprofile";
     }
-    @PutMapping("/{id}")
-    public String updateProfileImage(@PathVariable Long id, List<MultipartFile> multipartFiles) {
+    @PostMapping("/{id}")
+    public String updateProfileImage(@PathVariable Long id, @RequestParam("multipartFiles") List<MultipartFile> multipartFiles) {
         socialProfileService.updateProfileImage(id, multipartFiles);
         return "redirect:/social/profile/{id}";
     }
-
-
 
 }
