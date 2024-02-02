@@ -4,7 +4,7 @@
 </head>
 <body>
 <div layout:fragment="my_page_content" >
-    <form th:action method="post" th:object="${modifyRequest}" class="max-w-md mx-auto">
+    <form th:action method="post" th:object="${modifyRequest}" class="max-w-md mx-auto" enctype="multipart/form-data">
         <h1 class="text-3xl font-bold mb-4">로그인 정보</h1>
         <!-- error message -->
         <div class="mb-4" th:if="${#fields.hasAnyErrors()}">
@@ -68,6 +68,25 @@
                 <option value="">&#45;&#45; 선택 &#45;&#45;</option>
                 <option th:each="shoesSize : ${shoesSizeList}" th:value="${shoesSize}" th:text="${shoesSize}" />
             </select>
+        </div>
+
+        <div class="mb-4" th:unless="${#lists.isEmpty(profilePhoto)}">
+            <label for="removePhoto" class="block text-gray-700 text-sm font-bold mb-2">기존 프로필 사진 삭제:</label>
+            <input type="checkbox" id="removePhoto" name="removePhoto" th:field="*{removePhoto}"/>
+        </div>
+
+        <ul>
+            <li th:each="path : ${profilePhoto}">
+                <img th:src="${path}" class="w-20"/>
+            </li>
+        </ul>
+
+        <br/>
+
+        <div class="mb-4">
+            <label for="files" class="block text-gray-700 text-sm font-bold mb-2">프로필 사진 변경:</label>
+            <input type="file" id="files" name="files"
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
         </div>
 
         <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue">

@@ -1,10 +1,10 @@
 package com.ll.hype.domain.member.member.service;
 
 import com.ll.hype.domain.member.member.dto.JoinRequest;
+import com.ll.hype.domain.member.member.dto.ModifyRequest;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.entity.MemberRole;
 import com.ll.hype.domain.member.member.repository.MemberRepository;
-import com.ll.hype.domain.member.member.dto.ModifyRequest;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,9 @@ public class MemberService {
         member.changeToEncodedPassword(passwordEncoder.encode(member.getPassword()));
         member.updateRole(MemberRole.MEMBER);
         memberRepository.save(member);
-        imageBridgeComponent.save(ImageType.MEMBER, member.getId(), files);
+        if (!files.get(0).getOriginalFilename().isBlank()) {
+            imageBridgeComponent.save(ImageType.MEMBER, member.getId(), files);
+        }
     }
 
     public boolean confirmPassword(String password, String passwordConfirm) {
@@ -49,7 +51,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void modify(ModifyRequest modifyRequest, Member member) {
+    public void modify(ModifyRequest modifyRequest, Member member, List<MultipartFile> files) {
         member.modifyProfile(passwordEncoder.encode(modifyRequest.getPassword()),
                         modifyRequest.getNickname(),
                         modifyRequest.getPhoneNumber(),
@@ -57,5 +59,26 @@ public class MemberService {
         );
 
         memberRepository.save(member);
+
+        // 프로필 사진 삭제를 체크하면 동작
+        if (modifyRequest.isRemovePhoto()) {
+            imageBridgeComponent.delete(ImageType.MEMBER, member.getId());
+            return;
+        }
+
+        // 프로필 사진 삭제를 체크하지 않고 파일을 등록한다면 동작
+        if (!files.get(0).getOriginalFilename().isBlank()) {
+            List<String> imageFullPaths = imageBridgeComponent.findAllFullPath(ImageType.MEMBER, member.getId());
+
+            if (!imageFullPaths.isEmpty()) {
+                imageBridgeComponent.delete(ImageType.MEMBER, member.getId());
+            }
+
+            imageBridgeComponent.save(ImageType.MEMBER, member.getId(), files);
+        }
+    }
+
+    public List<String> getProfilePhoto(Long memberId) {
+        return imageBridgeComponent.findAllFullPath(ImageType.MEMBER, memberId);
     }
 }
