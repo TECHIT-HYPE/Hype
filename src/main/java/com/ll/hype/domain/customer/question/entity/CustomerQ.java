@@ -3,6 +3,7 @@ package com.ll.hype.domain.customer.question.entity;
 import com.ll.hype.domain.customer.answer.entity.CustomerA;
 import com.ll.hype.global.jpa.BaseEntity;
 import com.ll.hype.domain.member.member.entity.Member;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,7 +33,7 @@ public class CustomerQ extends BaseEntity {
     private String questionTitle;
     private String questionContent;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<CustomerA> answers = new ArrayList<>();
 
     public void update(CustomerQ customerQ) {

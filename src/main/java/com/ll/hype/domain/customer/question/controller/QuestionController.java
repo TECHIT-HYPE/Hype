@@ -1,8 +1,8 @@
 package com.ll.hype.domain.customer.question.controller;
 
-import com.ll.hype.domain.customer.question.dto.CustomerQRequest;
-import com.ll.hype.domain.customer.question.dto.CustomerQResponse;
-import com.ll.hype.domain.customer.question.service.CsQService;
+import com.ll.hype.domain.customer.question.dto.QuestionRequest;
+import com.ll.hype.domain.customer.question.dto.QuestionResponse;
+import com.ll.hype.domain.customer.question.service.QuestionService;
 import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/cs")
 @Controller
-public class CsQController {
-    private final CsQService csQService;
+public class QuestionController {
+    private final QuestionService csQService;
 
     @GetMapping("/main")
     public String questionMain() {
@@ -28,35 +29,40 @@ public class CsQController {
     }
 
     @GetMapping("/question/create")
-    public String questionSaveForm(CustomerQRequest customerQRequest) {
+    public String questionSaveForm(QuestionRequest questionRequest) {
         return "domain/cs/question/addForm";
     }
 
     @PostMapping("/question/create")
-    public String questionSave(CustomerQRequest customerQRequest, Principal principal) {
+    public String questionSave(QuestionRequest questionRequest,
+                               Principal principal,
+                               @RequestParam(value = "files") List<MultipartFile> files) {
         String email = principal.getName();
-        csQService.questionSave(customerQRequest, email);
+        csQService.questionSave(questionRequest, email, files);
         return "redirect:/cs/main";
     }
 
     @GetMapping("/question/list")
     public String questionList(Model model, Principal principal) {
         String email = principal.getName();
-        List<CustomerQResponse> findByQuestions = csQService.findByMyList(email);
+        List<QuestionResponse> findByQuestions = csQService.findByMyList(email);
         model.addAttribute("questions", findByQuestions);
         return "domain/cs/question/list";
     }
     @GetMapping("/question/update/{id}")
-    public String questionUpdateForm(@PathVariable("id") Long id, Model model, Principal principal,CustomerQRequest customerQRequest) {
+    public String questionUpdateForm(@PathVariable("id") Long id,
+                                     Model model,
+                                     Principal principal,
+                                     QuestionRequest customerQRequest) {
         String email = principal.getName();
-        CustomerQResponse findQuestion = csQService.findOne(id, email);
+        QuestionResponse findQuestion = csQService.findOne(id, email);
         model.addAttribute("question", findQuestion);
         return "domain/cs/question/updateForm";
     }
 
     @PostMapping("/question/update")
     public String questionUpdate(@RequestParam("id") Long id,
-                                 CustomerQRequest customerQRequest,
+                                 QuestionRequest customerQRequest,
                                  Principal principal) {
         String email = principal.getName();
         csQService.questionUpdate(id, customerQRequest,email);
@@ -73,7 +79,7 @@ public class CsQController {
     @GetMapping("/question/detail/{id}")
     public String questionDetail(@PathVariable("id") Long id, Model model, Principal principal) {
         String email = principal.getName();
-        CustomerQResponse findOne = csQService.findOne(id, email);
+        QuestionResponse findOne = csQService.findOne(id, email);
         model.addAttribute("question", findOne);
         return "domain/cs/question/detail";
     }
