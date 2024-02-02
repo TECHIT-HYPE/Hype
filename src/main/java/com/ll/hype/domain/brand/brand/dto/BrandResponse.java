@@ -1,17 +1,13 @@
 package com.ll.hype.domain.brand.brand.dto;
 
 import com.ll.hype.domain.brand.brand.entity.Brand;
-import com.ll.hype.domain.brand.brand.repository.BrandRepository;
 import com.ll.hype.global.enums.StatusCode;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.LastModifiedDate;
 
 @Getter
 @Builder
