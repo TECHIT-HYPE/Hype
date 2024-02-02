@@ -1,5 +1,6 @@
 package com.ll.hype.domain.order.sale.service;
 
+import com.ll.hype.domain.order.buy.repository.BuyRepository;
 import com.ll.hype.domain.order.sale.dto.SaleRequest;
 import com.ll.hype.domain.order.sale.dto.SaleResponse;
 import com.ll.hype.domain.order.sale.entity.Sale;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SaleService {
     private final ShoesService shoesService;
     private final SaleRepository saleRepository;
+    private final BuyRepository buyRepository;
 
     public ShoesResponse findByShoesId(Long shoesId) {
         return shoesService.findById(shoesId);
@@ -33,9 +35,8 @@ public class SaleService {
     }
 
     @Transactional
-    public SaleResponse saveSalesRequest(SaleRequest salesReqRequest) {
-        Sale salesRequest = SaleRequest.toEntity(salesReqRequest);
-        saleRepository.save(salesRequest);
-        return SaleResponse.of(salesRequest);
+    public void saveSaleRequest(SaleRequest saleRequest) {
+        Sale sale = SaleRequest.toEntity(saleRequest);
+        saleRepository.save(sale);
     }
 }
