@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -53,6 +54,7 @@ public class MyPageController {
     @PostMapping("/profile")
     public String modify(@AuthenticationPrincipal UserPrincipal userPrincipal,
                          @Valid ModifyRequest modifyRequest,
+                         @RequestParam(value = "files") List<MultipartFile> files,
                          BindingResult bindingResult,
                          Model model
     ) {
@@ -79,7 +81,7 @@ public class MyPageController {
             return loadAndReturnProfileForm(model);
         }
 
-        memberService.modify(modifyRequest, userPrincipal.getMember());
+        memberService.modify(modifyRequest, userPrincipal.getMember(), files);
 
         return "redirect:/mypage/profile";
     }
