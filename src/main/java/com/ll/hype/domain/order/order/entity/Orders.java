@@ -1,8 +1,7 @@
 package com.ll.hype.domain.order.order.entity;
 
-import com.ll.hype.domain.adress.adress.entity.Address;
-import com.ll.hype.domain.order.orderrequest.entity.OrderRequest;
-import com.ll.hype.domain.order.salesrequest.entity.SalesRequest;
+import com.ll.hype.domain.order.buy.entity.Buy;
+import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -20,10 +19,10 @@ import java.time.LocalDate;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Orders extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
-    private OrderRequest orderRequest; // 구매정보
+    private Buy orderRequest; // 구매정보
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private SalesRequest salesRequest; // 판매정보
+    private Sale salesRequest; // 판매정보
 
     private LocalDate orderDate; // 거래 성사 일자
     private int orderPrice; // 거래 성사 금액
@@ -31,8 +30,7 @@ public class Orders extends BaseEntity {
 
     private String name; // 받는사람 이름
 
-    @OneToOne
-    private Address address; // 받는사람 주소
+    private String address; // 받는사람 주소
 
     private String phoneNumber; // 받는 사람 연락처
 

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html layout:decorate="~{global/layout}">
+<body>
+<div layout:fragment="header" class="sticky bg-white top-0 flex justify-between px-[10px] py-[15px] border-b border-black mx-auto con">
+    <div class="flex items-center">HYPE</div>
+    <div class="flex flex-col justify-center">
+        <div class="flex mb-[20px] space-x-8">
+            <a href="/cs/main" class="text-black hover:text-blue-500">고객센터</a>
+            <a href="/mypage/profile" class="text-black hover:text-blue-500">마이페이지</a>
+            <a href="/mypage/wishlist">관심</a>
+            <div>알림</div>
+            <div sec:authorize="isAnonymous()" >
+                <a th:href="@{/member/login}" class="text-black hover:text-blue-500">로그인</a>
+            </div>
+            <div sec:authorize="isAuthenticated()" >
+                <a th:href="@{/member/logout}" class="text-black hover:text-blue-500">로그아웃</a>
+            </div>
+        </div>
+        <div class="flex space-x-4 justify-end">
+            <a href="/" class="text-black hover:text-blue-500">HOME</a>
+            <a href="/shoes/list" class="text-black hover:text-blue-500">SHOP</a>
+            <div>BOARD</div>
+            <div>SEARCH</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

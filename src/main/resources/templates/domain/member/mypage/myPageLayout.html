@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html layout:decorate="~{global/usrLayout}">
+<body>
+<div layout:fragment="content" >
+    <div class="con mx-auto flex">
+        <div class="ml-10 mr-10 w-[150px]">
+            <div class="text-xl font-bold mt-12 mb-2">마이페이지</div>
+            <a class="block" >쇼핑 정보</a>
+            <a class="block" >구매 내역</a>
+            <a class="block" >판매 내역</a>
+            <a class="block" href="/mypage/wishlist">관심</a>
+
+            <div class="text-xl font-bold mt-6 mb-2">내 정보</div>
+            <a class="block" href="/mypage/profile">로그인 정보</a>
+            <a class="block" href="/mypage/address">주소록</a>
+            <a class="block" >판매 정산 계좌</a>
+        </div>
+
+        <div class="flex-grow mt-8 p-6">
+            <th:block layout:fragment="my_page_content"></th:block>
+        </div>
+    </div>
+</div>
+</body>
+</html>

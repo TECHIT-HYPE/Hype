@@ -14,6 +14,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -28,7 +32,11 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(@Valid JoinRequest joinRequest, BindingResult bindingResult, Model model) {
+    public String join(@Valid JoinRequest joinRequest,
+                       @RequestParam(value = "files") List<MultipartFile> files,
+                       BindingResult bindingResult,
+                       Model model
+    ) {
 
         if (bindingResult.hasErrors()) {
             return loadAndReturnJoinForm(model);
@@ -54,7 +62,7 @@ public class MemberController {
             return loadAndReturnJoinForm(model);
         }
 
-        memberService.join(joinRequest);
+        memberService.join(joinRequest, files);
 
         return "redirect:/member/login";
     }

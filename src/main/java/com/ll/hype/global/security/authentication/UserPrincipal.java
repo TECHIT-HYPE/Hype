@@ -18,9 +18,10 @@ import java.util.List;
 public class UserPrincipal implements UserDetails {
     private Member member;
     private Collection<? extends GrantedAuthority> authorities;
+    private static final String ROLE = "ROLE_";
 
     public static UserPrincipal create(Member member) {
-        GrantedAuthority authority = new SimpleGrantedAuthority(member.getRole().getValue());
+        GrantedAuthority authority = new SimpleGrantedAuthority(ROLE + member.getRole().getValue());
 
         List<GrantedAuthority> authorities = Collections.singletonList(authority);
 
@@ -43,10 +44,6 @@ public class UserPrincipal implements UserDetails {
     @Override
     public String getUsername() {
         return member.getEmail();
-    }
-
-    public String getNickname() {
-        return member.getNickname();
     }
 
     @Override

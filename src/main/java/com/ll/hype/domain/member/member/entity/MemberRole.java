@@ -10,6 +10,7 @@ public enum MemberRole {
     STORE_MANAGER("STORE_MANAGER");
 
     private final String value;
+
     MemberRole(String value) {
         this.value = value;
     }

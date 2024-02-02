@@ -6,12 +6,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails.Address;
 
 import java.time.LocalDate;
 
@@ -58,5 +61,12 @@ public class Member extends BaseEntity {
 
     public void updateRole(MemberRole role) {
         this.role = role;
+    }
+
+    public void modifyProfile(String encodedPassword, String nickname, String phoneNumber, Integer shoesSize) {
+        this.password = encodedPassword;
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
+        this.shoesSize = shoesSize;
     }
 }

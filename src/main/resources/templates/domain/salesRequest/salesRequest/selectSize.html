@@ -1,0 +1,57 @@
+<html layout:decorate="~{global/usrLayout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+    <title>판매 입찰 사이즈 선택</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            justify-items: center;
+        }
+
+        .grid-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="flex justify-center">판매하기</div>
+    <div class="container mx-auto mt-5">
+        <div class="header text-center mb-5">
+            <!--이미지-->
+            <div>
+                <p class="text-l" th:text="${shoes.model}"></p>
+                <p class="text-l" th:text="${shoes.korName}"></p>
+                <p class="text-l" th:text="${shoes.engName}"></p>
+            </div>
+        </div>
+
+        <form th:action method="post">
+            <div class="grid-container">
+                <th:block th:each="shoesSize : ${shoesSizeList}">
+                    <div class="grid-item">
+                        <input type="radio" id="selectedSize" name="selectedSize" th:value="${shoesSize.size}">
+                        <label for="selectedSize">
+                            [[${shoesSize.size}]] <br>
+                            <span th:if="${shoesSize.exists == true}">
+                                [[${shoesSize.price}]] <br>
+                            </span>
+                            <span th:unless="${shoesSize.exists == true}">
+                                판매 입찰
+                            </span>
+                        </label>
+                    </div>
+                </th:block>
+                <br>
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+

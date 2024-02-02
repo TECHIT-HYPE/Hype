@@ -1,0 +1,39 @@
+<html layout:decorate="~{global/adLayout}">
+<head>
+    <title>관리자 브랜드 목록</title>
+</head>
+<body>
+<div layout:fragment="content" class="container mx-auto mt-8 p-4 bg-white rounded shadow-md">
+    <h2 class="text-2xl font-bold mb-4">브랜드 목록</h2>
+
+    <table class="w-full border-collapse border border-gray-300">
+        <thead>
+        <tr>
+            <th class="p-3 border-b">Image</th>
+            <th class="p-3 border-b">Create Date</th>
+            <th class="p-3 border-b">Modify Date</th>
+            <th class="p-3 border-b">Korean Name</th>
+            <th class="p-3 border-b">English Name</th>
+            <th class="p-3 border-b">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="brand : ${brands}" class="hover:bg-gray-100">
+            <td class="p-3 border-b">
+                <ul>
+                    <li th:each="path : ${brand.fullPath}" >
+                        <img th:src="${path}" class="w-20"/>
+                    </li>
+                </ul>
+            </td>
+            <td class="p-3 border-b" th:text="${brand.createDate}"></td>
+            <td class="p-3 border-b" th:text="${brand.modifyDate}"></td>
+            <td class="p-3 border-b" th:text="${brand.korName}"></td>
+            <td class="p-3 border-b" th:text="${brand.engName}"></td>
+            <td class="p-3 border-b" th:text="${brand.status}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

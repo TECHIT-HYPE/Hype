@@ -1,12 +1,15 @@
 package com.ll.hype.domain.shoes.shoes.entity;
 
+import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.enums.StatusCode;
 import com.ll.hype.global.jpa.BaseEntity;
 import com.ll.hype.domain.brand.brand.entity.Brand;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -20,7 +23,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Shoes extends BaseEntity {
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Brand brand;
 
@@ -28,7 +30,7 @@ public class Shoes extends BaseEntity {
     private String engName; // 영문명
     private String model; // 모델명
     private int price; // 발매가
-    private String release; //출시일
+    private LocalDate release; //출시일
 
     @Enumerated(value = EnumType.STRING)
     private ShoesCategory shoesCategory;
@@ -41,6 +43,16 @@ public class Shoes extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private StatusCode status; // 공개 비공개
 
+    @Builder.Default
     @OneToMany(mappedBy = "shoes", cascade = CascadeType.ALL)
     List<ShoesSize> sizes = new ArrayList<>();
+
+    public void updateStatus(StatusCode status) {
+        this.status = status;
+    }
+
+    public void addSize(ShoesSize shoesSize) {
+        shoesSize.addShoes(this);
+        sizes.add(shoesSize);
+    }
 }

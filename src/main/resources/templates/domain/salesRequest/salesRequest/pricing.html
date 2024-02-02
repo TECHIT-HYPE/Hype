@@ -1,0 +1,118 @@
+<html layout:decorate="~{global/usrLayout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+    <title>판매입찰 상세페이지</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="flex justify-center">판매 입찰하기</div>
+        <div class="container mx-auto mt-5">
+            <div class="header text-center mb-5">
+                <!--이미지-->
+                <p class="text-l" th:text="${buyResponse.shoes.model}"></p>
+                <p class="text-l" th:text="${buyResponse.shoes.korName}"></p>
+                <p class="text-l" th:text="${buyResponse.shoes.engName}"></p>
+                <p class="text-l" th:text="${buyResponse.shoesSize.size}"></p>
+                <hr>
+                <table style="display: flex; justify-content: space-around; align-items: center;">
+                    <tr>
+                        <th>즉시 구매가</th>
+                        <th>즉시 판매가</th>
+                    </tr>
+                    <tr>
+<!--                        <td th:text="${saleResponse.price}"></td>-->
+                        <td th:text="${buyResponse.price}"></td>
+                    </tr>
+                </table>
+                <hr>
+                <div>
+                    <form th:action method="post">
+                        <input type="hidden" name="shoesId" value="${shoes.id}">
+                        <input type="hidden" name="selectedSize" value="${shoesSize.size}">
+                        <div>
+                            <div style="display: flex; justify-content: space-around; align-items: center;">
+                                <!-- 판매 입찰 옵션과 입찰 희망 가격 입력 -->
+                                <input style="flex-direction: column;" type="radio" name="saleType" value="bidSale">
+                                판매 입찰
+                                <!-- 즉시 판매 옵션 -->
+                                <input style="flex-direction: column;" type="radio" name="saleType" value="immediateSale">
+                                즉시 판매
+                            </div>
+
+                            <label id="bidPriceInput" style="display: none;">
+                                <label for="bidPrice">판매 희망가</label>
+                                <input id="bidPrice" name="bidPrice" placeholder="판매 희망가 입력"> 원
+                                <p id="bidFee">수수료 -원</p>
+                                <p>배송비 선불 ・ 판매자 부담</p>
+                                <p>입찰 마감기한</p>
+                                <div>
+                                    <p>(마감기한 설정)<br>1일 3일 7일 30일 60일</p>
+                                </div>
+                                <hr>
+                                <p id="finalBidAmount"></p>
+                                <button type="submit">판매 입찰하기</button>
+                            </label>
+
+                            <label id="immediateSale" style="display: none;">
+                                <label for="immediateSalePrice">즉시 판매가</label>
+                                <span id="immediateSalePrice">91,000원</span>
+                                <p id="immediateSaleFee">수수료: -원</p>
+                                <p>배송비 선불 ・ 판매자 부담</p>
+                                <hr>
+                                <p id="finalImmediateAmount"></p>
+                                <button type="submit">즉시 판매하기</button>
+                            </label>
+                        </div>
+                    </form>
+
+                    <script>
+                        // 라디오 버튼 선택에 따라 입찰 희망 가격 입력을 표시하거나 숨깁니다.
+                        document.querySelectorAll('input[name="saleType"]').forEach((radio) => {
+                            radio.addEventListener('change', function() {
+                                var bidPriceInput = document.getElementById('bidPriceInput');
+                                var immediateSale = document.getElementById('immediateSale'); // 즉시 판매 정보의 ID
+
+                                if (this.value === 'bidSale') {
+                                    bidPriceInput.style.display = 'block'; // 입찰 희망 가격 입력 표시
+                                    immediateSale.style.display = 'none'; // 즉시 판매 정보 숨김
+                                } else {
+                                    bidPriceInput.style.display = 'none'; // 입찰 희망 가격 입력 숨김
+                                    immediateSale.style.display = 'block'; // 즉시 판매 정보 표시
+                                }
+                            });
+                        });
+
+                        // 수수료 계산 함수
+                        function calculateFees(price) { return price * 0.055;}
+
+                        // 정산 금액 계산 및 표시 함수
+                        function calculateAndDisplayFinalAmount() {
+                            // 즉시 판매가에서 수수료를 빼고 최종 정산 금액을 계산
+                            var immediatePriceElement = document.getElementById('immediateSalePrice');
+                            var immediatePrice = parseFloat(immediatePriceElement.textContent.replace(/[^0-9.]/g, '')) || 0;
+                            var immediateSaleFee = calculateFees(immediatePrice);
+                            var finalImmediateAmount = immediatePrice - immediateSaleFee;
+                            document.getElementById('immediateSaleFee').textContent = '수수료: ' + immediateSaleFee.toFixed(0) + '원';
+                            document.getElementById('finalImmediateAmount').textContent = '정산금액: ' + finalImmediateAmount.toFixed(0) + '원';
+
+                            // 판매 희망가 입력 필드 이벤트 리스너 설정
+                            var bidPriceInput = document.getElementById('bidPrice');
+                            bidPriceInput.addEventListener('input', function() {
+                                var bidPrice = parseFloat(this.value) || 0;
+                                var bidFee = calculateFees(bidPrice);
+                                var finalBidAmount = bidPrice - bidFee;
+                                document.getElementById('bidFee').textContent = '수수료: ' + bidFee.toFixed(0) + '원';
+                                document.getElementById('finalBidAmount').textContent = '정산금액: ' + finalBidAmount.toFixed(0) + '원';
+                            });
+                        }
+
+                        // 페이지 로드 시 정산 금액 계산 및 표시
+                        window.addEventListener('load', calculateAndDisplayFinalAmount);
+
+                    </script>
+                </div>
+            </div>
+        </div>
+</div>
+</body>
+</html>

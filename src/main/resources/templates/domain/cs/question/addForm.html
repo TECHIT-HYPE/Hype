@@ -1,0 +1,51 @@
+<html layout:decorate="~{global/usrLayout}">
+<head>
+    <title>문의사항 등록</title>
+</head>
+<body>
+<div layout:fragment="content" class="container mx-auto mt-8 p-4 bg-white rounded shadow-md">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+            <h2 class="text-2xl font-semibold mb-6">Add Question</h2>
+            <!-- Thymeleaf 폼 시작 -->
+            <form th:action th:object="${questionRequest}" method="post" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label for="questionTitle" class="block text-sm font-medium text-gray-600">Question Title</label>
+                    <input type="text" id="questionTitle" name="questionTitle" th:field="*{questionTitle}"
+                           class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div class="mb-4">
+                    <label for="questionContent" class="block text-sm font-medium text-gray-600">Question
+                        Content</label>
+                    <textarea id="questionContent" name="questionContent" th:field="*{questionContent}"
+                              class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="questionCategory" class="block text-sm font-medium text-gray-600">Question
+                        Category</label>
+                    <select id="questionCategory" name="questionCategory" th:field="*{questionCategory}"
+                            class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <option value="COMMON">Common</option>
+                        <option value="ETC">Etc</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="files" class="block text-sm font-medium text-gray-600">Question Image</label>
+                    <input type="file" multiple id="files" name="files"
+                           class="mt-1 p-2 block w-full border rounded-md"/>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <button type="submit"
+                            class="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        Save
+                    </button>
+                </div>
+            </form>
+            <!-- Thymeleaf 폼 종료 -->
+        </div>
+    </div>
+</div>
+</body>
+</html>
