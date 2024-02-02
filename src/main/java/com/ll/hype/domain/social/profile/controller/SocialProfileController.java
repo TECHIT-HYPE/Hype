@@ -1,8 +1,10 @@
 package com.ll.hype.domain.social.profile.controller;
 
+import com.ll.hype.domain.member.member.dto.ModifyRequest;
 import com.ll.hype.domain.social.profile.dto.SocialProfileResponse;
 import com.ll.hype.domain.social.profile.service.SocialProfileService;
 import com.ll.hype.global.security.authentication.UserPrincipal;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,7 +40,8 @@ public class SocialProfileController {
         return "/domain/social/social/socialprofile/socialprofile";
     }
     @PostMapping("/{id}")
-    public String updateProfileImage(@PathVariable Long id, @RequestParam("multipartFiles") List<MultipartFile> multipartFiles) {
+    public String updateProfileImage(@PathVariable Long id,
+            @RequestParam(value = "multipartFiles") List<MultipartFile> multipartFiles) {
         socialProfileService.updateProfileImage(id, multipartFiles);
         return "redirect:/social/profile/{id}";
     }

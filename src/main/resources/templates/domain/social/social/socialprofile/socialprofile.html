@@ -30,14 +30,24 @@
 
                 <!-- 사용자가 로그인한 사용자인 경우 -->
                 <div th:if="${profileDto.getEmail() eq #authentication.principal.username}">
-                    <button class="modi" onclick="popup('.modal-info')">프로필 수정</button>
+                    <!-- 파일 업로드 버튼 클릭 시 모달 팝업 호출 -->
+                    <button class="modi" onclick="openPopup()">프로필 수정</button>
+
+                    <!-- 모달 창 -->
+                    <div id="profileModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closePopup()">&times;</span>
+                            <!-- 파일 선택 폼 -->
+                            <form th:action="@{/social/profile/{id}(id=${profileDto.getId()})}" method="post" enctype="multipart/form-data">
+                                <label for="profileImage">프로필 이미지</label>
+                                <input type="file" id="profileImage" name="multipartFiles" required/>
+                                <input type="submit" value="수정"/>
+                            </form>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            <form action="/social/profile/{id}" method="post" enctype="multipart/form-data">
-                <label for="profileImage">프로필 이미지</label>
-                <input type="file" id="profileImage" name="multipartFiles" required/>
-                <input type="submit" value="수정"/>
-            </form>
 
             <!-- 다른 사용자인 경우 -->
             <div th:unless="${profileDto.getEmail() eq #authentication.principal.username}">
@@ -45,7 +55,6 @@
             </div>
         </div>
         <!-- 유저정보 및 사진등록 구독하기 end -->
-
     </div>
 </section>
 

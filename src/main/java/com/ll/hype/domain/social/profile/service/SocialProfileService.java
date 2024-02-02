@@ -56,27 +56,11 @@ public class SocialProfileService {
 
     @Transactional
     public void updateProfileImage(Long memberId, List<MultipartFile> profileImageFiles) {
-        Optional<ImageBridge> byTypeAndTypeId = imageBridgeRepository.findByTypeAndTypeId(ImageType.MEMBER, memberId);
+        List<String> imagePath = imageBridgeComponent.findAllFullPath(ImageType.MEMBER, memberId);
 
-        if (byTypeAndTypeId.isPresent()) {
-            ImageBridge imageBridge = byTypeAndTypeId.get();
-            List<Image> images = imageBridge.getImages();
-
-            // 기존 이미지 삭제
-            for (Image image : images) {
-                imageComponent.delete(image);
-            }
-
-            // 새 이미지 업로드 및 연결
-            for (MultipartFile file : profileImageFiles) {
-                Image image = imageComponent.upload(file, ImageType.MEMBER);
-                image.updateImageBridge(imageBridge);
-                images.add(image);
-            }
-
-            // 이미지 브릿지 업데이트
-            imageBridge.updateImages(images);
-        } else {imageBridgeComponent.save(ImageType.MEMBER, memberId, profileImageFiles);}
+        if (!imagePath.isEmpty()) {
+            imageBridgeComponent.delete(ImageType.MEMBER, memberId);
         }
-
+        imageBridgeComponent.save(ImageType.MEMBER, memberId, profileImageFiles);
+        }
 }
