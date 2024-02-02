@@ -80,7 +80,6 @@ public class NotProd {
         if (memberService.existsByEmail("admin@admin.com")) {
             return;
         }
-
         // ===== 이미지 객체 불러오기 시작 =====
         File profileFile = new File(
                 getClass().getClassLoader().getResource("img/profile.webp").getFile());
@@ -91,6 +90,7 @@ public class NotProd {
         List<MultipartFile> profileFiles = new ArrayList<>();
         profileFiles.add(profileMockMultipartFile);
         // ===== 이미지 객체 불러오기 끝 =====
+
 
         JoinRequest member = JoinRequest.builder()
                 .email("admin@admin.com")
