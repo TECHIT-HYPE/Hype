@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사진 업로드</title>
+
+    <!-- 스타일 -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 60px 0;
+            background-color: white;
+            text-align: center;
+        }
+
+        #file-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            order: 2;
+        }
+
+        #file {
+            display: none;
+        }
+
+        #image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-start; /* 변경된 부분 */
+            order: 1;
+        }
+
+        #image-container img {
+            max-width: 150px; /* 변경된 부분: 원하는 크기로 조정 */
+            height: auto;
+            margin-top: 10px;
+        }
+
+        #text-area {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+            order: 3;
+        }
+
+        #submit-button, #file-container label {
+            background-color: #0095f6;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            order: 4;
+            margin-top: 10px;
+        }
+    </style>
+
+    <!-- 헤더 -->
+    <th:block th:include="/domain/social/social/header.html"></th:block>
+
+    <!-- 추가된 JavaScript 코드 -->
+    <script>
+        function handleFileSelect(input) {
+            var imageContainer = document.getElementById('image-container');
+
+            for (var i = 0; i < input.files.length; i++) {
+                var file = input.files[i];
+                if (file.type.match('image.*')) {
+                    var reader = new FileReader();
+
+                    reader.onload = (function (theFile) {
+                        return function (e) {
+                            // 이미지를 미리보기할 img 엘리먼트 생성
+                            var img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.alt = theFile.name;
+
+                            // 이미지를 컨테이너에 추가
+                            imageContainer.appendChild(img);
+                        };
+                    })(file);
+
+                    // 파일을 읽어오기
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 파일 업로드 부분 -->
+    <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+        <div id="image-container"></div>
+
+        <!-- 이미지 선택 버튼 -->
+        <div id="file-container">
+            <label for="file" style="cursor: pointer;">이미지 선택</label>
+            <input type="file" id="file" name="files" multiple accept="image/*" onchange="handleFileSelect(this)">
+        </div>
+
+        <!-- 본문 작성 부분 -->
+        <textarea id="text-area" placeholder="글을 입력하세요..."></textarea>
+        <button type="submit" id="submit-button">게시</button>
+    </form>
+
+</div>
+
+</body>
+</html>

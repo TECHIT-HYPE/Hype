@@ -62,5 +62,5 @@ public class SocialProfileService {
             imageBridgeComponent.delete(ImageType.MEMBER, memberId);
         }
         imageBridgeComponent.save(ImageType.MEMBER, memberId, profileImageFiles);
-        }
+    }
 }
