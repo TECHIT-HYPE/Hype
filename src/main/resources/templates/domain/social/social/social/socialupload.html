@@ -111,17 +111,17 @@
 <div class="container">
 
     <!-- 파일 업로드 부분 -->
-    <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/social/feed/upload}" method="post" enctype="multipart/form-data">
         <div id="image-container"></div>
 
         <!-- 이미지 선택 버튼 -->
         <div id="file-container">
-            <label for="file" style="cursor: pointer;">이미지 선택</label>
-            <input type="file" id="file" name="files" multiple accept="image/*" onchange="handleFileSelect(this)">
+            <label for="files" style="cursor: pointer;">이미지 선택</label>
+            <input type="file" id="files" name="files" multiple accept="image/*" onchange="handleFileSelect(this)">
         </div>
 
         <!-- 본문 작성 부분 -->
-        <textarea id="text-area" placeholder="글을 입력하세요..."></textarea>
+        <textarea id="text-area" name="content" placeholder="글을 입력하세요..."></textarea>
         <button type="submit" id="submit-button">게시</button>
     </form>
 

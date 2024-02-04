@@ -23,16 +23,16 @@ public class SocialService {
     private final ImageBridgeComponent imageBridgeComponent;
 
     @Transactional
-    public void upload(SocialUploadRequest socialUploadRequest, List<MultipartFile> files, Long memberId) {
-        Social social = toEntity(socialUploadRequest, memberId);
+    public void upload(SocialUploadRequest socialUploadRequest, List<MultipartFile> files, String memberEmail) {
+        Social social = toEntity(socialUploadRequest, memberEmail);
         socialRepository.save(social);
 
         imageBridgeComponent.save(ImageType.SOCIAL, social.getId(), files);
     }
 
-    private Social toEntity(SocialUploadRequest socialUploadRequest, Long memberId) {
-        Optional<Member> socialMember = memberRepository.findById(memberId);
-        Member member = socialMember.orElseThrow(() -> new RuntimeException("Member not found with id: " + memberId));
+    private Social toEntity(SocialUploadRequest socialUploadRequest, String memberEmail) {
+        Optional<Member> socialMember = memberRepository.findByEmail(memberEmail);
+        Member member = socialMember.orElseThrow(() -> new RuntimeException("Member not found with email: " + memberEmail));
 
         return Social.builder()
                 .member(member)
