@@ -22,7 +22,7 @@
                     <p class="kor_name" th:text="${shoes.korName}"></p>
                 </div>
                 <div class="shoes_info">
-                    <table>
+                    <table class="flex flex-col items-center">
                         <tr>
                             <th>최근거래가</th>
                             <th>발매가</th>
@@ -31,6 +31,7 @@
                             <th>색상</th>
                         </tr>
                         <tr>
+                            <td>{최근 거래가}</td>
                             <td th:text="${shoes.price}"></td>
                             <td th:text="${shoes.model}"></td>
                             <td th:text="${shoes.release}"></td>
@@ -44,8 +45,10 @@
                         <input type="hidden" id="shoesId" name="shoesId" th:value="${shoes.id}">
                         <input type="submit" value="구매진행 ||">
                     </form>
-                    <a th:href="@{/sale/select/{id}(id=${shoes.id})}" class="btn">판매 진행</a>
-
+                    <form th:action="@{|/sale/shoes|}" method="post">
+                        <input type="hidden" id="saleShoesId" name="shoesId" th:value="${shoes.id}">
+                        <input type="submit" value="판매 진행 ||">
+                    </form>
                     <!--내 사이즈 가격, 가장 저렴한 사이즈 가격-->
                 </div>
                 <div class="wishlist">
@@ -53,7 +56,7 @@
 
                 </div>
                 <div class="brand_info">
-                    <a class="brand" th:href="@{#}">브랜드 이름
+                    <a class="brand" th:href="@{#}">
                         <p class="brand_eng_name" th:text="${shoes.brand.engName}"></p>
                         <p class="brand_kor_name" th:text="${shoes.brand.korName}"></p>
                     </a>
