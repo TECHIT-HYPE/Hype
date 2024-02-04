@@ -20,4 +20,6 @@ public interface ShoesRepository extends JpaRepository<Shoes, Long> {
             "OR LOWER(s.model) LIKE LOWER(CONCAT('%', :keyword, '%'))"+
             "AND s.status = 'ENABLE'")
     List<Shoes> findByShoesKeyword(String keyword);
+
+
 }

@@ -26,6 +26,8 @@ public class ShoesController {
     public String shoesDetail(@PathVariable("id") long id, Model model){
         ShoesResponse findOne = shoesService.findById(id);
         model.addAttribute("shoes", findOne);
+
+        //즉시 구매/판매가 최근 거래가
         return "domain/shoes/shoes/detail";
     }
 
