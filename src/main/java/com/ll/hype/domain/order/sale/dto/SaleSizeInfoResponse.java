@@ -1,7 +1,6 @@
 package com.ll.hype.domain.order.sale.dto;
 
 import com.ll.hype.domain.brand.brand.entity.Brand;
-import com.ll.hype.domain.order.buy.dto.BuySizeInfoResponse;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesCategory;
 import com.ll.hype.global.enums.Gender;
