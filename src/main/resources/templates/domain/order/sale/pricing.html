@@ -5,14 +5,14 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="flex justify-center">판매 입찰하기</div>
+    <div class="flex justify-center mt-5">판매 입찰하기</div>
         <div class="container mx-auto mt-5">
             <div class="header text-center mb-5">
-                <!--이미지-->
-                <p class="text-l" th:text="${buyResponse.shoes.model}"></p>
-                <p class="text-l" th:text="${buyResponse.shoes.korName}"></p>
-                <p class="text-l" th:text="${buyResponse.shoes.engName}"></p>
-                <p class="text-l" th:text="${buyResponse.shoesSize.size}"></p>
+<!--                &lt;!&ndash;이미지&ndash;&gt;-->
+                <p class="text-l" th:text="${buyShoes.model}"></p>
+                <p class="text-l" th:text="${buyShoes.korName}"></p>
+                <p class="text-l" th:text="${buyShoes.engName}"></p>
+                <p class="text-l" th:text="${size}"></p>
                 <hr>
                 <table style="display: flex; justify-content: space-around; align-items: center;">
                     <tr>
@@ -20,15 +20,15 @@
                         <th>즉시 판매가</th>
                     </tr>
                     <tr>
-<!--                        <td th:text="${saleResponse.price}"></td>-->
-                        <td th:text="${buyResponse.price}"></td>
+                        <td th:text="${saleShoes.sizeMap.get(size)}"></td>
+                        <td th:text="${buyShoes.sizeMap.get(size)}"></td>
                     </tr>
                 </table>
                 <hr>
                 <div>
-                    <form th:action method="post">
-                        <input type="hidden" name="shoesId" value="${shoes.id}">
-                        <input type="hidden" name="selectedSize" value="${shoesSize.size}">
+                    <form th:action="@{|/sale/shoes/sale/create|}" method="post">
+                        <input type="hidden" name="shoesId" th:value="${shoesId}"/>
+                        <input type="hidden" name="size" th:value="${size}"/>
                         <div>
                             <div style="display: flex; justify-content: space-around; align-items: center;">
                                 <!-- 판매 입찰 옵션과 입찰 희망 가격 입력 -->
@@ -41,13 +41,33 @@
 
                             <label id="bidPriceInput" style="display: none;">
                                 <label for="bidPrice">판매 희망가</label>
-                                <input id="bidPrice" name="bidPrice" placeholder="판매 희망가 입력"> 원
+                                <input id="bidPrice" name="price" placeholder="판매 희망가 입력"> 원
                                 <p id="bidFee">수수료 -원</p>
                                 <p>배송비 선불 ・ 판매자 부담</p>
+
                                 <p>입찰 마감기한</p>
-                                <div>
-                                    <p>(마감기한 설정)<br>1일 3일 7일 30일 60일</p>
+                                <div class="flex space-x-4">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" class="form-radio" name="endDate" value="7" checked>
+                                        <span class="ml-2">7일</span>
+                                    </label>
+
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" class="form-radio" name="endDate" value="14">
+                                        <span class="ml-2">14일</span>
+                                    </label>
+
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" class="form-radio" name="endDate" value="21">
+                                        <span class="ml-2">21일</span>
+                                    </label>
+
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" class="form-radio" name="endDate" value="28">
+                                        <span class="ml-2">28일</span>
+                                    </label>
                                 </div>
+
                                 <hr>
                                 <p id="finalBidAmount"></p>
                                 <button type="submit">판매 입찰하기</button>
@@ -55,7 +75,7 @@
 
                             <label id="immediateSale" style="display: none;">
                                 <label for="immediateSalePrice">즉시 판매가</label>
-                                <span id="immediateSalePrice">91,000원</span>
+                                <span id="immediateSalePrice" th:text="${buyShoes.sizeMap.get(size)}"></span>
                                 <p id="immediateSaleFee">수수료: -원</p>
                                 <p>배송비 선불 ・ 판매자 부담</p>
                                 <hr>
@@ -70,14 +90,14 @@
                         document.querySelectorAll('input[name="saleType"]').forEach((radio) => {
                             radio.addEventListener('change', function() {
                                 var bidPriceInput = document.getElementById('bidPriceInput');
-                                var immediateSale = document.getElementById('immediateSale'); // 즉시 판매 정보의 ID
+                                var immediateSale = document.getElementById('immediateSale');
 
                                 if (this.value === 'bidSale') {
-                                    bidPriceInput.style.display = 'block'; // 입찰 희망 가격 입력 표시
-                                    immediateSale.style.display = 'none'; // 즉시 판매 정보 숨김
+                                    bidPriceInput.style.display = 'block';
+                                    immediateSale.style.display = 'none';
                                 } else {
-                                    bidPriceInput.style.display = 'none'; // 입찰 희망 가격 입력 숨김
-                                    immediateSale.style.display = 'block'; // 즉시 판매 정보 표시
+                                    bidPriceInput.style.display = 'none';
+                                    immediateSale.style.display = 'block';
                                 }
                             });
                         });
