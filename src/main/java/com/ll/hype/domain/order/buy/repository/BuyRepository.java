@@ -16,11 +16,11 @@ public interface BuyRepository extends JpaRepository<Buy, Long> {
     List<Buy> findByShoesId(Long id);
 
     @Query("SELECT b FROM Buy b WHERE b.shoes.id = :#{#shoes.id} " +
-            "AND b.status = com.ll.hype.global.enums.Status.BIDDING " +
+            "AND b.status = 'BIDDING' " +
             "AND (b.shoesSize, b.price) IN " +
                 "(SELECT bb.shoesSize, MAX(bb.price) FROM Buy bb " +
                 "WHERE bb.shoes.id = :#{#shoes.id} " +
-                "AND bb.status = com.ll.hype.global.enums.Status.BIDDING " +
+                "AND bb.status = 'BIDDING' " +
                 "GROUP BY bb.shoesSize) " +
             "ORDER BY b.shoesSize.size ASC")
     List<Buy> findHighestPriceByShoesId(Shoes shoes);
