@@ -30,7 +30,7 @@ public class QuestionController {
 
     @GetMapping("/question/create")
     public String questionSaveForm(QuestionRequest questionRequest) {
-        return "domain/cs/question/addForm";
+        return "domain/cs/question/add_form";
     }
 
     @PostMapping("/question/create")
@@ -57,7 +57,7 @@ public class QuestionController {
         String email = principal.getName();
         QuestionResponse findQuestion = csQService.findOne(id, email);
         model.addAttribute("question", findQuestion);
-        return "domain/cs/question/updateForm";
+        return "domain/cs/question/update_form";
     }
 
     @PostMapping("/question/update")

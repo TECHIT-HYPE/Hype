@@ -1,7 +1,9 @@
 package com.ll.hype.domain.order.buy.controller;
 
-import com.ll.hype.domain.order.buy.dto.BuySizeInfoResponse;
-import com.ll.hype.domain.order.buy.dto.CreateBuyRequest;
+import com.ll.hype.domain.order.buy.dto.response.BuyFormResponse;
+import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
+import com.ll.hype.domain.order.buy.dto.response.BuySizeInfoResponse;
+import com.ll.hype.domain.order.buy.dto.request.CreateBuyRequest;
 import com.ll.hype.domain.order.buy.service.BuyService;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.global.security.authentication.UserPrincipal;
@@ -36,9 +38,9 @@ public class BuyController {
     @PostMapping("/shoes")
     public String buyShoesPickSuccess(@RequestParam("shoesId") Long shoesId,
                                       Model model) {
-        BuySizeInfoResponse findBySalesMinPrice = buyService.findByShoesSizeMinPrice(shoesId);
+        BuySizeInfoResponse findBySalesMinPrice = buyService.findByShoesSizeMinPriceAll(shoesId);
         model.addAttribute("shoes", findBySalesMinPrice);
-        return "domain/order/buy/selectSize";
+        return "domain/order/buy/select_size";
     }
 
     // 사이즈 선택 완료 -> 약관 동의 페이지로
@@ -51,32 +53,50 @@ public class BuyController {
         return "domain/order/buy/approve";
     }
 
-    @PostMapping("/shoes/approve")
-    public String buyApproveSuccess(@RequestParam("shoesId") Long shoesId,
-                                    @RequestParam("size") int size,
-                                    CreateBuyRequest buyRequest,
-                                    Model model) {
-        // TODO
-        // 여기에 뭐가 들어가야할까..
-        // shoes 정보가 들어가야한다.
-        // 선택한 size의 가장 낮은 가격의 매물 정보를 가져와야한다. 없으면 0
-        model.addAttribute("shoesId", shoesId);
-        model.addAttribute("size", size);
-        return "domain/order/buy/pricing";
+    // 약관 동의 페이지 -> 구매 입찰 상세페이지
+    @PostMapping("/shoes/bid")
+    public String buyBid(@RequestParam("shoesId") Long shoesId,
+                         @RequestParam("size") int size,
+                         CreateBuyRequest buyRequest,
+                         Model model) {
+
+        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
+        model.addAttribute("data", byShoesSizeMinPriceOne);
+        return "domain/order/buy/bid_pricing";
     }
 
-    @PostMapping("/shoes/buy/create")
-    public String createBuy(CreateBuyRequest buyRequest,
-                            @AuthenticationPrincipal UserPrincipal user,
-                            Model model) {
-        log.info("[BuyController.createBuy] shoesId : " + buyRequest.getShoesId());
-        log.info("[BuyController.createBuy] size : " + buyRequest.getSize());
-        log.info("[BuyController.createBuy] price : " + buyRequest.getPrice());
-        log.info("[BuyController.createBuy] endDate : " + buyRequest.getEndDate());
-        log.info("[BuyController.createBuy] user : " + user.getMember().getId());
+    @PostMapping("/shoes/now")
+    public String buyNow(@RequestParam("shoesId") Long shoesId,
+                         @RequestParam("size") int size,
+                         CreateBuyRequest buyRequest,
+                         Model model) {
 
-        buyService.createBuy(buyRequest, user.getMember());
+        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
+        long round = Math.round(byShoesSizeMinPriceOne.getSale().getPrice() * 0.05);
+        model.addAttribute("data", byShoesSizeMinPriceOne);
+        model.addAttribute("round", round);
+        return "domain/order/buy/now_pricing";
+    }
 
+    // 구매 입찰 상세페이지 -> 구매 입찰 객체 생성
+    @PostMapping("/shoes/buy/bid")
+    public String createBuyBid(CreateBuyRequest buyRequest,
+                               @AuthenticationPrincipal UserPrincipal user,
+                               Model model) {
+        BuyResponse buy = buyService.createBuy(buyRequest, user.getMember());
         return "redirect:/";
+    }
+
+    @PostMapping("/shoes/buy/now")
+    public String createBuyNow(CreateBuyRequest buyRequest,
+                               @AuthenticationPrincipal UserPrincipal user,
+                               Model model) {
+        BuyResponse buy = buyService.createBuy(buyRequest, user.getMember());
+        return "redirect:/";
+    }
+
+    @GetMapping("test")
+    public String test() {
+        return "domain/order/order/ordertest";
     }
 }
