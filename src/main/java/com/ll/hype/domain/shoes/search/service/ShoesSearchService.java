@@ -1,4 +1,4 @@
-package com.ll.hype.domain.shoes.shoes.shoessearch;
+package com.ll.hype.domain.shoes.search.service;
 
 import com.ll.hype.domain.brand.brand.dto.BrandResponse;
 import com.ll.hype.domain.brand.brand.entity.Brand;
