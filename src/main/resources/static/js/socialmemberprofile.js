@@ -26,6 +26,12 @@ function openPopup() {
     modal.style.display = 'block';
 }
 
+// 페이지 로드 시 모달 숨기기
+document.addEventListener("DOMContentLoaded", function() {
+    var modal = document.getElementById('profileModal');
+    modal.style.display = 'none';
+});
+
 // 모달 닫기
 function closePopup() {
     var modal = document.getElementById('profileModal');

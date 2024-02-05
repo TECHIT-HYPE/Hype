@@ -3,6 +3,8 @@ package com.ll.hype.domain.social.profile.service;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.repository.MemberRepository;
 import com.ll.hype.domain.social.profile.dto.SocialProfileResponse;
+import com.ll.hype.domain.social.social.entity.Social;
+import com.ll.hype.domain.social.social.repository.SocialRepository;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.image.component.ImageComponent;
 import com.ll.hype.global.s3.image.image.entity.Image;
@@ -25,23 +27,25 @@ import java.util.Optional;
 public class SocialProfileService {
     @Autowired
     private final MemberRepository memberRepository;
-    @Autowired
-    private final ImageBridgeRepository imageBridgeRepository;
+    private final SocialRepository socialRepository;
     private final ImageBridgeComponent imageBridgeComponent;
-    private final ImageComponent imageComponent;
+
 
     @Transactional
     public SocialProfileResponse findById(Long id) {
         Optional<Member> memberOptional = memberRepository.findById(id);
 
+
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
             String profileImage = getProfileImage(member.getId());
+            List<Social> socialList = socialRepository.findByMemberIdOrderByCreateDateDesc(member.getId());
             SocialProfileResponse socialProfileResponse = SocialProfileResponse.builder()
                     .id(member.getId())
                     .nickname(member.getNickname())
                     .email(member.getEmail())
                     .profileImage(profileImage)
+                    .socials(socialList)
                     .build();
 
             return socialProfileResponse;
