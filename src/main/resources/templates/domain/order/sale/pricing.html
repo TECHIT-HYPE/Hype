@@ -5,7 +5,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="flex justify-center mt-5">판매 입찰하기</div>
+    <div class="flex justify-center mt-5">판매하기</div>
         <div class="container mx-auto mt-5">
             <div class="header text-center mb-5">
 <!--                &lt;!&ndash;이미지&ndash;&gt;-->
@@ -41,7 +41,7 @@
 
                             <label id="bidPriceInput" style="display: none;">
                                 <label for="bidPrice">판매 희망가</label>
-                                <input id="bidPrice" name="price" placeholder="판매 희망가 입력"> 원
+                                <input id="bidPrice" name="price" placeholder="판매 희망가 입력" type="number" min="immediateSalePrice"> 원
                                 <p id="bidFee">수수료 -원</p>
                                 <p>배송비 선불 ・ 판매자 부담</p>
 
@@ -101,6 +101,27 @@
                                 }
                             });
                         });
+                        // 판매 희망가 > 즉시 판매가
+                        document.getElementById('bidPrice').addEventListener('input', function() { // bidPrice 입력 필드에 값이 입력될 때 마다 실행
+                            var bidPrice = parseFloat(this.value) || 0;
+                            var immediateSalePrice = parseFloat(document.getElementById('immediateSalePrice').textContent) || 0;
+
+                            if (bidPrice <= immediateSalePrice) {
+                                alert('판매 희망가는 즉시 판매가보다 높아야 합니다.');
+                                this.value = immediateSalePrice + 1; // 최소 판매 희망가 자동 설정
+                            }
+                        });
+
+                        // document.querySelector('form').addEventListener('submit', function(event) {
+                        //     var bidPrice = parseFloat(document.getElementById('bidPrice').value) || 0;
+                        //     var immediateSalePrice = parseFloat(document.getElementById('immediateSalePrice').textContent) || 0;
+                        //
+                        //     if (bidPrice <= immediateSalePrice) {
+                        //         alert('판매 희망가는 즉시 판매가보다 높아야 합니다.');
+                        //         event.preventDefault(); // 폼 제출 방지
+                        //     }
+                        // });
+
 
                         // 수수료 계산 함수
                         function calculateFees(price) { return price * 0.055;}
