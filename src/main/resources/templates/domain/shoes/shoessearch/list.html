@@ -1,42 +1,43 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html layout:decorate="~{global/usrLayout}">
 <head>
-    <meta charset="UTF-8">
     <title>신발 목록</title>
 </head>
-<body>
-
-<h2>신발 목록</h2>
+<body layout:fragment="content">
+<div class="container mx-auto mt-8">
+    <h1 class="text-3xl font-bold mb-4">신발 목록</h1>
 
 <!-- 검색 결과가 있을 경우에만 표시 -->
 <!--<div th:if="${not #lists.isEmpty(shoes)}">-->
-    <table border="1">
-        <thead>
-        <tr>
-            <th>신발 한글 이름</th>
-            <th>신발 영어 이름</th>
-            <th>브랜드 한글 이름</th>
-            <th>브랜드 영어 이름</th>
-            <!-- 기타 필요한 컬럼들을 추가하세요 -->
-        </tr>
-        </thead>
-        <tbody>
-        <!-- 검색 결과를 반복문을 사용하여 표시 -->
-        <tr th:each="shoes : ${data.shoes}">
-            <td th:text="${shoes.korName}"></td>
-            <td th:text="${shoes.engName}"></td>
-            <td th:text="${shoes.model}"></td>
-            <td th:text="${shoes.brand.korName}"></td>
-            <td th:text="${shoes.brand.engName}"></td>
-            <!--            // 여기서 검색 할 목록..? 아무튼 shoesResponse에서 확인하기-->
-            <!-- 기타 필요한 컬럼들을 추가하세요 -->
-        </tr>
-        </tbody>
-    </table>
+
+    <table class="min-w-full border border-gray-300">
+<!--<table border="1">-->
+    <thead>
+    <tr>
+        <th class="py-2 px-4 border-b">신발 한글 이름 </th>
+        <th class="py-2 px-4 border-b">신발 영어 이름</th>
+        <th class="py-2 px-4 border-b">브랜드 한글 이름</th>
+        <th class="py-2 px-4 border-b">브랜드 영어 이름</th>
+<!--        <th>신발 한글 이름</th>-->
+<!--        <th>신발 영어 이름</th>-->
+<!--        <th>브랜드 한글 이름</th>-->
+<!--        <th>브랜드 영어 이름</th>-->
+        <!-- 기타 필요한 컬럼들을 추가하세요 -->
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 검색 결과를 반복문을 사용하여 표시 -->
+    <tr th:each="shoes : ${data.shoes}">
+        <td class="py-2 px-4 border-b" th:text="${shoes.korName}"></td>
+        <td class="py-2 px-4 border-b" th:text="${shoes.engName}"></td>
+        <td class="py-2 px-4 border-b" th:text="${shoes.brand.korName}"></td>
+        <td class="py-2 px-4 border-b" th:text="${shoes.brand.engName}"></td>
+        <!--            // 여기서 검색 할 목록..? 아무튼 shoesResponse에서 확인하기-->
+    </tr>
+    </tbody>
+</table>
 
 <br/><br/>
-
-<h2>브랜드 목록</h2>
+    <h2 class="text-3xl font-bold mb-4">브랜드 목록</h2>
 <table class="w-full border-collapse border border-gray-300">
     <thead>
     <tr>

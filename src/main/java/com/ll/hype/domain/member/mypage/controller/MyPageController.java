@@ -4,9 +4,9 @@ import com.ll.hype.domain.address.address.dto.AddressRequest;
 import com.ll.hype.domain.address.address.dto.AddressResponse;
 import com.ll.hype.domain.address.address.entity.Address;
 import com.ll.hype.domain.address.address.service.AddressService;
+import com.ll.hype.domain.member.member.dto.ModifyRequest;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.service.MemberService;
-import com.ll.hype.domain.member.member.dto.ModifyRequest;
 import com.ll.hype.domain.wishlist.wishlist.dto.MyWishlistDto;
 import com.ll.hype.domain.wishlist.wishlist.entity.Wishlist;
 import com.ll.hype.domain.wishlist.wishlist.service.WishlistService;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -47,12 +48,16 @@ public class MyPageController {
         modifyRequest.setGender(member.getGender());
         modifyRequest.setShoesSize(member.getShoesSize());
 
+        List<String> profilePhoto = memberService.getProfilePhoto(member.getId());
+
+        model.addAttribute("profilePhoto", profilePhoto);
         return loadAndReturnProfileForm(model);
     }
 
     @PostMapping("/profile")
     public String modify(@AuthenticationPrincipal UserPrincipal userPrincipal,
                          @Valid ModifyRequest modifyRequest,
+                         @RequestParam(value = "files") List<MultipartFile> files,
                          BindingResult bindingResult,
                          Model model
     ) {
@@ -79,7 +84,7 @@ public class MyPageController {
             return loadAndReturnProfileForm(model);
         }
 
-        memberService.modify(modifyRequest, userPrincipal.getMember());
+        memberService.modify(modifyRequest, userPrincipal.getMember(), files);
 
         return "redirect:/mypage/profile";
     }
