@@ -1,7 +1,9 @@
 package com.ll.hype.domain.social.social.controller;
 
+import com.ll.hype.domain.social.social.dto.SocialDetailResponse;
 import com.ll.hype.domain.social.social.dto.SocialUploadRequest;
-import com.ll.hype.domain.social.social.service.SocialService;
+import com.ll.hype.domain.social.social.service.SocialDetailService;
+import com.ll.hype.domain.social.social.service.SocialUploadService;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -19,12 +20,21 @@ import java.util.List;
 @RequestMapping("/social/feed")
 public class socialController {
     @Autowired
-    private SocialService socialService;
+    private SocialUploadService socialUploadService;
+    @Autowired
+    private SocialDetailService socialDetailService;
 
     @GetMapping("")
-    public String getFeed() {
+    public String uploadFeed() {
         return "/domain/social/social/social/socialupload";
     }
+
+    @GetMapping("/{id}")
+    public String getFeedById(@PathVariable Long id, Model model, UserPrincipal userPrincipal) {
+        SocialDetailResponse socialDetailResponse = socialDetailService.findSocial(id);
+
+        model.addAttribute("detailDto", socialDetailResponse);
+        return "/domain/social/social/social/socialdetail";}
 
     @PostMapping("/upload")
     public String uploadSocial(@RequestParam("content") String content,
@@ -37,7 +47,7 @@ public class socialController {
 
         String memberEmail = userPrincipal.getUsername();
         Long principalId = userPrincipal.getMember().getId();
-        socialService.upload(socialUploadRequest, files, memberEmail);
+        socialUploadService.upload(socialUploadRequest, files, memberEmail);
 
         return "redirect:/social/profile/%s".formatted(principalId);
     }

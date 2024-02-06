@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail Page</title>
+    <!-- Add your CSS imports here -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
+    <style>
+        .slick-slide {
+            position: relative;
+            width: 400px;
+            height: 500px; /* 이미지의 고정 높이 설정 */
+        }
+
+        .slick-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 이미지가 잘리지 않고 전체가 보이도록 설정 */
+        }
+
+        .post-images-slider {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .post-images-slider .slick-list,
+        .post-images-slider .slick-track {
+            height: 100%; /* 이미지 박스의 높이를 자식 요소로부터 상속 */
+        }
+
+        .post-images-slider .slick-slide div {
+            height: 100%; /* 이미지 박스의 높이를 자식 요소로부터 상속 */
+        }
+
+        .post-images-slider .slick-slide img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain; /* 이미지가 잘리지 않고 전체가 보이도록 설정 */
+        }
+    </style>
+</head>
+<body>
+<header th:include="/domain/social/social/header.html"></header>
+
+<main class="main">
+    <section class="container">
+        <article class="story-list">
+            <div class="story-list__item">
+                <div class="sl__item__header">
+                    <div>
+                        <img class="profile-image" th:src="@{${detailDto.getProfileImage()}}"
+                             onerror="this.src='https://kr.object.ncloudstorage.com/hypeimagebucket/SOCIAL/person.jpeg'" />
+                    </div>
+                    <div th:text="${detailDto.getMember().getNickname()}"></div>
+                </div>
+
+                <div class="sl__item__img">
+                    <!-- Post Images Slider -->
+                    <div class="post-images-slider">
+                        <!-- Iterate through postImages and display each image -->
+                        <th:block th:each="postImage : ${detailDto.postImages}">
+                            <div class="slick-slide">
+                                <div>
+                                    <img th:src="@{${postImage}}" alt="Post Image" />
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+
+                <div class="sl__item__contents">
+                    <!-- <div class="sl__item__contents__icon">
+                            <button>
+                                <i th:classappend="${detailDto.likeState} ? 'fas fa-heart active' : 'far fa-heart'"
+                                   th:id="'LikeIcon-' + ${detailDto.imageId}" th:onclick="'toggleLike(' + ${detailDto.imageId} + ')"></i>
+                            </button>
+                        </div>
+
+                        <span class="like"><b th:id="'LikeCount-' + ${detailDto.imageId}"
+                                              th:text="${detailDto.likeCount}">0</b>likes</span>-->
+
+                    <div class="sl__item__contents__content">
+                        <p th:text="${detailDto.getContent()}"></p>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+    // Initialize Slick Slider
+    $(document).ready(function(){
+        $('.post-images-slider').slick({
+            dots: true,
+            infinite: true,
+            speed: 300,
+            slidesToShow: 1,
+            adaptiveHeight: true
+        });
+    });
+</script>
+<script th:src="@{/js/detail.js}"></script>
+</body>
+</html>
+

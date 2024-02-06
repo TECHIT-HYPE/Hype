@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class SocialService {
+public class SocialUploadService {
     private final SocialRepository socialRepository;
     private final MemberRepository memberRepository;
     private final ImageBridgeComponent imageBridgeComponent;
