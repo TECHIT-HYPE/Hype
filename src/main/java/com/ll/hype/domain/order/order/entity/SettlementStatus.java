@@ -1,6 +1,7 @@
 package com.ll.hype.domain.order.order.entity;
 
 public enum SettlementStatus {
+    WAIT_PAYMENT("WAIT_PAYMENT"),
     COMPLETE_PAYMENT("COMPLETE_PAYMENT"), // 결제 완료
     CANCEL_PAYMENT("CANCEL_PAYMENT"), // 결제 취소
     INCOMPLETE_DEPOSIT("INCOMPLETE_DEPOSIT"), // 미입금

@@ -37,3 +37,4 @@ out/
 .vscode/
 *.db
 medium_dev.mv.db
+application-secret.yml

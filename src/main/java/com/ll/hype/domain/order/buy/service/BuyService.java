@@ -1,9 +1,12 @@
 package com.ll.hype.domain.order.buy.service;
 
+import com.ll.hype.domain.address.address.entity.Address;
+import com.ll.hype.domain.address.address.repository.AddressRepository;
 import com.ll.hype.domain.member.member.entity.Member;
-import com.ll.hype.domain.order.buy.dto.CreateBuyRequest;
-import com.ll.hype.domain.order.buy.dto.BuyResponse;
-import com.ll.hype.domain.order.buy.dto.BuySizeInfoResponse;
+import com.ll.hype.domain.order.buy.dto.response.BuyFormResponse;
+import com.ll.hype.domain.order.buy.dto.request.CreateBuyRequest;
+import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
+import com.ll.hype.domain.order.buy.dto.response.BuySizeInfoResponse;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
 import com.ll.hype.domain.order.order.repository.OrderRepository;
@@ -14,7 +17,6 @@ import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesSizeRepository;
-import com.ll.hype.domain.shoes.shoes.service.ShoesService;
 import com.ll.hype.global.enums.Status;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
@@ -40,6 +42,7 @@ public class BuyService {
 
     private final ShoesRepository shoesRepository;
     private final ShoesSizeRepository shoesSizeRepository;
+    private final AddressRepository addressRepository;
     private final ImageBridgeComponent imageBridgeComponent;
 
 
@@ -65,7 +68,7 @@ public class BuyService {
         return orderRequestList;
     }
 
-    public BuySizeInfoResponse findByShoesSizeMinPrice(Long id) {
+    public BuySizeInfoResponse findByShoesSizeMinPriceAll(Long id) {
         Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
         List<Sale> findByMinPrice = saleRepository.findLowestPriceByShoesId(shoes);
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
@@ -83,6 +86,15 @@ public class BuyService {
         return BuySizeInfoResponse.of(shoes, sizeMap, fullPath);
     }
 
+    public BuyFormResponse findByShoesSizeMinPriceOne(Long id, int size) {
+        Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
+        Sale findByMinPrice = saleRepository.findLowestPriceSale(shoes, size);
+        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES,
+                findByMinPrice.getShoes().getId());
+
+        return BuyFormResponse.of(findByMinPrice, fullPath);
+    }
+
     public BuyResponse createBuy(CreateBuyRequest buyRequest, Member member) {
         Shoes shoes = shoesRepository.findById(buyRequest.getShoesId())
                 .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
@@ -90,11 +102,21 @@ public class BuyService {
         ShoesSize shoesSize = shoesSizeRepository.findByShoesAndSize(shoes, buyRequest.getSize())
                 .orElseThrow(() -> new IllegalArgumentException("조회된 사이즈 정보가 없습니다."));
 
+        Address address = Address.builder()
+                .address(buyRequest.getAddress())
+                .postcode(buyRequest.getPostCode())
+                .detailAddress(buyRequest.getDetailAddress())
+                .extraAddress(buyRequest.getExtraAddress())
+                .build();
+
+        addressRepository.save(address);
+
         Buy buy = Buy.builder()
                 .shoes(shoes)
                 .shoesSize(shoesSize)
                 .member(member)
                 .price(buyRequest.getPrice())
+                .address(address.getFullAddress())
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusDays(buyRequest.getEndDate()))
                 .status(Status.BIDDING)

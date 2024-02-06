@@ -1,4 +1,4 @@
-package com.ll.hype.domain.order.buy.dto;
+package com.ll.hype.domain.order.buy.dto.response;
 
 import com.ll.hype.domain.brand.brand.entity.Brand;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
@@ -7,11 +7,9 @@ import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.enums.StatusCode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

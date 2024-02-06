@@ -8,7 +8,7 @@
     <div class="flex justify-center">구매동의</div>
     <div class="container mx-auto mt-5">
         <div>
-            <form th:action="@{|/buy/shoes/approve|}" method="post">
+            <form th:action="@{|/buy/shoes/bid|}" method="post">
                 <input type="hidden" name="shoesId" th:value="${shoesId}"/>
                 <input type="hidden" name="size" th:value="${size}"/>
                 <div>
