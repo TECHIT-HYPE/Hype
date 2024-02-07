@@ -19,6 +19,9 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Orders extends BaseEntity {
+    @Comment("토스페이먼츠 오더 고유 값")
+    private String tossId;
+
     @Comment("구매정보")
     @ManyToOne(fetch = FetchType.LAZY)
     private Buy buy;
@@ -47,9 +50,13 @@ public class Orders extends BaseEntity {
 
     @Comment("거래 상태")
     @Enumerated(value = EnumType.STRING)
-    private OrderStatus status; // 거래완료, 거래취소, 반품 진행 중, 반품완료, 거래중
+    private OrderStatus status;
 
     @Comment("정산상태")
     @Enumerated(value = EnumType.STRING)
-    private PaymentStatus settlementStatus; // 결제대기(사용자) ,결제완료(사용자), 결제취소(사용자), 미입금(관리자), 입금(관리자)
+    private PaymentStatus paymentStatus;
+
+    public void createTossId() {
+        tossId = super.getId().toString() +"-"+ this.orderDate.toString();
+    }
 }
