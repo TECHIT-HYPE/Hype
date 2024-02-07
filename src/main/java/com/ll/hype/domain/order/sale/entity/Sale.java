@@ -51,4 +51,8 @@ public class Sale extends BaseEntity {
 
     @Comment("환불 계좌")
     private String account; // ex) 신한은행 1002-123455-5555--88, 판매요청에만 컬럼 존재
+
+    public void updateStatus(Status status) {
+        this.status = status;
+    }
 }
