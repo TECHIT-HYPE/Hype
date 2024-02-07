@@ -37,4 +37,6 @@ public class ModifyRequest {
     private Gender gender;
 
     private Integer shoesSize; // 회원 신발 사이즈
+
+    private boolean removePhoto; // 프로필 사진 제거
 }
