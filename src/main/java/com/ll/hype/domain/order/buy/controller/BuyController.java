@@ -5,6 +5,7 @@ import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuySizeInfoResponse;
 import com.ll.hype.domain.order.buy.dto.request.CreateBuyRequest;
 import com.ll.hype.domain.order.buy.service.BuyService;
+import com.ll.hype.domain.order.order.dto.response.OrderBuyResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -83,7 +84,7 @@ public class BuyController {
     public String createBuyBid(CreateBuyRequest buyRequest,
                                @AuthenticationPrincipal UserPrincipal user,
                                Model model) {
-        BuyResponse buy = buyService.createBuy(buyRequest, user.getMember());
+        BuyResponse buy = buyService.createBuyBid(buyRequest, user.getMember());
         return "redirect:/";
     }
 
@@ -91,12 +92,8 @@ public class BuyController {
     public String createBuyNow(CreateBuyRequest buyRequest,
                                @AuthenticationPrincipal UserPrincipal user,
                                Model model) {
-        BuyResponse buy = buyService.createBuy(buyRequest, user.getMember());
-        return "redirect:/";
-    }
-
-    @GetMapping("test")
-    public String test() {
-        return "domain/order/order/ordertest";
+        OrderBuyResponse order = buyService.createBuyNow(buyRequest, user.getMember());
+        model.addAttribute("order", order);
+        return "domain/order/order/order_payment";
     }
 }

@@ -27,7 +27,7 @@ public class BuyResponse {
     private Long price;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String address;
+    private String receiverAddress;
     private Status status;
 
     public static BuyResponse of(Buy buy) {
@@ -41,7 +41,7 @@ public class BuyResponse {
                 .price(buy.getPrice())
                 .startDate(buy.getStartDate())
                 .endDate(buy.getEndDate())
-                .address(buy.getAddress())
+                .receiverAddress(buy.getReceiverAddress())
                 .status(buy.getStatus())
                 .build();
     }

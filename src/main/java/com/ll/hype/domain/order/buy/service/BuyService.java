@@ -9,6 +9,10 @@ import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuySizeInfoResponse;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
+import com.ll.hype.domain.order.order.dto.response.OrderBuyResponse;
+import com.ll.hype.domain.order.order.entity.OrderStatus;
+import com.ll.hype.domain.order.order.entity.Orders;
+import com.ll.hype.domain.order.order.entity.PaymentStatus;
 import com.ll.hype.domain.order.order.repository.OrderRepository;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.domain.order.sale.repository.SaleRepository;
@@ -38,12 +42,13 @@ import org.springframework.stereotype.Service;
 public class BuyService {
     private final BuyRepository buyRepository;
     private final SaleRepository saleRepository;
-    private final OrderRepository orderRepository;
 
     private final ShoesRepository shoesRepository;
     private final ShoesSizeRepository shoesSizeRepository;
-    private final AddressRepository addressRepository;
     private final ImageBridgeComponent imageBridgeComponent;
+
+    private final OrderRepository orderRepository;
+    private final AddressRepository addressRepository;
 
 
     public ShoesResponse findByShoesId(Long shoesId) {
@@ -95,7 +100,8 @@ public class BuyService {
         return BuyFormResponse.of(findByMinPrice, fullPath);
     }
 
-    public BuyResponse createBuy(CreateBuyRequest buyRequest, Member member) {
+    // 구매 입찰
+    public BuyResponse createBuyBid(CreateBuyRequest buyRequest, Member member) {
         Shoes shoes = shoesRepository.findById(buyRequest.getShoesId())
                 .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
 
@@ -109,22 +115,84 @@ public class BuyService {
                 .extraAddress(buyRequest.getExtraAddress())
                 .build();
 
-        addressRepository.save(address);
-
         Buy buy = Buy.builder()
                 .shoes(shoes)
                 .shoesSize(shoesSize)
                 .member(member)
                 .price(buyRequest.getPrice())
-                .address(address.getFullAddress())
+                .receiverName(buyRequest.getReceiverName())
+                .receiverPhoneNumber(buyRequest.getReceiverPhoneNumber())
+                .receiverAddress(address.getFullAddress())
                 .startDate(LocalDate.now())
-                .endDate(LocalDate.now().plusDays(buyRequest.getEndDate()))
+                .endDate(LocalDate.now())
                 .status(Status.BIDDING)
                 .build();
 
         buyRepository.save(buy);
 
         return BuyResponse.of(buy);
+    }
+
+    // 즉시 구매
+    public OrderBuyResponse createBuyNow(CreateBuyRequest buyRequest, Member member) {
+        Shoes shoes = shoesRepository.findById(buyRequest.getShoesId())
+                .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
+
+        ShoesSize shoesSize = shoesSizeRepository.findByShoesAndSize(shoes, buyRequest.getSize())
+                .orElseThrow(() -> new IllegalArgumentException("조회된 사이즈 정보가 없습니다."));
+
+        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
+
+        Address address = Address.builder()
+                .address(buyRequest.getAddress())
+                .postcode(buyRequest.getPostCode())
+                .detailAddress(buyRequest.getDetailAddress())
+                .extraAddress(buyRequest.getExtraAddress())
+                .build();
+
+        Buy buy = Buy.builder()
+                .shoes(shoes)
+                .shoesSize(shoesSize)
+                .member(member)
+                .price(buyRequest.getPrice())
+                .receiverName(buyRequest.getReceiverName())
+                .receiverPhoneNumber(buyRequest.getReceiverPhoneNumber())
+                .receiverAddress(address.getFullAddress())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now())
+                .status(Status.BIDDING)
+                .build();
+
+        buyRepository.save(buy);
+
+        Sale sale = saleRepository.findLowestPriceSale(shoes, buyRequest.getSize());
+
+        log.info("[BuyService.now] sale price : " + sale.getPrice());
+        log.info("[BuyService.now] buy price : " + buy.getPrice());
+        if (!buy.getPrice().equals(sale.getPrice())) {
+            throw new IllegalArgumentException("거래 성사 금액이 일치하지 않습니다.");
+        }
+
+        Orders order = Orders.builder()
+                .buy(buy)
+                .sale(sale)
+                .orderDate(LocalDate.now())
+                .orderPrice(buy.getPrice())
+                .receiverName(buy.getReceiverName())
+                .receiverPhoneNumber(buy.getReceiverPhoneNumber())
+                .receiverAddress(buy.getReceiverAddress())
+                .status(OrderStatus.TRADING)
+                .paymentStatus(PaymentStatus.WAIT_PAYMENT)
+                .build();
+
+        log.info("[BuyService.now] orderPrice : " + order.getOrderPrice());
+        orderRepository.save(order);
+
+        // TODO
+        // 더티체킹 안됨
+        order.createTossId();
+
+        return OrderBuyResponse.of(order, fullPath);
     }
 
     //신발 사이즈 별로 그룹화, 그룹 내 높은가격순, 입찰순으로 정렬

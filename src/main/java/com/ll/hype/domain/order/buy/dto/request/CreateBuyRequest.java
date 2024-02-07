@@ -12,6 +12,9 @@ public class CreateBuyRequest {
     private Long price;
     private int endDate;
 
+    private String receiverName;
+    private Long receiverPhoneNumber;
+
     private String postCode;
     private String address;
     private String detailAddress;
