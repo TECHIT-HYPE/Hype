@@ -6,9 +6,85 @@
     <title>프로필 페이지</title>
     <!-- 다른 헤더 설정 -->
     <th:block th:include="/domain/social/social/header.html"></th:block>
-</head>
-<body>
 
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 800px;
+            margin: auto;
+            padding-top: 30px;
+            padding-bottom: 20px;
+            background-color: transparent;
+            margin-bottom: 30px;
+            height: 300px;
+        }
+
+        .profileContainer {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .profile-left {
+            width: 100%;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+        }
+
+        .profile-right {
+            margin-left: 20px;
+        }
+
+        .name-group {
+            text-align: center;
+        }
+
+        .user-posts {
+            display: grid;
+            grid-template-columns: repeat(3, calc(33.33% - 20px)); /* 3등분하고 간격을 뺀 크기로 설정 */
+            gap: 20px; /* 조절 가능한 여백 값 */
+            width: 70%;
+            margin: auto;
+            overflow-y: auto; /* 스크롤 가능하도록 설정 */
+            background-color: #f5f5f5;
+            height: auto; /* 높이를 자동으로 조절 */
+        }
+
+        .post-item {
+            width: 100%; /* 각 이미지가 부모 요소를 100% 채우도록 설정 */
+            padding-bottom: 100%; /* 이미지를 정사각형으로 만들기 위해 높이를 너비와 동일하게 설정 */
+            position: relative; /* 상대 위치 설정 */
+        }
+
+        .post-image {
+            position: absolute;
+            width: 100%; /* 이미지가 부모 요소에 꽉 차도록 설정 */
+            height: 100%; /* 이미지가 부모 요소에 꽉 차도록 설정 */
+            object-fit: cover; /* 이미지를 부모 요소에 맞게 잘라서 표시 */
+        }
+    </style>
+</head>
+
+<body>
 <!-- 프로필 섹션 -->
 <section class="profile">
     <!-- 유저정보 컨테이너 -->
@@ -17,13 +93,8 @@
         <!-- 유저이미지 -->
         <div class="profile-left">
             <div class="profile-img-wrap story-border" th:if="${profileDto.getEmail() eq #authentication.principal.username}">
-                <!-- 이미지 및 파일 업로드 폼 -->
-                <form id="userProfileImageForm">
-                    <input type="file" name="profileImageFile" style="display: none;" id="userProfileImageInput"/>
-                </form>
-
                 <!-- 프로필 이미지 -->
-                <img class="profile-image" th:src="${profileDto.profileImage != null ? profileDto.profileImage : 'https://kr.object.ncloudstorage.com/hypeimagebucket/SOCIAL/person.jpeg'}"/>
+                <img class="profile-image" th:src="${profileDto.getProfileImage() != null ? profileDto.getProfileImage() : 'https://kr.object.ncloudstorage.com/hypeimagebucket/SOCIAL/person.jpeg'}"/>
             </div>
         </div>
         <!-- 유저이미지 end -->
@@ -31,57 +102,56 @@
         <!-- 유저정보 및 사진등록 구독하기 -->
         <div class="profile-right">
             <div class="name-group">
-                <h2 th:text="${profileDto.getNickname()}"></h2>-->
+                <h2 th:text="${profileDto.getNickname()}"></h2>
 
                 <!-- 사용자가 로그인한 사용자인 경우 -->
                 <div th:if="${profileDto.getEmail() eq #authentication.principal.username}">
-                    <button class="cta" onclick="location.href='/image/upload'">사진등록</button>
-                    <button class="modi" onclick="popup('.modal-info')">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                </div>
+                    <!-- 파일 업로드 버튼 클릭 시 모달 팝업 호출 -->
+                    <button class="modi" onclick="openPopup()">프로필 수정</button>
 
-                <!-- 다른 사용자인 경우 -->
-                <div th:unless="${profileDto.getEmail() eq #authentication.principal.username}">
-                    <button class="cta" th:onclick="'toggleSubscribe(' + ${profileDto.id} + ', this)'"></button>
-<!--                            th:text="${profileDto.subscribed ? '구독취소' : '구독하기'}"></button>-->
+                    <!-- 모달 창 -->
+                    <div id="profileModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closePopup()">&times;</span>
+                            <!-- 파일 선택 폼 -->
+                            <form th:action="@{/social/profile/{id}(id=${profileDto.getId()})}" method="post" enctype="multipart/form-data">
+                                <label for="profileImage">프로필 이미지</label>
+                                <input type="file" id="profileImage" name="multipartFiles" required/>
+                                <input type="submit" value="수정"/>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="subscribe">
-                <ul>
-                    <li><a href=""> 게시물<span></span></a></li>
-<!--                    <li><a href="javascript:subscribeInfoModalOpen(${profileDto.id});"> 구독정보<span></span></a></li>-->
-                </ul>
-            </div>
-            <div class="state">
-<!--                <h4 th:text="${profileDto.bio}"></h4>-->
-<!--                <h4 th:text="${profileDto.website}"></h4>-->
+            <!-- 다른 사용자인 경우 -->
+            <div th:unless="${profileDto.getEmail() eq #authentication.principal.username}">
+                <button class="cta" th:onclick="'toggleSubscribe(' + ${profileDto.id} + ', this)'"></button>
             </div>
         </div>
         <!-- 유저정보 및 사진등록 구독하기 end -->
-
     </div>
 </section>
 
-<!-- 로그아웃, 회원정보변경 모달 -->
-<!-- 해당 부분 제거 -->
-<!-- 로그아웃, 회원정보변경 모달 end -->
-
-
-
-<!--프로필사진 바꾸기 모달end-->
-
-
-
-
+<!-- 사용자의 게시물 부분 추가 -->
+<section class="user-posts">
+    <!-- 각 게시물 아이템 순회 -->
+    <div th:each="social : ${profileDto.getSocials()}" class="post-item">
+        <!-- 이미지 경로 리스트 가져오기 -->
+        <th:block th:with="imagePaths=${imageBridgeComponent.findOneFullPath('SOCIAL', social.getId())}">
+            <!-- 이미지 경로 리스트가 비어있지 않으면 이미지 출력 -->
+            <th:block th:if="${#lists.size(imagePaths) > 0}">
+                <!-- 이미지를 클릭하면 해당 게시물로 이동하도록 설정 -->
+                <a th:href="@{/social/feed/{id}(id=${social.getId()})}">
+                <img th:src="${imagePaths[0]}" alt="게시물 이미지" class="post-image"/>
+                </a>
+            </th:block>
+        </th:block>
+    </div>
+</section>
 
 <script th:src="@{/js/socialmemberprofile.js}"></script>
 
-<!-- 다른 푸터 설정 -->
-<th:block th:include="/domain/social/social/footer.html"></th:block>
-
 </body>
 </html>
-
 

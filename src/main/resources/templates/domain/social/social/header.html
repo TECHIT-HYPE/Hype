@@ -42,9 +42,14 @@
 <!--                    <a th:href="@{/image/popular}">-->
 <!--                    <i class="far fa-compass"></i>-->
 <!--                </a></li>-->
-                <li class="navi-item"><a th:href="@{|/user/${principal}|}">
+                <li class="navi-item"><a th:href="@{'/social/profile/' + ${principal}}">
                     <i class="far fa-user"></i>
                 </a></li>
+                <li class="navi-item">
+                    <a href="/social/feed">
+                        <i class="fas fa-camera"></i>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
