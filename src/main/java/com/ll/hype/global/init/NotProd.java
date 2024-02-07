@@ -84,7 +84,7 @@ public class NotProd {
         File profileFile = new File(
                 getClass().getClassLoader().getResource("img/profile.webp").getFile());
         InputStream profileStream = new FileInputStream(profileFile);
-        MultipartFile profileMockMultipartFile = new MockMultipartFile("file", profileFile.getName(), MediaType.TEXT_HTML_VALUE,
+        MultipartFile profileMockMultipartFile = new MockMultipartFile("file", profileFile.getName(), MediaType.IMAGE_JPEG_VALUE,
                 profileStream);
 
         List<MultipartFile> profileFiles = new ArrayList<>();
@@ -98,7 +98,7 @@ public class NotProd {
                 .passwordConfirm("1234")
                 .name("admin")
                 .nickname("admin")
-                .phoneNumber("010-4193-2693")
+                .phoneNumber("01041932693")
                 .birthday(LocalDate.of(1995, 10, 27))
                 .gender(Gender.MALE)
                 .shoesSize(265)
@@ -114,7 +114,7 @@ public class NotProd {
                 .passwordConfirm("test")
                 .name("테스트")
                 .nickname("test")
-                .phoneNumber("010-0000-1111")
+                .phoneNumber("01000001111")
                 .birthday(LocalDate.of(2000, 1, 1))
                 .gender(Gender.FEMALE)
                 .shoesSize(230)
@@ -255,7 +255,7 @@ public class NotProd {
                 .price(125000L)
                 .startDate(LocalDate.of(2024, 1, 25))
                 .endDate(LocalDate.of(2024, 1, 30))
-                .address(address3.getFullAddress())
+                .receiverAddress(address3.getFullAddress())
                 .status(Status.BIDDING)
                 .build();
 
@@ -268,7 +268,7 @@ public class NotProd {
                 .price(150000L)
                 .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
-                .address(address4.getFullAddress())
+                .receiverAddress(address4.getFullAddress())
                 .status(Status.BIDDING)
                 .build();
         orderRequestRepository.save(orderRequest2);
@@ -307,7 +307,7 @@ public class NotProd {
                 .startDate(LocalDate.of(2024, 1, 1)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 1, 31)) // 다른 종료 날짜
                 .address(address2.getFullAddress())
-                .status(Status.EXPIRED)
+                .status(Status.BID_EXPIRED)
                 .account("1234-5678-999999-10")
                 .build();
         saleRepository.save(saleRequest3);
@@ -320,7 +320,7 @@ public class NotProd {
                 .startDate(LocalDate.of(2024, 1, 1)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 1, 31)) // 다른 종료 날짜
                 .address(address2.getFullAddress())
-                .status(Status.EXPIRED)
+                .status(Status.BID_EXPIRED)
                 .account("1234-5678-999999-10")
                 .build();
         saleRepository.save(saleRequest4);
