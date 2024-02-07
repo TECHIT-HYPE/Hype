@@ -23,14 +23,18 @@ import java.util.stream.Collectors;
 public class ShoesController {
     private final ShoesService shoesService;
 
+    // TODO
+    // 1. 랭킹: 조회수 + 1 관심 + 10
+    // 2. 사이즈등록 O: 상세페이지에 본인 사이즈 → 내 사이즈의 즉시 구매, 판매가
+    //    사이즈등록 X: 모든 사이즈 보기 → 최저 즉시 구매가, 최고 즉시 판매가
+    // 3. 최근 거래가
+
     //신발 상세
     @GetMapping("/{id}")
     public String shoesDetail(@PathVariable("id") long id, Model model){
         ShoesResponse findOne = shoesService.findById(id);
         model.addAttribute("shoes", findOne);
 
-        // TODO
-        // 즉시 구매/판매가 최근 거래가
         return "domain/shoes/shoes/detail";
     }
 
