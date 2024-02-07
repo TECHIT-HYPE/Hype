@@ -111,7 +111,7 @@ public class SaleService {
                 .price(saleRequest.getPrice())
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusDays(saleRequest.getEndDate()))
-                .status(Status.COMPLETE)
+                .status(Status.BID_COMPLETE)
                 .build();
 
         saleRepository.save(sale);

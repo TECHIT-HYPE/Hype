@@ -6,8 +6,6 @@ import com.ll.hype.domain.order.buy.repository.BuyRepository;
 import com.ll.hype.domain.order.order.dto.OrderRequest;
 import com.ll.hype.domain.order.order.dto.OrderResponse;
 import com.ll.hype.domain.order.order.entity.Orders;
-import com.ll.hype.domain.order.order.entity.SettlementStatus;
-import com.ll.hype.domain.order.order.entity.Status;
 import com.ll.hype.domain.order.order.repository.OrderRepository;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.domain.order.sale.repository.SaleRepository;
