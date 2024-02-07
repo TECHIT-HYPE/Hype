@@ -49,7 +49,6 @@ public class OrderController {
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String paymentCreate() throws Exception {
-
         return "domain/order/order/order_payment";
     }
 
@@ -59,20 +58,20 @@ public class OrderController {
      * @return
      * @throws Exception
      */
-    @GetMapping("/success")
+    @GetMapping("/payment/success")
     public String paymentSuccess() throws Exception {
         return "domain/order/order/success";
     }
 
     /**
-     * 인증실패처리
+     * 인증 실패 처리
      *
      * @param request
      * @param model
      * @return
      * @throws Exception
      */
-    @GetMapping("/fail")
+    @GetMapping("/payment/fail")
     public String paymentFail(HttpServletRequest request, Model model) throws Exception {
         String failCode = request.getParameter("code");
         String failMessage = request.getParameter("message");
@@ -82,8 +81,16 @@ public class OrderController {
         return "domain/order/order/fail";
     }
 
-    @RequestMapping(value = "/confirm")
+    /**
+     * 결제 성공 후 2차 확인
+     *
+     * @param jsonBody
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/confirm")
     public ResponseEntity<JSONObject> paymentConfirm(@RequestBody String jsonBody) throws Exception {
+        log.info("[OrderController.confirm] paymentConfirm start");
         JSONParser parser = new JSONParser();
         String orderId;
         String amount;
@@ -98,9 +105,7 @@ public class OrderController {
             throw new RuntimeException(e);
         }
 
-        // TODO
-        // 여기서
-        // orderService.checkAmount(orderId, amount);
+        orderService.checkAmount(orderId, amount);
 
         JSONObject obj = new JSONObject();
         obj.put("orderId", orderId);
@@ -133,27 +138,33 @@ public class OrderController {
 
         int code = connection.getResponseCode();
         boolean isSuccess = code == 200 ? true : false;
-
         InputStream responseStream = isSuccess ? connection.getInputStream() : connection.getErrorStream();
 
-        // TODO: 결제 성공 및 실패 비즈니스 로직을 구현하세요.
-        // if isSuccess
-        // orderService.setPaymentComplete(orderId)
-        // else
-        // throw new Exception() ~
+        if (!isSuccess) {
+            throw new IllegalArgumentException("결제 실패");
+        }
 
+        orderService.setPaymentComplete(orderId);
         Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8);
         JSONObject jsonObject = (JSONObject) parser.parse(reader);
         responseStream.close();
 
         return ResponseEntity.status(code).body(jsonObject);
+    }
 
+    @PostMapping("/complete")
+    public String paymentComplete(@RequestParam String tossId,
+                                  Model model) {
+        log.info("[OrderController.paymentComplete] 진입 : " + tossId);
+        return "redirect:/";
     }
 
     // 즉시 판매 -> 오더생성
     @PostMapping("/sale/create")
-    public String createOrder(OrderRequest orderRequest, @RequestParam("saleId") long saleId,
-                              @RequestParam("buyId") long buyId, @AuthenticationPrincipal UserPrincipal user,
+    public String createOrder(OrderRequest orderRequest,
+                              @RequestParam("saleId") long saleId,
+                              @RequestParam("buyId") long buyId,
+                              @AuthenticationPrincipal UserPrincipal user,
                               Model model) {
         BuyResponse buyResponse = buyService.findByBuyId(buyId);
         model.addAttribute("buyData", buyResponse);
