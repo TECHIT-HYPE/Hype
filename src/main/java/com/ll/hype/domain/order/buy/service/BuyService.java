@@ -26,12 +26,10 @@ import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -221,7 +219,8 @@ public class BuyService {
 
         buyRepository.save(buy);
 
-        Sale sale = saleRepository.findLowestPriceSale(shoes, buyRequest.getSize()).orElseThrow(()->new IllegalArgumentException("판매입찰 내역을 찾을 수 없습니다."));
+        Sale sale = saleRepository.findLowestPriceSale(shoes, buyRequest.getSize())
+                .orElseThrow(() -> new IllegalArgumentException("판매입찰 내역을 찾을 수 없습니다."));
 
         if (!buy.getPrice().equals(sale.getPrice())) {
             throw new IllegalArgumentException("거래 성사 금액이 일치하지 않습니다.");
@@ -252,5 +251,17 @@ public class BuyService {
                 buy.getShoes().getId());
 
         return BuyResponse.of(buy, fullPath);
+    }
+
+    public boolean confirmBuy(Member member, Long id, int size) {
+//        Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
+        Optional<Buy> findOne = buyRepository.findByShoesIdAndMemberAndShoesSizeSize(id, member
+                , size);
+
+        if (findOne.isEmpty()) {
+            return true;
+        }
+
+        return false;
     }
 }
