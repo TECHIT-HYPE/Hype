@@ -2,6 +2,7 @@ package com.ll.hype.domain.order.order.entity;
 
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.sale.entity.Sale;
+import com.ll.hype.global.enums.Status;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import org.hibernate.annotations.Comment;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Getter
@@ -56,7 +58,17 @@ public class Orders extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private PaymentStatus paymentStatus;
 
-    public void createTossId() {
-        tossId = super.getId().toString() +"-"+ this.orderDate.toString();
+    public String createTossId() {
+        return super.getId() + "-" + orderDate;
+    }
+
+    public void updateTossId(String tossId) {
+        this.tossId = tossId;
+    }
+
+    public void updatePaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+        this.buy.updateStatus(Status.BID_COMPLETE);
+        this.sale.updateStatus(Status.BID_COMPLETE);
     }
 }
