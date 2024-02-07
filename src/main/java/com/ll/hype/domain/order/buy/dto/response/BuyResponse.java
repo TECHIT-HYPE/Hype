@@ -29,6 +29,8 @@ public class BuyResponse {
     private Long price;
     private LocalDate startDate;
     private LocalDate endDate;
+    private String receiverName;
+    private Long receiverPhone;
     private String receiverAddress;
     private Status status;
 
@@ -46,6 +48,8 @@ public class BuyResponse {
                 .price(buy.getPrice())
                 .startDate(buy.getStartDate())
                 .endDate(buy.getEndDate())
+                .receiverName(buy.getReceiverName())
+                .receiverPhone(buy.getReceiverPhoneNumber())
                 .receiverAddress(buy.getReceiverAddress())
                 .status(buy.getStatus())
                 .fullPath(fullPath)
