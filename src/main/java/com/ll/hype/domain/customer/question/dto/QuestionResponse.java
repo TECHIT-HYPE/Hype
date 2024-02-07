@@ -1,7 +1,7 @@
 package com.ll.hype.domain.customer.question.dto;
 
-import com.ll.hype.domain.customer.answer.entity.CustomerA;
-import com.ll.hype.domain.customer.question.entity.CustomerQ;
+import com.ll.hype.domain.customer.answer.entity.Answer;
+import com.ll.hype.domain.customer.question.entity.Question;
 import com.ll.hype.domain.customer.question.entity.QuestionCategory;
 import com.ll.hype.domain.member.member.entity.Member;
 import java.time.LocalDateTime;
@@ -23,10 +23,10 @@ public class QuestionResponse {
     private String questionTitle;
     private String questionContent;
     private QuestionCategory questionCategory;
-    private List<CustomerA> answers;
+    private List<Answer> answers;
     private List<String> fullPath;
 
-    public static QuestionResponse of(CustomerQ customerQ) {
+    public static QuestionResponse of(Question customerQ) {
         return QuestionResponse.builder()
                 .id(customerQ.getId())
                 .createDate(customerQ.getCreateDate())
@@ -39,7 +39,7 @@ public class QuestionResponse {
                 .build();
     }
 
-    public static QuestionResponse of(CustomerQ customerQ, List<String> fullPath) {
+    public static QuestionResponse of(Question customerQ, List<String> fullPath) {
         return QuestionResponse.builder()
                 .id(customerQ.getId())
                 .createDate(customerQ.getCreateDate())

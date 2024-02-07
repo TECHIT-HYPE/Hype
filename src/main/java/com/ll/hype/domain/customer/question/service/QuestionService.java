@@ -2,8 +2,8 @@ package com.ll.hype.domain.customer.question.service;
 
 import com.ll.hype.domain.customer.question.dto.QuestionRequest;
 import com.ll.hype.domain.customer.question.dto.QuestionResponse;
-import com.ll.hype.domain.customer.question.entity.CustomerQ;
-import com.ll.hype.domain.customer.question.repository.CsQRepository;
+import com.ll.hype.domain.customer.question.entity.Question;
+import com.ll.hype.domain.customer.question.repository.QuestionRepository;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.repository.MemberRepository;
 import com.ll.hype.global.exception.custom.UserMismatchException;
@@ -19,13 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Service
 public class QuestionService {
-    private final CsQRepository csQRepository;
+    private final QuestionRepository csQRepository;
     private final MemberRepository memberRepository;
     private final ImageBridgeComponent imageBridgeComponent;
 
     @Transactional
     public QuestionResponse questionSave(QuestionRequest customerQRequest, String email, List<MultipartFile> files) {
-        CustomerQ customerQ = QuestionRequest.toEntity(customerQRequest);
+        Question customerQ = QuestionRequest.toEntity(customerQRequest);
 
         Member findMember = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 사용자가 없습니다."));
@@ -43,7 +43,7 @@ public class QuestionService {
     // 문의사항 수정
     @Transactional
     public void questionUpdate(Long id, QuestionRequest customerQRequest, String email) {
-        CustomerQ findQuestion = csQRepository.findById(id)
+        Question findQuestion = csQRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 문의사항이 없습니다."));
 
         if (!findQuestion.getMember().getEmail().equals(email)) {
@@ -54,14 +54,14 @@ public class QuestionService {
             throw new IllegalArgumentException("답변이 달린 문의사항은 수정이 불가능합니다.");
         }
 
-        CustomerQ customerQ = QuestionRequest.toEntity(customerQRequest);
+        Question customerQ = QuestionRequest.toEntity(customerQRequest);
         findQuestion.update(customerQ);
     }
 
     // 문의사항 삭제
     @Transactional
     public void questionDelete(Long id, String email) {
-        CustomerQ findQuestion = csQRepository.findById(id)
+        Question findQuestion = csQRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 문의사항이 없습니다."));
 
 
@@ -75,7 +75,7 @@ public class QuestionService {
 
     // 문의사항 상세조회
     public QuestionResponse findOne(Long id, String userEmail) {
-        CustomerQ question = csQRepository.findById(id)
+        Question question = csQRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 문의사항이 없습니다."));
 
         if (!question.getMember().getEmail().equals(userEmail)) {
@@ -93,9 +93,9 @@ public class QuestionService {
         Member findMember = memberRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 사용자가 없습니다."));
 
-        List<CustomerQ> findByQuestions = csQRepository.findByMember(findMember);
+        List<Question> findByQuestions = csQRepository.findByMember(findMember);
 
-        for (CustomerQ csq : findByQuestions) {
+        for (Question csq : findByQuestions) {
             questions.add(QuestionResponse.of(csq));
         }
 
