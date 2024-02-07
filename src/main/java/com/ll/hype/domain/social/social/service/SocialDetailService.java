@@ -8,6 +8,7 @@ import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import com.ll.hype.global.s3.image.imagebridge.entity.ImageBridge;
 import com.ll.hype.global.s3.image.imagebridge.repository.ImageBridgeRepository;
+import com.ll.hype.global.security.authentication.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,10 @@ public class SocialDetailService {
         } else {
             throw new NoSuchElementException("해당 id에 대한 Social를 찾을 수 없습니다.");
         }
+    }
+    public void delete(Long socialId) {
+        imageBridgeComponent.delete(ImageType.SOCIAL, socialId);
+        socialRepository.deleteById(socialId);
     }
 
     private Social toEntity(SocialDetailResponse socialDetailResponse) {

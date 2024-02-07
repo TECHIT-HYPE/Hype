@@ -51,5 +51,14 @@ public class socialController {
 
         return "redirect:/social/profile/%s".formatted(principalId);
     }
+    @GetMapping("/delete/{id}")
+    public String deleteSocial(@PathVariable Long id,
+                               @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        Long principalId = userPrincipal.getMember().getId();
+        log.debug("deleteSocial 메서드 호출됨. id: {}, principalId: {}", id, principalId);
+        socialDetailService.delete(id);
+        return "redirect:/social/profile/%s".formatted(principalId);
+    }
+
 
 }

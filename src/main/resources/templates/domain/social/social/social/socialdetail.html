@@ -54,6 +54,42 @@
                              onerror="this.src='https://kr.object.ncloudstorage.com/hypeimagebucket/SOCIAL/person.jpeg'" />
                     </div>
                     <div th:text="${detailDto.getMember().getNickname()}"></div>
+                    <!-- 버튼을 클릭하면 삭제 및 수정 기능 수행 -->
+                    <div class="vertical-dots" th:if="${#authentication.principal.username eq detailDto.getMember().getEmail()}">
+                        <div class="dropdown">
+                            <a th:href="@{'/social/feed/delete/' + ${detailDto.socialId}}" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
+                            <a href="#">수정</a>
+                        </div>
+                    </div>
+
+
+
+
+                    <script>
+                        function showDropdownMenu() {
+                            document.getElementById("dropdownMenu").classList.toggle("show");
+                        }
+
+                        function deletePost(postId) {
+                            if (confirm('정말로 삭제하시겠습니까?')) {
+                                // AJAX를 이용하여 컨트롤러로 삭제 요청을 보냄
+                                var xhr = new XMLHttpRequest();
+                                xhr.open('DELETE', '/social/feed/delete/' + postId);
+                                xhr.setRequestHeader('Content-Type', 'application/json');
+                                xhr.onload = function() {
+                                    if (xhr.status === 200) {
+                                        // 삭제 성공시 수행할 작업
+                                        document.getElementById("dropdownMenu").classList.remove("show");
+                                    } else {
+                                        // 삭제 실패시 수행할 작업
+                                        alert('삭제에 실패했습니다.');
+                                    }
+                                };
+                                xhr.send();
+                            }
+                        }
+
+                    </script>
                 </div>
 
                 <div class="sl__item__img">

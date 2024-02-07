@@ -141,7 +141,10 @@
         <th:block th:with="imagePaths=${imageBridgeComponent.findOneFullPath('SOCIAL', social.getId())}">
             <!-- 이미지 경로 리스트가 비어있지 않으면 이미지 출력 -->
             <th:block th:if="${#lists.size(imagePaths) > 0}">
+                <!-- 이미지를 클릭하면 해당 게시물로 이동하도록 설정 -->
+                <a th:href="@{/social/feed/{id}(id=${social.getId()})}">
                 <img th:src="${imagePaths[0]}" alt="게시물 이미지" class="post-image"/>
+                </a>
             </th:block>
         </th:block>
     </div>
