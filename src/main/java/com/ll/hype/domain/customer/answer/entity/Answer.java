@@ -1,6 +1,6 @@
 package com.ll.hype.domain.customer.answer.entity;
 
-import com.ll.hype.domain.customer.question.entity.CustomerQ;
+import com.ll.hype.domain.customer.question.entity.Question;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
@@ -11,18 +11,22 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class CustomerA extends BaseEntity {
+public class Answer extends BaseEntity {
+    @Comment("문의 정보")
     @ManyToOne(fetch = FetchType.LAZY)
-    private CustomerQ question;
+    private Question question;
 
+    @Comment("회원 정보")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    @Comment("문의 답변 내용")
     private String answerContent;
 }

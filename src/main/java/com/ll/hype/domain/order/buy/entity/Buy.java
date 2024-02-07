@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -20,21 +21,37 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Buy extends BaseEntity {
+    @Comment("신발")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Shoes shoes; //신발
+    private Shoes shoes;
 
+    @Comment("신발 사이즈")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ShoesSize shoesSize; // 신발 사이즈
+    private ShoesSize shoesSize;
 
+    @Comment("구매자")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member member; // 구매자
+    private Member member;
 
-    private Long price; // 가격
-    private LocalDate startDate; // 구매 입찰 시작
-    private LocalDate endDate; // 구매 입찰 만료 기간
+    @Comment("가격")
+    private Long price;
 
-    private String address; // ex) 18001 경기도 화성시 동탄대로 10동 1호, address의 값을 쭉 이어서 붙여준다.
+    @Comment("구매 입찰 시작")
+    private LocalDate startDate;
 
+    @Comment("구매 입찰 만료 기간")
+    private LocalDate endDate;
+
+    @Comment("받는 사람 이름")
+    private String receiverName;
+
+    @Comment("받는 사람 연락처")
+    private Long receiverPhoneNumber;
+
+    @Comment("받는 사람 주소")
+    private String receiverAddress;
+
+    @Comment("거래 상태")
     @Enumerated(value = EnumType.STRING)
     private Status status; // 거래 상태 거래중 거래완료
 }
