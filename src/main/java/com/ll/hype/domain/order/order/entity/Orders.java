@@ -19,13 +19,13 @@ import java.time.LocalDate;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Orders extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
-    private Buy orderRequest; // 구매정보
+    private Buy buy; // 구매정보
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Sale salesRequest; // 판매정보
+    private Sale sale; // 판매정보
 
     private LocalDate orderDate; // 거래 성사 일자
-    private int orderPrice; // 거래 성사 금액
+    private Long orderPrice; // 거래 성사 금액
     private int deliveryNumber; // 운소장 번호
 
     private String name; // 받는사람 이름
