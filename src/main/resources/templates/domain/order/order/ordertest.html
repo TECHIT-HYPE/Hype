@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html" ; charset="UTF-8">
+    <script src="https://js.tosspayments.com/v1/payment-widget"></script>
+</head>
+<body>
+<!-- 상품 정보 영역-->
+<div class="title">상품 정보</div>
+<p>토스 티셔츠</p>
+<p>결제 금액: 15,000원</p>
+
+<!-- 결제 방법 영역-->
+<div class="title">결제 방법</div>
+<div id="payment-method"></div>
+<div id="agreement"></div>
+
+<!-- 결제 버튼 -->
+<button id="payment-button">결제하기</button>
+
+<script>
+    const clientKey = 'test_ck_KNbdOvk5rkj0Rl2exYqwVn07xlzm' // 상점을 특정하는 키
+    const customerKey = PaymentWidget.ANONYMOUS // 결제 고객을 특정하는 키
+    const amount = 15_000 // 결제 금액
+
+    /*결제위젯 영역 렌더링*/
+    const paymentWidget = PaymentWidget(clientKey, customerKey) // 회원 결제 초기화
+    // const paymentWidget = PaymentWidget(clientKey, PaymentWidget.ANONYMOUS) // 비회원 결제 초기화
+    paymentMethods = paymentWidget.renderPaymentMethods('#payment-method', amount)
+
+    /*약관 영역 렌더링*/
+    const paymentAgreement = paymentWidget.renderAgreement('#agreement')
+
+    /*결제요청 함수 정의*/
+    document.querySelector("#payment-button").addEventListener("click", () => {
+        paymentWidget.requestPayment({
+            orderId: 'AD8aZDpbzXs4EQa-UkIX6',
+            orderName: '토스 티셔츠 외 2건',
+            successUrl: 'http://localhost:8080/success',
+            failUrl: 'http://localhost:8080/fail',
+            customerEmail: 'customer123@gmail.com',
+            customerName: '김토스'
+
+        }).catch(function (error) {
+            if (error.code === 'USER_CANCEL') {
+                // 결제 고객이 결제창을 닫았을 때 에러 처리
+            }
+
+            if (error.code === 'INVALID_CARD_COMPANY') {
+                // 유효하지 않은 카드 코드에 대한 에러 처리
+            }
+        })
+    })
+</script>
+</body>
+</html>
