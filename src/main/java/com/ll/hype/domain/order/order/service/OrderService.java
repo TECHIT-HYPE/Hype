@@ -50,20 +50,23 @@ public class OrderService {
         Sale sale = saleRepository.findById(saleId)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 판매 입찰이 없습니다."));
 
-        Orders orders = Orders.builder()
-                .buy(buy)
-                .sale(sale)
-                .orderDate(LocalDate.now())
-                .orderPrice(buy.getPrice())
-                .deliveryNumber(1234567890)
-                .name(buy.getMember().getName())
-                .address(buy.getAddress())
-                .phoneNumber(buy.getMember().getPhoneNumber())
-                .status(Status.ORDER_COMPLETE)
-                .settlementStatus(SettlementStatus.WAIT_PAYMENT)
-                .build();
-        orderRepository.save(orders);
+        // TODO
+        // BuyService 에 있는 Order.builder 참고해서 수정해 주세요 ~!
 
-        return OrderResponse.of(orders);
+        //        Orders orders = Orders.builder()
+        //                .buy(buy)
+        //                .sale(sale)
+        //                .orderDate(LocalDate.now())
+        //                .orderPrice(buy.getPrice())
+        //                .deliveryNumber(1234567890L)
+        //                .receiverAddress(buy.getReceiverAddress())
+        //                .phoneNumber(buy.getMember().getPhoneNumber())
+        //                .status(Status.ORDER_COMPLETE)
+        //                .settlementStatus(SettlementStatus.WAIT_PAYMENT)
+        //                .build();
+        //        orderRepository.save(orders);
+        //
+        //        return OrderResponse.of(orders);
+        return null;
     }
 }
