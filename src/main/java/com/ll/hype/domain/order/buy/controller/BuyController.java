@@ -60,7 +60,6 @@ public class BuyController {
                          @RequestParam("size") int size,
                          CreateBuyRequest buyRequest,
                          Model model) {
-
         BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
         model.addAttribute("data", byShoesSizeMinPriceOne);
         return "domain/order/buy/bid_pricing";
@@ -71,11 +70,8 @@ public class BuyController {
                          @RequestParam("size") int size,
                          CreateBuyRequest buyRequest,
                          Model model) {
-
         BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
-        long round = Math.round(byShoesSizeMinPriceOne.getSale().getPrice() * 0.05);
         model.addAttribute("data", byShoesSizeMinPriceOne);
-        model.addAttribute("round", round);
         return "domain/order/buy/now_pricing";
     }
 
