@@ -36,10 +36,10 @@
                         <button type="submit" disabled>구매입찰</button>
                     </form>
 
-                    <form th:action="@{|/buy/shoes/now|}" method="post">
+                    <form th:action="@{|/buy/shoes/now|}" method="post" id="buyNow">
                         <input type="hidden" name="shoesId" th:value="${data.shoes.id}"/>
                         <input type="hidden" name="size" th:value="${data.size}"/>
-                        <button type="submit">즉시구매</button>
+                        <button type="button" onclick="checkPriceAndSubmit()">즉시구매</button>
                     </form>
                 </div>
 
@@ -107,6 +107,9 @@
                 </form>
             </div>
         </div>
+        <script th:inline="javascript">
+            const thprice = /*[[ ${data.price} ]]*/ null;
+        </script>
         <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
         <script>
             function sample6_execDaumPostcode() {
@@ -156,16 +159,14 @@
                     }
                 }).open();
             }
-        </script>
 
-        <script th:inline="javascript">
-            function cal() {
-                var purchasePrice = document.getElementById('price').value;
-                var commission = Math.round(purchasePrice * 0.05);
-                var totalPrice = parseInt(purchasePrice) + parseInt(commission);
-                document.getElementById('commission').innerText = '수수료: ' + commission + '원';
-                document.getElementById('totalPrice').innerText = '총 : ' + totalPrice + '원';
-                document.getElementById('totalPriceValue').value = totalPrice;
+            function checkPriceAndSubmit() {
+                const price = thprice;
+                if (price === 0) {
+                    alert("즉시 구매가 가능한 상품이 없습니다.");
+                    return;
+                }
+                document.getElementById("buyNow").submit();
             }
         </script>
     </div>
