@@ -5,7 +5,20 @@
 <body layout:fragment="content">
     <div class="container mx-auto mt-8">
         <h1 class="text-3xl font-bold mb-4">Shoes List</h1>
+        <div class="mb-4">
+            <form th:action="@{|/shoes/list|}" method="get">
+                <div class="flex">
 
+                    <div th:each="category : ${T(com.ll.hype.domain.shoes.shoes.entity.ShoesCategory).values()}"
+                         class="mr-2">
+                        <input type="checkbox" th:id="${category.name()}" th:value="${category.name()}" th:name="categories"
+                               th:checked="${selectedCategories != null && selectedCategories.contains(category.name())}">
+                        <label th:for="${category.name()}" th:text="${category}"></label>
+                    </div>
+                </div>
+                <button type="submit">필터 적용</button>
+            </form>
+        </div>
         <table class="min-w-full border border-gray-300">
             <thead>
             <tr>

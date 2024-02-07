@@ -1,4 +1,4 @@
-package com.ll.hype.domain.order.sale.dto;
+package com.ll.hype.domain.order.sale.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

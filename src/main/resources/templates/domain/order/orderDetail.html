@@ -1,0 +1,39 @@
+<html layout:decorate="~{global/usrLayout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+    <title>즉시 판매 내역</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="flex justify-center mt-5">즉시 판매 내역</div>
+    <div class="container mx-auto mt-5">
+        <div class="header text-center mb-5">
+
+            <div class="order-details">
+                <div class="order-info">
+                    <p>주문 번호: [[${orderResponse.id}]]</p>
+                    <p>상품 이미지</p>
+                    <p>영문명: [[${orderResponse.sale.shoes.engName}]]</p>
+                    <p>한글명: [[${orderResponse.sale.shoes.korName}]]</p>
+                    <p>신발 모델: [[${orderResponse.sale.shoes.model}]]</p>
+                    <p>사이즈: [[${orderResponse.sale.shoesSize.size}]]</p>
+                    <p>거래 성사 금액: [[${orderResponse.buy.price}]]원</p>
+                    <p>거래 성사일: [[${orderResponse.orderDate}]]</p>
+                    <p>배송 정보: [[${orderResponse.deliveryNumber}]]</p>
+                    <p>거래 상태: [[${orderResponse.status}]]</p>
+                    <p>수취인 이름: {이름}</p>
+                    <p>수취인 주소: {주소}</p>
+                    <p>수취인 연락처: {연락처}</p>
+                    <p>정산 상태: [[${orderResponse.settlementStatus}]]</p>
+                    <p>정산 계좌: [[${orderResponse.sale.account}]]</p>
+                    <hr>
+                    <p>최종 주문 정보: {입찰금액/수수료/정산 예정 금액}</p>
+                    <p>정산 예정 금액: {거래금액-수수료} </p>
+                </div>
+                <a href="/">홈으로</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

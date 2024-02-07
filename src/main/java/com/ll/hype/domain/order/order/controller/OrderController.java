@@ -1,7 +1,13 @@
 package com.ll.hype.domain.order.order.controller;
 
 
+import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
+import com.ll.hype.domain.order.buy.service.BuyService;
+import com.ll.hype.domain.order.order.dto.OrderRequest;
+import com.ll.hype.domain.order.order.dto.OrderResponse;
 import com.ll.hype.domain.order.order.service.OrderService;
+import com.ll.hype.domain.order.sale.service.SaleService;
+import com.ll.hype.global.security.authentication.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,9 +16,7 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
@@ -20,6 +24,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Slf4j
@@ -35,9 +41,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class OrderController {
     private final OrderService orderService;
+    private final BuyService buyService;
+    private final SaleService saleService;
 
     @Value("${api.key}")
     private String API_KEY;
+
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String paymentCreate() throws Exception {
 
@@ -46,6 +55,7 @@ public class OrderController {
 
     /**
      * 인증성공처리
+     *
      * @return
      * @throws Exception
      */
@@ -137,6 +147,19 @@ public class OrderController {
         responseStream.close();
 
         return ResponseEntity.status(code).body(jsonObject);
+
+    }
+
+    // 즉시 판매 -> 오더생성
+    @PostMapping("/sale/create")
+    public String createOrder(OrderRequest orderRequest, @RequestParam("saleId") long saleId,
+                              @RequestParam("buyId") long buyId, @AuthenticationPrincipal UserPrincipal user,
+                              Model model) {
+        BuyResponse buyResponse = buyService.findByBuyId(buyId);
+        model.addAttribute("buyData", buyResponse);
+
+        OrderResponse orderResponse = orderService.createOrder(orderRequest, saleId, buyId, user.getMember());
+        model.addAttribute("orderResponse", orderResponse);
+        return "domain/order/orderDetail";
     }
 }
-

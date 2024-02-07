@@ -1,0 +1,142 @@
+<html layout:decorate="~{global/usrLayout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+    <title>판매입찰 상세페이지</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="flex justify-center mt-5">판매하기</div>
+    <div class="container mx-auto mt-5">
+        <div class="header text-center mb-5">
+            <div class="flex">
+                <ul>
+                    <li th:each="path : ${saleData.fullPath}">
+                        <img th:src="${path}" class="w-20"/>
+                    </li>
+                </ul>
+                <div>
+                    <p class="text-l" th:text="${saleData.buy.shoes.model}"></p>
+                    <p class="text-l" th:text="${saleData.buy.shoes.korName}"></p>
+                    <p class="text-l" th:text="${saleData.buy.shoes.engName}"></p>
+                    <p class="text-l" th:text="${saleData.buy.shoesSize.size}"></p>
+                </div>
+            </div>
+            <hr>
+            <table style="display: flex; justify-content: space-around; align-items: center;">
+                <tr>
+                    <th>즉시 구매가</th>
+                    <th>즉시 판매가</th>
+                </tr>
+                <tr>
+                    <td th:text="${buyData.sale.price}"></td>
+                    <td id="immediateSalePrice" th:text="${saleData.buy.price}"></td>
+                </tr>
+            </table>
+
+            <hr>
+            <div>
+                <div style="display: flex; justify-content: space-around; align-items: center;">
+                    <form th:action="@{|/sale/shoes/bid|}" method="post">
+                        <input type="hidden" name="shoesId" th:value="${saleData.buy.shoes.id}"/>
+                        <input type="hidden" name="size" th:value="${saleData.buy.shoesSize.size}"/>
+                        <button type="submit" disabled>판매입찰</button>
+                    </form>
+
+                    <form th:action="@{|/sale/shoes/now|}" method="post">
+                        <input type="hidden" name="shoesId" th:value="${saleData.buy.shoes.id}"/>
+                        <input type="hidden" name="size" th:value="${saleData.buy.shoesSize.size}"/>
+                        <button type="submit">즉시판매</button>
+                    </form>
+                </div>
+
+                <form th:action="@{|/sale/shoes/sale/bid|}" method="post" id="bid">
+                    <input type="hidden" name="shoesId" th:value="${saleData.buy.shoes.id}"/>
+                    <input type="hidden" name="size" th:value="${saleData.buy.shoesSize.size}"/>
+
+                    <div>
+                        <label id="bidSaleInput">
+                            <label for="bidSalePrice">판매 희망가</label>
+                            <input id="bidSalePrice" name="price" placeholder="판매 희망가 입력" type="number"> 원
+                            <p id="bidSaleFee">수수료 -원</p>
+                            <p>배송비 선불 ・ 판매자 부담</p>
+
+                            <p>입찰 마감기한</p>
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" class="form-radio" name="endDate" value="7" checked>
+                                    <span class="ml-2">7일</span>
+                                </label>
+
+                                <label class="inline-flex items-center">
+                                    <input type="radio" class="form-radio" name="endDate" value="14">
+                                    <span class="ml-2">14일</span>
+                                </label>
+
+                                <label class="inline-flex items-center">
+                                    <input type="radio" class="form-radio" name="endDate" value="21">
+                                    <span class="ml-2">21일</span>
+                                </label>
+
+                                <label class="inline-flex items-center">
+                                    <input type="radio" class="form-radio" name="endDate" value="28">
+                                    <span class="ml-2">28일</span>
+                                </label>
+                            </div>
+                            <hr>
+                            <p id="finalBidSaleAmount"></p>
+                            <button type="submit">판매 입찰하기</button>
+                        </label>
+
+                    </div>
+                </form>
+
+                <script>
+                    // 판매 희망가 > 즉시 판매가
+                    document.getElementById('bidSalePrice').addEventListener('input', function() { // bidPrice 입력 필드에 값이 입력될 때 마다 실행
+                        var bidSalePrice = parseFloat(this.value) || 0;
+                        var immediateSalePrice = parseFloat(document.getElementById('immediateSalePrice').textContent) || 0;
+
+                        if (bidSalePrice <= immediateSalePrice) {
+                            alert('판매 희망가는 즉시 판매가보다 높아야 합니다.');
+                            this.value = immediateSalePrice + 1; // 최소 판매 희망가 자동 설정
+                        }
+                    });
+
+                    // // 판매 희망가 > 즉시 판매가 폼 제출 방지
+                    // document.querySelector('form').addEventListener('submit', function(event) {
+                    //     var bidPrice = parseFloat(document.getElementById('bidPrice').value) || 0;
+                    //     var immediateSalePrice = parseFloat(document.getElementById('immediateSalePrice').textContent) || 0;
+                    //
+                    //     if (bidPrice <= immediateSalePrice) {
+                    //         alert('판매 희망가는 즉시 판매가보다 높아야 합니다.');
+                    //         event.preventDefault();
+                    //     }
+                    // });
+
+
+                    // 수수료 계산 함수
+                    function calculateFees(price) { return price * 0.055;}
+
+                    // 정산 금액 계산 및 표시 함수
+                    function calculateAndDisplayFinalAmount() {
+                        // 판매 희망가 입력 필드 이벤트 리스너 설정
+                        var bidSaleInput = document.getElementById('bidSalePrice');
+                        bidSaleInput.addEventListener('input', function() {
+                            var bidSalePrice = parseFloat(this.value) || 0;
+                            var bidSaleFee = calculateFees(bidSalePrice);
+                            var finalBidSaleAmount = bidSalePrice - bidSaleFee;
+                            document.getElementById('bidSaleFee').textContent = '수수료: ' + bidSaleFee.toFixed(0) + '원';
+                            document.getElementById('finalBidSaleAmount').textContent = '정산금액: ' + finalBidSaleAmount.toFixed(0) + '원';
+                        });
+                    }
+
+                    // 페이지 로드 시 정산 금액 계산 및 표시
+                    window.addEventListener('load', calculateAndDisplayFinalAmount);
+
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
