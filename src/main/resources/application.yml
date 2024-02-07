@@ -1,6 +1,13 @@
 server:
   port: 8090
 spring:
+  profiles:
+    include: secret
+  devtools:
+    livereload:
+      enabled: true
+  freemarker:
+    cache: false
   thymeleaf:
     cache: false
   mvc:
@@ -35,3 +42,6 @@ logging:
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
     org.springframework.transaction.interceptor: TRACE
+
+api:
+  key: ON_SECRET
