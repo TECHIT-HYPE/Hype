@@ -5,6 +5,8 @@ import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.global.enums.Status;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,7 +32,10 @@ public class BuyResponse {
     private String receiverAddress;
     private Status status;
 
-    public static BuyResponse of(Buy buy) {
+    @Builder.Default
+    private List<String> fullPath = new ArrayList<>();
+
+    public static BuyResponse of(Buy buy, List<String> fullPath) {
         return BuyResponse.builder()
                 .id(buy.getId())
                 .createDate(buy.getCreateDate())
@@ -43,6 +48,7 @@ public class BuyResponse {
                 .endDate(buy.getEndDate())
                 .receiverAddress(buy.getReceiverAddress())
                 .status(buy.getStatus())
+                .fullPath(fullPath)
                 .build();
     }
 }
