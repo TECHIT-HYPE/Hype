@@ -1,6 +1,6 @@
 package com.ll.hype.domain.customer.question.dto;
 
-import com.ll.hype.domain.customer.question.entity.CustomerQ;
+import com.ll.hype.domain.customer.question.entity.Question;
 import com.ll.hype.domain.customer.question.entity.QuestionCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,8 +18,8 @@ public class QuestionRequest {
     private String questionContent;
     private QuestionCategory questionCategory;
 
-    public static CustomerQ toEntity(QuestionRequest CustomerQRequest) {
-        return CustomerQ.builder()
+    public static Question toEntity(QuestionRequest CustomerQRequest) {
+        return Question.builder()
                 .questionTitle(CustomerQRequest.getQuestionTitle())
                 .questionContent(CustomerQRequest.getQuestionContent())
                 .questionCategory(CustomerQRequest.getQuestionCategory())

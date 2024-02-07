@@ -1,0 +1,37 @@
+<html layout:decorate="~{global/usrLayout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+    <title>판매 입찰 내역</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="flex justify-center mt-5">판매 입찰 내역</div>
+    <div class="container mx-auto mt-5">
+        <div class="header text-center mb-5">
+
+            <div class="sale-details">
+                <div class="sale-info">
+                    <p>입찰 번호: [[${saleResponse.id}]]</p>
+                    <p>신발 모델: [[${saleResponse.shoes.model}]]</p>
+                    <p>사이즈: [[${saleResponse.shoesSize.size}]]</p>
+                    <p>판매 입찰가: [[${saleResponse.price}]]원</p>
+                    <p>입찰 시작일: [[${saleResponse.startDate}]]</p>
+                    <p>입찰 종료일: [[${saleResponse.endDate}]]</p>
+                    <p>상태: [[${saleResponse.status}]]</p>
+                    <p>반송 주소: [[${saleResponse.address}]]</p>
+                    <p>정산 계좌: [[${saleResponse.account}]]</p>
+                    <hr>
+                    <p>최종 주문 정보: 입찰금액/수수료/정산 예정 금액</p>
+
+                    <!-- 추가 정보 표시 -->
+                </div>
+                <a href="/">홈으로</a>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

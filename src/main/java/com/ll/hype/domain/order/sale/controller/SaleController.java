@@ -1,21 +1,17 @@
 package com.ll.hype.domain.order.sale.controller;
 
-import com.ll.hype.domain.order.buy.dto.BuyResponse;
+import com.ll.hype.domain.order.buy.dto.response.BuyFormResponse;
 import com.ll.hype.domain.order.buy.service.BuyService;
-import com.ll.hype.domain.order.sale.dto.SaleRequest;
-import com.ll.hype.domain.order.sale.dto.SaleResponse;
+import com.ll.hype.domain.order.sale.dto.request.CreateSaleRequest;
+import com.ll.hype.domain.order.sale.dto.response.SaleFormResponse;
+import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
+import com.ll.hype.domain.order.sale.dto.response.SaleSizeInfoResponse;
 import com.ll.hype.domain.order.sale.service.SaleService;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
-import com.ll.hype.domain.shoes.shoes.dto.ShoesSizeDTO;
-import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
-import com.ll.hype.domain.shoes.shoes.service.ShoesService;
-import com.ll.hype.global.util.ShoesSizeGenerator;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import com.ll.hype.global.security.authentication.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,158 +22,122 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class SaleController {
 
-    private final ShoesService shoesService;
     private final BuyService buyService;
     private final SaleService saleService;
 
     // TODO
-    // ShoesSizeGenerator 교체
-    // 신발리스트 / 상세(1~3장) / 사이즈 선택 / 약관 동의 / 입찰, 즉시거래 / 거래체결 이미지 추가
-    // highestbidid가 없는 사이즈 처리
-    // 판매 입찰 기한 설정
-    // 47번째 optional
+    // 신발리스트, 상세(1~3장) / 약관 동의, 입찰, 즉시거래, 거래체결 이미지 추가
+    // 즉시 판매는 status=COMPLETE
 
-    //사이즈 선택
-    //신발고유번호, 이름, 이미지, 사이즈 노출
-    @GetMapping("/select/{id}")
-    public String selectSizeForm(@PathVariable("id") long id, Model model) {
-        ShoesResponse shoesResponse = shoesService.findById(id);
-        model.addAttribute("shoes", shoesResponse);
+    // 신발상세 -> 사이즈 선택
+    @PostMapping("/shoes")
+    public String saleShoesPickSuccess(@RequestParam("shoesId") long shoesId,
+                                       Model model) {
+        SaleSizeInfoResponse findByBuyMaxPrice = saleService.findByShoesSizeMaxPrice(shoesId);
+        model.addAttribute("shoes", findByBuyMaxPrice);
 
-        Map<Integer, Optional<BuyResponse>> highestBidBySize = buyService.getHighestBidsGroupedBySize(id);
-        //사이즈가 존재하면 가격 노출, 존재하지않으면 판매 입찰
-        List<ShoesSizeDTO> list = ShoesSizeGenerator.getSizes().stream()
-                .map(size -> highestBidBySize.getOrDefault(size, Optional.empty())
-                        .map(buyResponse -> ShoesSizeDTO.builder()
-                                .size(size)
-                                .price(buyResponse.getPrice())
-                                .exists(true)
-                                .build())
-                        .orElseGet(() -> ShoesSizeDTO.builder()
-                                .exists(false)
-                                .size(size)
-                                .build()))
-                .toList();
-
-        model.addAttribute("shoesSizeList", list);
-
-        return "domain/salesRequest/salesRequest/selectSize";
+        return "domain/order/sale/selectSize";
     }
 
-    //사이즈 선택 처리
-    @PostMapping("/select/{id}")
-    public String selectSize(@PathVariable("id") Long id,
-                             @RequestParam("selectedSize") int selectedSize,
-                             RedirectAttributes redirectAttributes) {
+    // 사이즈 선택 -> 약관 동의
+    @PostMapping("/shoes/size")
+    public String saleSizePickSuccess(@RequestParam("shoesId") long shoesId,
+                                      @RequestParam("size") int size,
+                                      Model model) {
+        ShoesResponse shoes = saleService.findByShoesId(shoesId);
+        model.addAttribute("shoes", shoes);
 
-        Optional<BuyResponse> highestBid = buyService.getHighestBidsGroupedBySize(id).get(selectedSize);
+        model.addAttribute("shoesId", shoesId);
+        model.addAttribute("size", size);
 
-        highestBid.ifPresent(bid -> {
-            redirectAttributes.addFlashAttribute("selectedSize", selectedSize);
-            redirectAttributes.addFlashAttribute("highestBidId", bid.getId());
-        });
-
-        return "redirect:/sale/approval";
+        return "domain/order/sale/approve";
     }
 
-    //판매 약관 동의
-    @GetMapping("/approval")
-    public String approveForm(@ModelAttribute("selectedSize") int selectedSize,
-                              @ModelAttribute("highestBidId") long highestBidId,
-                              Model model) {
-        System.out.println("approveForm: Selected Size: " + selectedSize);
-        System.out.println("approveForm: Highest Bid ID: " + highestBidId);
+//    // 약관 동의 -> 판매가 결정
+//    @PostMapping("/shoes/approve")
+//    public String saleApproveSuccess(@RequestParam("shoesId") long shoesId,
+//                                     @RequestParam("size") int size,
+//                                     Model model) {
+//
+//        model.addAttribute("shoesId", shoesId);
+//        model.addAttribute("size", size);
+//        //즉시 구매가(최저 판매입찰가)
+//        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
+//        model.addAttribute("saleShoes", byShoesSizeMinPriceOne);
+//
+//        //즉시 판매가(최고 구매입찰가)
+//        SaleFormResponse byShoesSizeMaxPriceOne = saleService.findByShoesSizeMaxPriceOne(shoesId, size);
+//        model.addAttribute("buyShoes", byShoesSizeMaxPriceOne);
+//
+//        return "domain/order/sale/pricing";
+//    }
 
-        BuyResponse buyResponse = buyService.findById(highestBidId);
-        model.addAttribute("buyResponse", buyResponse);
-
-        return "domain/salesRequest/salesRequest/approve";
-    }
-
-    //판매 약관 동의 처리
-    @PostMapping("/approval")
-    public String approve(@RequestParam("selectedSize") int selectedSize,
-                          @RequestParam("highestBidId") long highestBidId,
-                          @RequestParam Map<String, String> allParams,
-                          RedirectAttributes redirectAttributes) {
-
-        boolean allTermsAgreed = allParams.entrySet().stream()
-                .filter(e -> e.getKey().startsWith("term"))
-                .allMatch(e -> e.getValue().equals("on"));
-        System.out.println("approve: All terms agreed: " + allTermsAgreed);
-
-        if (allTermsAgreed) {
-            redirectAttributes.addFlashAttribute("selectedSize", selectedSize);
-            redirectAttributes.addFlashAttribute("highestBidId", highestBidId);
-            return "redirect:/sale/pricing";
-        } else {
-            return "redirect:/sale/approval";
-        }
-    }
-
-    //신발 정보 및 예상 정산 금액 표시, 판매 입찰 생성 기능
-    @GetMapping("/pricing")
-    public String pricingForm(@ModelAttribute("selectedSize") int selectedSize,
-                          @ModelAttribute("highestBidId") long highestBidId,
+    // 약관 동의 -> 판매 타입: 판매 입찰
+    @PostMapping("/shoes/bid")
+    public String saleBid(@RequestParam("shoesId") long shoesId,
+                          @RequestParam("size") int size,
                           Model model) {
-//        SaleResponse saleResponse = saleService.findById(lowestBidId);
-//        model.addAttribute("saleResponse", saleResponse); // 즉시 구매가
 
-        BuyResponse buyResponse = buyService.findById(highestBidId);
-        model.addAttribute("buyResponse", buyResponse); // 즉시 판매가
-        model.addAttribute("selectedSize", selectedSize); //
-        model.addAttribute("highestBidId", highestBidId); //
+        //즉시 구매가 (최저 판매입찰가)
+        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
+        model.addAttribute("buyData", byShoesSizeMinPriceOne);
 
+        //즉시 판매가 (최고 구매입찰가)
+        SaleFormResponse byShoesSizeMaxPriceOne = saleService.findByShoesSizeMaxPriceOne(shoesId, size);
+        model.addAttribute("saleData", byShoesSizeMaxPriceOne);
 
-        System.out.println("[SaleController.pricingForm] selectedSize : " + selectedSize);
-        System.out.println("[SaleController.pricingForm] highestBidId : " + highestBidId);
+        return "domain/order/sale/bidPricing";
+    }
+    // 약관 동의 -> 판매 타입: 즉시 판매
+    @PostMapping("/shoes/now")
+    public String saleNow(@RequestParam("shoesId") Long shoesId,
+                          @RequestParam("size") int size,
+                          Model model) {
 
-        return "domain/salesRequest/salesRequest/pricing";
+        //즉시 구매가(최저 판매입찰가)
+        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
+        model.addAttribute("buyData", byShoesSizeMinPriceOne);
+
+        //즉시 판매가(최고 구매입찰가)
+        SaleFormResponse byShoesSizeMaxPriceOne = saleService.findByShoesSizeMaxPriceOne(shoesId, size);
+        model.addAttribute("saleData", byShoesSizeMaxPriceOne);
+
+        return "domain/order/sale/nowPricing";
     }
 
-    //
-    @PostMapping("/pricing")
-    public String pricing(@RequestParam("selectedSize") int selectedSize,
-                          @RequestParam("highestBidId") long highestBidId,
-                          @RequestParam("price") int price,
-                          @RequestParam("saleType") String saleType,
-                          RedirectAttributes redirectAttributes) {
+    // 판매 생성: 판매 입찰
+    @PostMapping("/shoes/sale/bid")
+    public String createSaleBid(CreateSaleRequest saleRequest,
+                                @AuthenticationPrincipal UserPrincipal user,
+                                RedirectAttributes redirectAttributes) {
 
-        if ("bidSale".equals(saleType)) {
-            // 즉시 판매 로직 처리
-//            saleService.processBidSale(productId, price);
-        } else if ("immediateSale".equals(saleType)) {
-            // 입찰 판매 로직 처리
-//            saleService.processImmediateSale(productId, price);
-        }
-        BuyResponse buyResponse = buyService.findById(highestBidId);
-        redirectAttributes.addFlashAttribute("selectedSize", selectedSize);
-        redirectAttributes.addAttribute("buyResponse", buyResponse);
-        redirectAttributes.addFlashAttribute("price", price);
-        System.out.println("[SaleController.pricing] selectedSize : " + selectedSize);
-        System.out.println("[SaleController.pricing] highestBidId : " + highestBidId);
+        SaleResponse saleResponse = saleService.createSaleBid(saleRequest, user.getMember());
+        redirectAttributes.addFlashAttribute("saleId", saleResponse.getId());
 
-        return "redirect:/sale/{id}/{shoesSize}";
+        return "redirect:/sale/shoes/sale/bid/detail";
     }
 
-    @GetMapping("/{id}/{shoesSize}")
-    public String saveSaleForm(@ModelAttribute("selectedSize") int selectedSize,
-                               @ModelAttribute("highestBidId") long highestBidId,
-                               @ModelAttribute("price") int price,
-                               @ModelAttribute("saleType") String saleType,
-                               SaleRequest saleRequest, Model model) {
-        model.addAttribute("selectedSize", selectedSize); //
-        model.addAttribute("highestBidId", highestBidId); //
-        model.addAttribute("price", price); //
-        model.addAttribute("saleType", saleType); //
+    // 판매 생성: 즉시 판매
+    @PostMapping("/shoes/sale/now")
+    public String createSaleNow(CreateSaleRequest saleRequest,
+                                @AuthenticationPrincipal UserPrincipal user,
+                                RedirectAttributes redirectAttributes) {
 
-        return "domain/salesRequest/salesRequest/saveSale";
+
+
+        SaleResponse saleResponse = saleService.createSaleNow(saleRequest, user.getMember());
+        redirectAttributes.addFlashAttribute("saleId", saleResponse.getId());
+
+        return "redirect:/order/sale/create";
     }
 
-    //판매 결정 및 정보 입력//
-    @PostMapping("/select/{id}/{shoesSize}")
-    public String saveSale(SaleRequest saleRequest, Model model) {
-        saleService.saveSaleRequest(saleRequest);
-        return "redirect:/";
+    // 생성 완료: 판매 입찰 내역
+    @GetMapping("/shoes/sale/bid/detail")
+    public String saleBidDetail(@ModelAttribute("saleId")Long saleId, Model model) {
+
+        SaleResponse saleResponse = saleService.findById(saleId);
+        model.addAttribute("saleResponse", saleResponse);
+
+        return "domain/order/sale/bidDetail";
     }
 }

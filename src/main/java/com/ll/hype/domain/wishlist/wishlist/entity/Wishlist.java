@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -18,9 +19,11 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Wishlist extends BaseEntity {
+    @Comment("회원 정보")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    @Comment("신발 사이즈 정보")
     @ManyToOne(fetch = FetchType.LAZY)
     private ShoesSize shoesSize;
 }

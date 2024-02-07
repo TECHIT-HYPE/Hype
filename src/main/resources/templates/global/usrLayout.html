@@ -7,7 +7,7 @@
         <div class="flex mb-[20px] space-x-8">
             <a href="/cs/main" class="text-black hover:text-blue-500">고객센터</a>
             <a href="/mypage/profile" class="text-black hover:text-blue-500">마이페이지</a>
-            <a href="/mypage/wishlist">관심</a>
+            <a href="/mypage/wishlist" class="text-black hover:text-blue-500">관심</a>
             <div>알림</div>
             <div sec:authorize="isAnonymous()" >
                 <a th:href="@{/member/login}" class="text-black hover:text-blue-500">로그인</a>
@@ -20,7 +20,7 @@
             <a href="/" class="text-black hover:text-blue-500">HOME</a>
             <a href="/shoes/list" class="text-black hover:text-blue-500">SHOP</a>
             <div>BOARD</div>
-            <div>SEARCH</div>
+            <a href="/shoes/search" class="text-black hover:text-blue-500">SEARCH</a>
         </div>
     </div>
 </div>

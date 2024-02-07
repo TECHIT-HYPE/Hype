@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -18,23 +19,30 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Address extends BaseEntity {
+    @Comment("주소 보유 회원")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    @Comment("주소 별칭")
     @NotNull
     private String addressName;
 
+    @Comment("우편번호")
     @NotNull
     private String postcode;
 
+    @Comment("주소")
     @NotNull
     private String address;
 
+    @Comment("상세 주소")
     @NotNull
     private String detailAddress;
 
+    @Comment("동 주소")
     private String extraAddress;
 
+    @Comment("대표 주소 여부")
     private boolean isPrimary; // 대표주소 여부
 
     public String getFullAddress() {

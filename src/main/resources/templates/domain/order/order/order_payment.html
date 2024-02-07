@@ -1,0 +1,91 @@
+<html layout:decorate="~{global/usrLayout}">
+<head>
+    <title>결제하기</title>
+    <script src="https://js.tosspayments.com/v1/payment-widget"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+<div layout:fragment="content">
+    <ul>
+        <li th:each="path : ${order.fullPath}" >
+            <img th:src="${path}" class="w-20"/>
+        </li>
+    </ul>
+    <!-- 상품 정보 영역-->
+    <div class="title">상품 정보</div>
+    <p th:text="${order.buy.shoes.korName}"></p>
+    <p>결제 금액 : </p>
+    <p th:text="${order.orderPrice}"></p>
+
+    <!-- 결제 방법 영역-->
+    <div class="title">결제 방법</div>
+    <div id="payment-method"></div>
+    <div id="agreement"></div>
+
+    <!-- 결제 버튼 -->
+    <button id="payment-button">결제하기</button>
+
+    <script th:inline="javascript">
+        const thorderId = /*[[ ${order.tossId} ]]*/ null;
+        const thorderPrice = /*[[ ${order.orderPrice} ]]*/ null;
+        const thorderName = /*[[ ${order.buy.shoes.korName} ]]*/ null;
+        const thorderCustomerName = /*[[ ${order.buy.member.name} ]]*/ null;
+        const thorderCustomerPhone = /*[[ ${order.buy.member.phoneNumber} ]]*/ null;
+        const thorderCustomerEmail = /*[[ ${order.buy.member.email} ]]*/ null;
+        const customerKeyUser = /*[[ ${order.buy.member.nickname} ]]*/ null;
+    </script>
+    <script>
+        const button = document.getElementById("payment-button");
+        const amount = thorderPrice;
+        // ------  결제위젯 초기화 ------
+        // TODO: clientKey는 개발자센터의 결제위젯 연동 키 > 클라이언트 키로 바꾸세요.
+        // TODO: 구매자의 고유 아이디를 불러와서 customerKey로 설정하세요. 이메일・전화번호와 같이 유추가 가능한 값은 안전하지 않습니다.
+        // @docs https://docs.tosspayments.com/reference/widget-sdk#sdk-설치-및-초기화
+        const widgetClientKey = "test_ck_KNbdOvk5rkj0Rl2exYqwVn07xlzm";
+        const customerKey = customerKeyUser;
+        const paymentWidget = PaymentWidget(widgetClientKey, customerKey); // 회원 결제
+        // const paymentWidget = PaymentWidget(widgetClientKey, PaymentWidget.ANONYMOUS); // 비회원 결제
+
+        // ------  결제 UI 렌더링 ------
+        // @docs https://docs.tosspayments.com/reference/widget-sdk#renderpaymentmethods선택자-결제-금액-옵션
+        paymentMethodWidget = paymentWidget.renderPaymentMethods(
+            "#payment-method",
+            { value: amount },
+            // 렌더링하고 싶은 결제 UI의 variantKey
+            // 결제 수단 및 스타일이 다른 멀티 UI를 직접 만들고 싶다면 계약이 필요해요.
+            // @docs https://docs.tosspayments.com/guides/payment-widget/admin#멀티-결제-ui
+            { variantKey: "DEFAULT" }
+        );
+        // ------  이용약관 UI 렌더링 ------
+        // @docs https://docs.tosspayments.com/reference/widget-sdk#renderagreement선택자-옵션
+        paymentWidget.renderAgreement("#agreement", { variantKey: "AGREEMENT" });
+
+
+        // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
+        // @docs https://docs.tosspayments.com/reference/widget-sdk#requestpayment결제-정보
+        button.addEventListener("click", function () {
+            console.log("버튼 눌림")
+            console.log("order id : " + thorderId)
+            console.log("thorderCustomerPhone : " + thorderCustomerPhone)
+            console.log("customerKeyUser : " + customerKeyUser)
+            console.log("thorderCustomerName : " + thorderCustomerName)
+            console.log("thorderCustomerEmail : " + thorderCustomerEmail)
+
+
+            // 결제를 요청하기 전에 orderId, amount를 서버에 저장하세요.
+            // 결제 과정에서 악의적으로 결제 금액이 바뀌는 것을 확인하는 용도입니다.
+            paymentWidget.requestPayment({
+                orderId: thorderId ,
+                orderName: thorderName,
+                successUrl: window.location.origin + "/order/success",
+                failUrl: window.location.origin + "/order/fail",
+                customerEmail: thorderCustomerEmail,
+                customerName: thorderCustomerName,
+                customerMobilePhone: thorderCustomerPhone,
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

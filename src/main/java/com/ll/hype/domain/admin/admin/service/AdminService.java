@@ -4,11 +4,11 @@ import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.dto.BrandResponse;
 import com.ll.hype.domain.brand.brand.entity.Brand;
 import com.ll.hype.domain.brand.brand.repository.BrandRepository;
-import com.ll.hype.domain.customer.answer.entity.CustomerA;
-import com.ll.hype.domain.customer.answer.repository.CsARepository;
+import com.ll.hype.domain.customer.answer.entity.Answer;
+import com.ll.hype.domain.customer.answer.repository.AnswerRepository;
 import com.ll.hype.domain.customer.question.dto.QuestionResponse;
-import com.ll.hype.domain.customer.question.entity.CustomerQ;
-import com.ll.hype.domain.customer.question.repository.CsQRepository;
+import com.ll.hype.domain.customer.question.entity.Question;
+import com.ll.hype.domain.customer.question.repository.QuestionRepository;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.repository.MemberRepository;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
@@ -33,8 +33,8 @@ public class AdminService {
     private final BrandRepository brandRepository;
     private final ShoesRepository shoesRepository;
     private final ShoesSizeRepository shoesSizeRepository;
-    private final CsQRepository csQRepository;
-    private final CsARepository csARepository;
+    private final QuestionRepository csQRepository;
+    private final AnswerRepository csARepository;
     private final ImageBridgeComponent imageBridgeComponent;
     private final MemberRepository memberRepository;
 
@@ -125,7 +125,7 @@ public class AdminService {
     //============== CS Question Start ==============
     // Question 상세 조회
     public QuestionResponse findQuestion(Long id) {
-        CustomerQ question = csQRepository.findById(id)
+        Question question = csQRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 문의가 없습니다."));
 
         List<String> fullPath = imageBridgeComponent.findAllFullPath(ImageType.QUESTION, question.getId());
@@ -136,7 +136,7 @@ public class AdminService {
     // Question 전체 조회
     public List<QuestionResponse> findQuestionAll() {
         List<QuestionResponse> questions = new ArrayList<>();
-        for (CustomerQ customerQ : csQRepository.findAll()) {
+        for (Question customerQ : csQRepository.findAll()) {
             List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.QUESTION, customerQ.getId());
             questions.add(QuestionResponse.of(customerQ, fullPath));
         }
@@ -148,10 +148,10 @@ public class AdminService {
         Member findMember = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 사용자가 없습니다."));
 
-        CustomerQ customerQ = csQRepository.findById(id)
+        Question customerQ = csQRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 문의가 없습니다."));
 
-        CustomerA csA = CustomerA.builder()
+        Answer csA = Answer.builder()
                 .question(customerQ)
                 .answerContent(content)
                 .member(findMember)
@@ -164,10 +164,10 @@ public class AdminService {
 
     // Answer 삭제
     public QuestionResponse deleteAnswer(Long id) {
-        CustomerA customerA = csARepository.findById(id)
+        Answer customerA = csARepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 답변이 없습니다."));
 
-        CustomerQ question = customerA.getQuestion();
+        Question question = customerA.getQuestion();
         csARepository.delete(customerA);
 
         return QuestionResponse.of(question);

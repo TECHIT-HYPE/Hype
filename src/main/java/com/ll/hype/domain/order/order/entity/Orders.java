@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -18,25 +19,44 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Orders extends BaseEntity {
+    @Comment("토스페이먼츠 오더 고유 값")
+    private String tossId;
+
+    @Comment("구매정보")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Buy orderRequest; // 구매정보
+    private Buy buy;
 
+    @Comment("판매정보")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Sale salesRequest; // 판매정보
+    private Sale sale;
 
-    private LocalDate orderDate; // 거래 성사 일자
-    private int orderPrice; // 거래 성사 금액
-    private int deliveryNumber; // 운소장 번호
+    @Comment("거래 성사 일자")
+    private LocalDate orderDate;
 
-    private String name; // 받는사람 이름
+    @Comment("거래 성사 금액")
+    private Long orderPrice;
 
-    private String address; // 받는사람 주소
+    @Comment("운소장 번호")
+    private Long deliveryNumber;
 
-    private String phoneNumber; // 받는 사람 연락처
+    @Comment("받는사람 이름")
+    private String receiverName;
 
+    @Comment("받는 사람 연락처")
+    private Long receiverPhoneNumber;
+
+    @Comment("받는사람 주소")
+    private String receiverAddress;
+
+    @Comment("거래 상태")
     @Enumerated(value = EnumType.STRING)
-    private Status status; // 거래 상태 (거래완료, 거래취소, 반품 진행 중, 반품완료, 거래중)
+    private OrderStatus status;
 
+    @Comment("정산상태")
     @Enumerated(value = EnumType.STRING)
-    private SettlementStatus settlementStatus; // 정산상태 (결제완료(사용자), 결제취소(사용자), 미입금(관리자), 입금(관리자))
+    private PaymentStatus paymentStatus;
+
+    public void createTossId() {
+        tossId = super.getId().toString() +"-"+ this.orderDate.toString();
+    }
 }

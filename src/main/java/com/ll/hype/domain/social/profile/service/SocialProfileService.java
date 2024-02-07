@@ -3,6 +3,8 @@ package com.ll.hype.domain.social.profile.service;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.repository.MemberRepository;
 import com.ll.hype.domain.social.profile.dto.SocialProfileResponse;
+import com.ll.hype.domain.social.social.entity.Social;
+import com.ll.hype.domain.social.social.repository.SocialRepository;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.image.component.ImageComponent;
 import com.ll.hype.global.s3.image.image.entity.Image;
@@ -25,23 +27,25 @@ import java.util.Optional;
 public class SocialProfileService {
     @Autowired
     private final MemberRepository memberRepository;
-    @Autowired
-    private final ImageBridgeRepository imageBridgeRepository;
+    private final SocialRepository socialRepository;
     private final ImageBridgeComponent imageBridgeComponent;
-    private final ImageComponent imageComponent;
+
 
     @Transactional
     public SocialProfileResponse findById(Long id) {
         Optional<Member> memberOptional = memberRepository.findById(id);
 
+
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
             String profileImage = getProfileImage(member.getId());
+            List<Social> socialList = socialRepository.findByMemberIdOrderByCreateDateDesc(member.getId());
             SocialProfileResponse socialProfileResponse = SocialProfileResponse.builder()
                     .id(member.getId())
                     .nickname(member.getNickname())
                     .email(member.getEmail())
                     .profileImage(profileImage)
+                    .socials(socialList)
                     .build();
 
             return socialProfileResponse;
@@ -56,27 +60,11 @@ public class SocialProfileService {
 
     @Transactional
     public void updateProfileImage(Long memberId, List<MultipartFile> profileImageFiles) {
-        Optional<ImageBridge> byTypeAndTypeId = imageBridgeRepository.findByTypeAndTypeId(ImageType.SOCIAL, memberId);
+        List<String> imagePath = imageBridgeComponent.findAllFullPath(ImageType.MEMBER, memberId);
 
-        if (byTypeAndTypeId.isPresent()) {
-            ImageBridge imageBridge = byTypeAndTypeId.get();
-            List<Image> images = imageBridge.getImages();
-
-            // 기존 이미지 삭제
-            for (Image image : images) {
-                imageComponent.delete(image);
-            }
-
-            // 새 이미지 업로드 및 연결
-            for (MultipartFile file : profileImageFiles) {
-                Image image = imageComponent.upload(file, ImageType.SOCIAL);
-                image.updateImageBridge(imageBridge);
-                images.add(image);
-            }
-
-            // 이미지 브릿지 업데이트
-            imageBridge.updateImages(images);
-        } else {imageBridgeComponent.save(ImageType.SOCIAL, memberId, profileImageFiles);}
+        if (!imagePath.isEmpty()) {
+            imageBridgeComponent.delete(ImageType.MEMBER, memberId);
         }
-
+        imageBridgeComponent.save(ImageType.MEMBER, memberId, profileImageFiles);
+    }
 }
