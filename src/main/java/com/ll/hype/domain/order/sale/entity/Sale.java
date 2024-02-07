@@ -21,7 +21,6 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Sale extends BaseEntity {
-    //판매 입찰 요청
     @Comment("신발 정보")
     @ManyToOne(fetch = FetchType.LAZY)
     private Shoes shoes;
