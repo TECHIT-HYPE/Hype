@@ -7,7 +7,7 @@ import com.ll.hype.domain.order.buy.dto.response.BuyModifyPriceResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuySizeInfoResponse;
 import com.ll.hype.domain.order.buy.service.BuyService;
-import com.ll.hype.domain.order.order.dto.response.OrderBuyResponse;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -116,7 +116,7 @@ public class BuyController {
     public String createBuyNow(CreateBuyRequest buyRequest,
                                @AuthenticationPrincipal UserPrincipal user,
                                Model model) {
-        OrderBuyResponse order = buyService.createBuyNow(buyRequest, user.getMember());
+        OrderResponse order = buyService.createBuyNow(buyRequest, user.getMember());
         model.addAttribute("order", order);
         return "domain/order/order/order_payment";
     }

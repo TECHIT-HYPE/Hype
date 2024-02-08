@@ -4,8 +4,9 @@ package com.ll.hype.domain.order.order.controller;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.service.BuyService;
 import com.ll.hype.domain.order.order.dto.OrderRequest;
-import com.ll.hype.domain.order.order.dto.OrderResponse;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.order.order.service.OrderService;
+import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
 import com.ll.hype.domain.order.sale.service.SaleService;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,12 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
@@ -160,17 +156,16 @@ public class OrderController {
     }
 
     // 즉시 판매 -> 오더생성
-    @PostMapping("/sale/create")
-    public String createOrder(OrderRequest orderRequest,
-                              @RequestParam("saleId") long saleId,
-                              @RequestParam("buyId") long buyId,
-                              @AuthenticationPrincipal UserPrincipal user,
-                              Model model) {
-        BuyResponse buyResponse = buyService.findByBuyId(buyId);
-        model.addAttribute("buyData", buyResponse);
-
-        OrderResponse orderResponse = orderService.createOrder(orderRequest, saleId, buyId, user.getMember());
-        model.addAttribute("orderResponse", orderResponse);
-        return "domain/order/orderDetail";
-    }
+//    @PostMapping("/sale/create")
+//    public String createOrder(OrderRequest orderRequest,
+//                              @ModelAttribute("saleResponse") SaleResponse saleResponse,
+//                              @AuthenticationPrincipal UserPrincipal user,
+//                              Model model) {
+////        BuyResponse buyResponse = buyService.findByBuyId(orderRequest.getBuy().getId());
+////        model.addAttribute("buyData", buyResponse);
+//
+//        OrderResponse orderResponse = orderService.createOrder(orderRequest, saleResponse, user.getMember());
+//        model.addAttribute("orderResponse", orderResponse);
+//        return "domain/order/orderDetail";
+//    }
 }

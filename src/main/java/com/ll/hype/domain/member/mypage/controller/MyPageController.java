@@ -8,6 +8,9 @@ import com.ll.hype.domain.member.member.dto.ModifyRequest;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.service.MemberService;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
+import com.ll.hype.domain.order.order.service.OrderService;
+import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
 import com.ll.hype.domain.wishlist.wishlist.dto.MyWishlistDto;
 import com.ll.hype.domain.wishlist.wishlist.entity.Wishlist;
 import com.ll.hype.domain.wishlist.wishlist.service.WishlistService;
@@ -35,6 +38,7 @@ public class MyPageController {
     private final MemberService memberService;
     private final WishlistService wishlistService;
     private final AddressService addressService;
+    private final OrderService orderService;
 
     @GetMapping("/profile")
     public String profileForm(@AuthenticationPrincipal UserPrincipal userPrincipal, ModifyRequest modifyRequest,
@@ -207,4 +211,22 @@ public class MyPageController {
         model.addAttribute("data", buyHistory);
         return "domain/member/mypage/buy_history";
     }
+
+    @GetMapping("/sale/history")
+    public String saleHistory(@AuthenticationPrincipal UserPrincipal user, Model model) {
+        List<SaleResponse> saleHistory = memberService.findMySaleHistory(user.getMember());
+        model.addAttribute("data", saleHistory);
+        return "domain/member/mypage/sale_history";
+    }
+
+    @GetMapping("/order/trading")
+    public String tradingOrder(@AuthenticationPrincipal UserPrincipal user, Model model) {
+        List<OrderResponse> tradingOrder = orderService.findTradingOrder(user.getMember());
+        model.addAttribute("data", tradingOrder);
+
+        return "domain/member/mypage/tradingOrder";
+    }
+
+
+
 }

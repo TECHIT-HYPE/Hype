@@ -8,6 +8,9 @@ import com.ll.hype.domain.member.member.repository.MemberRepository;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
+import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
+import com.ll.hype.domain.order.sale.entity.Sale;
+import com.ll.hype.domain.order.sale.repository.SaleRepository;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final ImageBridgeComponent imageBridgeComponent;
     private final BuyRepository buyRepository;
+    private final SaleRepository saleRepository;
 
     @Transactional
     public void join(JoinRequest joinRequest, List<MultipartFile> files) {
@@ -98,5 +102,18 @@ public class MemberService {
         }
 
         return buyResponses;
+    }
+
+    public List<SaleResponse> findMySaleHistory(Member member) {
+        List<Sale> findBySaleMemberAll = saleRepository.findByMember(member);
+        List<SaleResponse> saleResponses = new ArrayList<>();
+
+        for (Sale sale : findBySaleMemberAll) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, sale.getShoes().getId());
+            SaleResponse saleResponse = SaleResponse.of(sale, fullPath);
+            saleResponses.add(saleResponse);
+        }
+
+        return saleResponses;
     }
 }
