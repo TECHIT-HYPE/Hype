@@ -9,7 +9,7 @@ import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuySizeInfoResponse;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
-import com.ll.hype.domain.order.order.dto.response.OrderBuyResponse;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.order.order.entity.OrderStatus;
 import com.ll.hype.domain.order.order.entity.Orders;
 import com.ll.hype.domain.order.order.entity.PaymentStatus;
@@ -188,7 +188,7 @@ public class BuyService {
      * @return OrderBuyResponse
      */
     @Transactional
-    public OrderBuyResponse createBuyNow(CreateBuyRequest buyRequest, Member member) {
+    public OrderResponse createBuyNow(CreateBuyRequest buyRequest, Member member) {
         Shoes shoes = shoesRepository.findById(buyRequest.getShoesId())
                 .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
 
@@ -240,7 +240,7 @@ public class BuyService {
         orderRepository.save(order);
 
         order.updateTossId(order.createTossId());
-        return OrderBuyResponse.of(order, fullPath);
+        return OrderResponse.of(order, fullPath);
     }
 
     public BuyResponse findById(long highestBidId) {

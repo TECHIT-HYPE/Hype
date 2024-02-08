@@ -1,7 +1,5 @@
 package com.ll.hype.domain.order.order.dto.response;
 
-import com.ll.hype.domain.customer.question.dto.QuestionResponse;
-import com.ll.hype.domain.customer.question.entity.Question;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.order.entity.OrderStatus;
 import com.ll.hype.domain.order.order.entity.Orders;
@@ -19,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderBuyResponse {
+public class OrderResponse {
     private Long id;
     private String tossId;
     private Buy buy;
@@ -36,8 +34,8 @@ public class OrderBuyResponse {
     @Builder.Default
     private List<String> fullPath = new ArrayList<>();
 
-    public static OrderBuyResponse of(Orders order, List<String>fullPath) {
-        return OrderBuyResponse.builder()
+    public static OrderResponse of(Orders order, List<String>fullPath) {
+        return OrderResponse.builder()
                 .id(order.getId())
                 .tossId(order.getTossId())
                 .buy(order.getBuy())

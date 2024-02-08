@@ -6,16 +6,12 @@ import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuySizeInfoResponse;
 import com.ll.hype.domain.order.buy.dto.request.CreateBuyRequest;
 import com.ll.hype.domain.order.buy.service.BuyService;
-import com.ll.hype.domain.order.order.dto.response.OrderBuyResponse;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -96,7 +92,7 @@ public class BuyController {
     public String createBuyNow(CreateBuyRequest buyRequest,
                                @AuthenticationPrincipal UserPrincipal user,
                                Model model) {
-        OrderBuyResponse order = buyService.createBuyNow(buyRequest, user.getMember());
+        OrderResponse order = buyService.createBuyNow(buyRequest, user.getMember());
         model.addAttribute("order", order);
         return "domain/order/order/order_payment";
     }
