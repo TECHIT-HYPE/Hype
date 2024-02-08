@@ -3,6 +3,7 @@ package com.ll.hype.domain.order.buy.repository;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
+import com.ll.hype.global.enums.Status;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,7 +34,9 @@ public interface BuyRepository extends JpaRepository<Buy, Long> {
             "AND bb.shoesSize.size = :size)")
     Buy findHighestPriceBuy(@Param("shoes") Shoes shoes, @Param("size") int size);
 
-    Optional<Buy> findByShoesIdAndMemberAndShoesSizeSize(Long id, Member member, int size);
+    Optional<Buy> findByShoesIdAndMemberAndShoesSizeSizeAndStatus(Long id, Member member, int size, Status status);
 
     List<Buy> findByMember(Member member);
+
+    Optional<Buy> findByIdAndMember(Long id, Member member);
 }

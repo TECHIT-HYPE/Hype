@@ -58,4 +58,8 @@ public class Buy extends BaseEntity {
     public void updateStatus(Status status) {
         this.status = status;
     }
+
+    public void updatePrice(Long price) {
+        this.price = price;
+    }
 }
