@@ -1,12 +1,15 @@
 package com.ll.hype.domain.order.order.dto;
 
 import com.ll.hype.domain.order.buy.entity.Buy;
+import com.ll.hype.domain.order.order.dto.response.OrderBuyResponse;
 import com.ll.hype.domain.order.order.entity.OrderStatus;
 import com.ll.hype.domain.order.order.entity.Orders;
 import com.ll.hype.domain.order.order.entity.PaymentStatus;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,37 +20,36 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderResponse {
-    private long id;
-    private LocalDateTime createDate;
-    private LocalDateTime modifyDate;
+    private Long id;
+    private String tossId;
     private Buy buy;
     private Sale sale;
     private LocalDate orderDate;
     private Long orderPrice;
-    private int deliveryNumber;
-    private String name;
-    private String address;
-    private String phoneNumber;
+    // private Long deliveryNumber;
+    private String receiverName;
+    private Long receiverPhoneNumber;
+    private String receiverAddress;
     private OrderStatus status;
-    private PaymentStatus settlementStatus;
+    private PaymentStatus paymentStatus;
 
-    // TODO
-    // OrderResponse 반환객체 수정 부탁드립니다.
-    public static OrderResponse of(Orders orders) {
+    @Builder.Default
+    private List<String> fullPath = new ArrayList<>();
+
+    public static OrderResponse of(Orders order) {
         return OrderResponse.builder()
-//                .id(orders.getId())
-//                .createDate(orders.getCreateDate())
-//                .modifyDate(orders.getModifyDate())
-//                .buy(orders.getBuy())
-//                .sale(orders.getSale())
-//                .orderDate(orders.getOrderDate())
-//                .orderPrice(orders.getOrderPrice())
-//                .deliveryNumber(orders.getDeliveryNumber())
-//                .name(orders.getName())
-//                .address(orders.getAddress())
-//                .phoneNumber(orders.getPhoneNumber())
-//                .status(orders.getStatus())
-//                .settlementStatus(orders.getSettlementStatus())
+                .id(order.getId())
+                .tossId(order.getTossId())
+                .buy(order.getBuy())
+                .sale(order.getSale())
+                .orderDate(order.getOrderDate())
+                .orderPrice(order.getOrderPrice())
+                //.deliveryNumber(order.getDeliveryNumber())
+                .receiverName(order.getReceiverName())
+                .receiverPhoneNumber(order.getReceiverPhoneNumber())
+                .receiverAddress(order.getReceiverAddress())
+                .status(order.getStatus())
+                .paymentStatus(order.getPaymentStatus())
                 .build();
     }
 }
