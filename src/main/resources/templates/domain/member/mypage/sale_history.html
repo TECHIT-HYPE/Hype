@@ -1,0 +1,42 @@
+<html layout:decorate="~{domain/member/mypage/myPageLayout}">
+<head>
+    <title>판매 내역</title>
+    <style>
+        img {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="my_page_content">
+    <div class="container mx-auto">
+        <div th:each="sale : ${data}" class="bg-gray-100 border border-gray-200 p-4 mb-4 flex">
+            <ul>
+                <li th:each="path : ${sale.fullPath}">
+                    <img th:src="${path}"/>
+                </li>
+            </ul>
+            <div class="flex">
+                <div class="ml-4 mb-4 mr-10">
+                    <label class="block text-gray-700 text-lg font-bold mb-2">신발 정보</label>
+                    <p class="text-sm">한글명 : <span th:text="${sale.shoes.korName}"></span></p>
+                    <p class="text-sm">영문명 : <span th:text="${sale.shoes.engName}"></span></p>
+                    <p class="text-sm">모델명 : <span th:text="${sale.shoes.model}"></span></p>
+                    <p class="text-sm">사이즈 : <span th:text="${sale.shoesSize.size}"></span></p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-lg font-bold mb-2">입찰 정보</label>
+                    <p class="text-sm">금액 : <span th:text="${sale.price}"></span></p>
+                    <p class="text-sm">시작일 : <span th:text="${sale.startDate}"></span></p>
+                    <p class="text-sm">종료일 : <span th:text="${sale.endDate}"></span></p>
+                    <p class="text-sm">상태 : <span th:text="${sale.status}"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

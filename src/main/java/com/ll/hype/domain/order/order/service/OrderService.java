@@ -107,4 +107,17 @@ public class OrderService {
         log.info("[OrderService.setPaymentComplete] 여기까지는 오나?");
         order.updatePaymentStatus(PaymentStatus.COMPLETE_PAYMENT);
     }
+
+    public List<OrderResponse> findTradingOrder(Member member) {
+        List<Orders> tradingOrderAll = orderRepository.findTradingByMember(member);
+        List<OrderResponse> orderResponses = new ArrayList<>();
+
+        for (Orders order : tradingOrderAll) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(
+                    ImageType.SHOES, order.getSale().getShoes().getId());
+            OrderResponse orderResponse = OrderResponse.of(order, fullPath);
+            orderResponses.add(orderResponse);
+        }
+        return orderResponses;
+    }
 }
