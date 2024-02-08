@@ -333,7 +333,7 @@ public class BuyService {
      * @return OrderBuyResponse
      */
     @Transactional
-    public OrderBuyResponse createModifyBuyNow(Long id, Long nowPrice, Member member) {
+    public OrderResponse createModifyBuyNow(Long id, Long nowPrice, Member member) {
         Buy buy = buyRepository.findByIdAndMember(id, member)
                 .orElseThrow(() -> new EntityNotFoundException("조회된 구매 입찰 내역이 없습니다."));
 
@@ -363,6 +363,6 @@ public class BuyService {
         order.updateTossId(order.createTossId());
 
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, buy.getShoes().getId());
-        return OrderBuyResponse.of(order, fullPath);
+        return OrderResponse.of(order, fullPath);
     }
 }
