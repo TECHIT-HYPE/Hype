@@ -7,6 +7,7 @@ import com.ll.hype.domain.address.address.service.AddressService;
 import com.ll.hype.domain.member.member.dto.ModifyRequest;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.service.MemberService;
+import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.wishlist.wishlist.dto.MyWishlistDto;
 import com.ll.hype.domain.wishlist.wishlist.entity.Wishlist;
 import com.ll.hype.domain.wishlist.wishlist.service.WishlistService;
@@ -36,7 +37,8 @@ public class MyPageController {
     private final AddressService addressService;
 
     @GetMapping("/profile")
-    public String profileForm(@AuthenticationPrincipal UserPrincipal userPrincipal, ModifyRequest modifyRequest, Model model) {
+    public String profileForm(@AuthenticationPrincipal UserPrincipal userPrincipal, ModifyRequest modifyRequest,
+                              Model model) {
 
         Member member = userPrincipal.getMember();
 
@@ -77,7 +79,7 @@ public class MyPageController {
             return loadAndReturnProfileForm(model);
         }
 
-        if (memberService.existsByPhoneNumber(modifyRequest.getPhoneNumber())  &&
+        if (memberService.existsByPhoneNumber(modifyRequest.getPhoneNumber()) &&
                 !Objects.equals(userPrincipal.getMember().getPhoneNumber(), modifyRequest.getPhoneNumber())
         ) {
             bindingResult.reject("existPhoneNumber", "이미 존재하는 전화번호입니다.");
@@ -104,11 +106,12 @@ public class MyPageController {
 
     @DeleteMapping("/wishlist/{id}/delete")
     public String deleteWishlist(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                @PathVariable long id
+                                 @PathVariable long id
     ) {
         Wishlist wishlist = wishlistService.findById(id).orElseThrow(() -> new RuntimeException("해당 게시물을 찾을 수 없습니다."));
-        if (!wishlistService.canAccess(userPrincipal.getMember(), wishlist))
+        if (!wishlistService.canAccess(userPrincipal.getMember(), wishlist)) {
             throw new AccessDeniedException("접근 권한이 없습니다.");
+        }
 
         wishlistService.deleteWishlist(wishlist);
 
@@ -124,7 +127,8 @@ public class MyPageController {
     }
 
     @GetMapping("/address/create")
-    public String createAddressForm(@AuthenticationPrincipal UserPrincipal userPrincipal, AddressRequest addressRequest, Model model) {
+    public String createAddressForm(@AuthenticationPrincipal UserPrincipal userPrincipal, AddressRequest addressRequest,
+                                    Model model) {
         return "domain/member/mypage/addAddress";
     }
 
@@ -150,8 +154,9 @@ public class MyPageController {
                                     Model model
     ) {
         Address address = addressService.findById(id).orElseThrow(() -> new RuntimeException("해당 게시물을 찾을 수 없습니다."));
-        if (!addressService.canAccess(userPrincipal.getMember(), address))
+        if (!addressService.canAccess(userPrincipal.getMember(), address)) {
             throw new AccessDeniedException("접근 권한이 없습니다.");
+        }
 
         addressRequest.setAddressName(address.getAddressName());
         addressRequest.setPostcode(address.getPostcode());
@@ -186,11 +191,20 @@ public class MyPageController {
                                 @PathVariable long id
     ) {
         Address address = addressService.findById(id).orElseThrow(() -> new RuntimeException("해당 게시물을 찾을 수 없습니다."));
-        if (!addressService.canAccess(userPrincipal.getMember(), address))
+        if (!addressService.canAccess(userPrincipal.getMember(), address)) {
             throw new AccessDeniedException("접근 권한이 없습니다.");
+        }
 
         addressService.deleteAddress(address);
 
         return "redirect:/mypage/address";
+    }
+
+    @GetMapping("/buy/history")
+    public String buyHistory(@AuthenticationPrincipal UserPrincipal user,
+                             Model model) {
+        List<BuyResponse> buyHistory = memberService.findMyBuyHistory(user.getMember());
+        model.addAttribute("data", buyHistory);
+        return "domain/member/mypage/buy_history";
     }
 }

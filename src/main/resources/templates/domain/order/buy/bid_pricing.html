@@ -14,41 +14,41 @@
                     </li>
                 </ul>
                 <div>
-                    <p class="text-l" th:text="${data.sale.shoes.model}"></p>
-                    <p class="text-l" th:text="${data.sale.shoes.korName}"></p>
-                    <p class="text-l" th:text="${data.sale.shoes.engName}"></p>
-                    <p class="text-l" th:text="${data.sale.shoesSize.size}"></p>
+                    <p class="text-l" th:text="${data.shoes.model}"></p>
+                    <p class="text-l" th:text="${data.shoes.korName}"></p>
+                    <p class="text-l" th:text="${data.shoes.engName}"></p>
+                    <p class="text-l" th:text="${data.size}"></p>
                 </div>
             </div>
             <hr>
             <table style="display: flex; justify-content: space-around; align-items: center;">
                 <tr>
                     <td>즉시 구매가 :</td>
-                    <td th:text="${data.sale.price}"></td>
+                    <td th:text="${data.price}"></td>
                 </tr>
             </table>
             <hr>
             <div>
                 <div style="display: flex; justify-content: space-around; align-items: center;">
                     <form th:action="@{|/buy/shoes/bid|}" method="post">
-                        <input type="hidden" name="shoesId" th:value="${data.sale.shoes.id}"/>
-                        <input type="hidden" name="size" th:value="${data.sale.shoesSize.size}"/>
+                        <input type="hidden" name="shoesId" th:value="${data.shoes.id}"/>
+                        <input type="hidden" name="size" th:value="${data.size}"/>
                         <button type="submit" disabled>구매입찰</button>
                     </form>
 
-                    <form th:action="@{|/buy/shoes/now|}" method="post">
-                        <input type="hidden" name="shoesId" th:value="${data.sale.shoes.id}"/>
-                        <input type="hidden" name="size" th:value="${data.sale.shoesSize.size}"/>
-                        <button type="submit">즉시구매</button>
+                    <form th:action="@{|/buy/shoes/now|}" method="post" id="buyNow">
+                        <input type="hidden" name="shoesId" th:value="${data.shoes.id}"/>
+                        <input type="hidden" name="size" th:value="${data.size}"/>
+                        <button type="button" onclick="checkPriceAndSubmit()">즉시구매</button>
                     </form>
                 </div>
 
                 <form th:action="@{|/buy/shoes/buy/bid|}" method="post" id="bid">
-                    <input type="hidden" name="shoesId" th:value="${data.sale.shoes.id}"/>
-                    <input type="hidden" name="size" th:value="${data.sale.shoesSize.size}"/>
+                    <input type="hidden" name="shoesId" th:value="${data.shoes.id}"/>
+                    <input type="hidden" name="size" th:value="${data.size}"/>
 
                     <p>구매 희망가</p>
-                    <input type="number" id="price" name="price" placeholder="구매 희망가를 입력해 주세요." th:onchange="cal()">
+                    <input type="number" id="price" name="price" placeholder="구매 희망가를 입력해 주세요.">
 
                     <!-- <p id="commission">수수료: 0원</p> -->
 
@@ -107,6 +107,9 @@
                 </form>
             </div>
         </div>
+        <script th:inline="javascript">
+            const thprice = /*[[ ${data.price} ]]*/ null;
+        </script>
         <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
         <script>
             function sample6_execDaumPostcode() {
@@ -156,16 +159,14 @@
                     }
                 }).open();
             }
-        </script>
 
-        <script th:inline="javascript">
-            function cal() {
-                var purchasePrice = document.getElementById('price').value;
-                var commission = Math.round(purchasePrice * 0.05);
-                var totalPrice = parseInt(purchasePrice) + parseInt(commission);
-                document.getElementById('commission').innerText = '수수료: ' + commission + '원';
-                document.getElementById('totalPrice').innerText = '총 : ' + totalPrice + '원';
-                document.getElementById('totalPriceValue').value = totalPrice;
+            function checkPriceAndSubmit() {
+                const price = thprice;
+                if (price === 0) {
+                    alert("즉시 구매가 가능한 상품이 없습니다.");
+                    return;
+                }
+                document.getElementById("buyNow").submit();
             }
         </script>
     </div>

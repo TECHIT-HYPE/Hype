@@ -5,8 +5,12 @@ import com.ll.hype.domain.member.member.dto.ModifyRequest;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.entity.MemberRole;
 import com.ll.hype.domain.member.member.repository.MemberRepository;
+import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
+import com.ll.hype.domain.order.buy.entity.Buy;
+import com.ll.hype.domain.order.buy.repository.BuyRepository;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageBridgeComponent imageBridgeComponent;
+    private final BuyRepository buyRepository;
 
     @Transactional
     public void join(JoinRequest joinRequest, List<MultipartFile> files) {
@@ -46,16 +51,16 @@ public class MemberService {
         return memberRepository.existsByNickname(nickname);
     }
 
-    public boolean existsByPhoneNumber(String phoneNumber) {
+    public boolean existsByPhoneNumber(Long phoneNumber) {
         return memberRepository.existsByPhoneNumber(phoneNumber);
     }
 
     @Transactional
     public void modify(ModifyRequest modifyRequest, Member member, List<MultipartFile> files) {
         member.modifyProfile(passwordEncoder.encode(modifyRequest.getPassword()),
-                        modifyRequest.getNickname(),
-                        modifyRequest.getPhoneNumber(),
-                        modifyRequest.getShoesSize()
+                modifyRequest.getNickname(),
+                modifyRequest.getPhoneNumber(),
+                modifyRequest.getShoesSize()
         );
 
         memberRepository.save(member);
@@ -80,5 +85,18 @@ public class MemberService {
 
     public List<String> getProfilePhoto(Long memberId) {
         return imageBridgeComponent.findAllFullPath(ImageType.MEMBER, memberId);
+    }
+
+    public List<BuyResponse> findMyBuyHistory(Member member) {
+        List<Buy> findByBuyMemberAll = buyRepository.findByMember(member);
+        List<BuyResponse> buyResponses = new ArrayList<>();
+
+        for (Buy buy : findByBuyMemberAll) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, buy.getShoes().getId());
+            BuyResponse buyResponse = BuyResponse.of(buy, fullPath);
+            buyResponses.add(buyResponse);
+        }
+
+        return buyResponses;
     }
 }

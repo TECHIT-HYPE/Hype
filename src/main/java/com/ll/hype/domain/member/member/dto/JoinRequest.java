@@ -34,8 +34,8 @@ public class JoinRequest {
     private String nickname; // 별명
 
     @NotBlank(message = "전화번호는 필수 항목입니다.")
-    @Pattern(regexp="^\\d{2,3}-\\d{3,4}-\\d{4}$", message="올바른 전화번호 형식을 입력해주세요.")
-    private String phoneNumber; // 010-1234-5678
+    @Pattern(regexp="^[0-9]+$", message="올바른 전화번호 형식을 입력해주세요.")
+    private Long phoneNumber;
 
     @NotNull(message = "생년월일는 필수 항목입니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

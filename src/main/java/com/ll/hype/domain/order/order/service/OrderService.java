@@ -17,8 +17,11 @@ import java.util.List;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -69,5 +72,27 @@ public class OrderService {
         orderRepository.save(order);
 
         return OrderResponse.of(order);
+    }
+
+    public void checkAmount(String tossId, String amountStr) {
+        Orders order = orderRepository.findByTossId(tossId)
+                .orElseThrow(() -> new IllegalArgumentException("찾는 주문이 없습니다."));
+
+        long amount = Long.parseLong(amountStr);
+
+        log.info("[OrderService.checkAmount] amount : " + amount);
+        log.info("[OrderService.checkAmount] Order amount : " + order.getOrderPrice());
+
+        if (amount != order.getOrderPrice()) {
+            throw new IllegalArgumentException("주문금액과 결제금액이 일치하지 않습니다.");
+        }
+    }
+
+    @Transactional
+    public void setPaymentComplete(String tossId) {
+        Orders order = orderRepository.findByTossId(tossId)
+                .orElseThrow(() -> new IllegalArgumentException("찾는 주문이 없습니다."));
+        log.info("[OrderService.setPaymentComplete] 여기까지는 오나?");
+        order.updatePaymentStatus(PaymentStatus.COMPLETE_PAYMENT);
     }
 }

@@ -8,6 +8,7 @@
 
   <!-- Form to update the question -->
   <form th:object="${customerQRequest}" th:action="@{/cs/question/update}" method="post">
+    <input type="hidden" name="_method" value="PUT">
     <input type="hidden" th:field="${question.id}"/>
 
     <!-- Add other form fields based on your requirements -->

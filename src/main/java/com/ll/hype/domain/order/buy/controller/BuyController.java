@@ -1,5 +1,6 @@
 package com.ll.hype.domain.order.buy.controller;
 
+import com.ll.hype.domain.order.buy.dto.request.BuyConfirmRequest;
 import com.ll.hype.domain.order.buy.dto.response.BuyFormResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuySizeInfoResponse;
@@ -10,12 +11,19 @@ import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -60,7 +68,6 @@ public class BuyController {
                          @RequestParam("size") int size,
                          CreateBuyRequest buyRequest,
                          Model model) {
-
         BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
         model.addAttribute("data", byShoesSizeMinPriceOne);
         return "domain/order/buy/bid_pricing";
@@ -71,11 +78,8 @@ public class BuyController {
                          @RequestParam("size") int size,
                          CreateBuyRequest buyRequest,
                          Model model) {
-
         BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
-        long round = Math.round(byShoesSizeMinPriceOne.getSale().getPrice() * 0.05);
         model.addAttribute("data", byShoesSizeMinPriceOne);
-        model.addAttribute("round", round);
         return "domain/order/buy/now_pricing";
     }
 
@@ -95,5 +99,18 @@ public class BuyController {
         OrderBuyResponse order = buyService.createBuyNow(buyRequest, user.getMember());
         model.addAttribute("order", order);
         return "domain/order/order/order_payment";
+    }
+
+    @PostMapping("/confirm")
+    public ResponseEntity<String> confirmBuy(@AuthenticationPrincipal UserPrincipal user,
+                                             @RequestBody BuyConfirmRequest buyRequest) {
+        long shoesId = buyRequest.getShoesId();
+        int size = buyRequest.getSize();
+
+        if (!buyService.confirmBuy(user.getMember(), shoesId, size)) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("이미 입찰 중인 신발 및 사이즈 입니다.");
+        }
+
+        return ResponseEntity.ok().body("입찰 가능");
     }
 }

@@ -46,7 +46,7 @@ public class Member extends BaseEntity {
     @Comment("회원 연락처")
     @NotNull
     @Column(unique = true)
-    private String phoneNumber;
+    private Long phoneNumber;
 
     @Comment("회원 생년월일")
     @NotNull
@@ -73,7 +73,7 @@ public class Member extends BaseEntity {
         this.role = role;
     }
 
-    public void modifyProfile(String encodedPassword, String nickname, String phoneNumber, Integer shoesSize) {
+    public void modifyProfile(String encodedPassword, String nickname, Long phoneNumber, Integer shoesSize) {
         this.password = encodedPassword;
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
