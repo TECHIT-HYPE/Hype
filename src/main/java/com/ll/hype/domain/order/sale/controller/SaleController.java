@@ -27,7 +27,6 @@ public class SaleController {
 
     // TODO
     // 신발리스트, 상세(1~3장) / 약관 동의, 입찰, 즉시거래, 거래체결 이미지 추가
-    // 즉시 판매는 status=COMPLETE
 
     // 신발상세 -> 사이즈 선택
     @PostMapping("/shoes")
@@ -53,25 +52,6 @@ public class SaleController {
         return "domain/order/sale/approve";
     }
 
-//    // 약관 동의 -> 판매가 결정
-//    @PostMapping("/shoes/approve")
-//    public String saleApproveSuccess(@RequestParam("shoesId") long shoesId,
-//                                     @RequestParam("size") int size,
-//                                     Model model) {
-//
-//        model.addAttribute("shoesId", shoesId);
-//        model.addAttribute("size", size);
-//        //즉시 구매가(최저 판매입찰가)
-//        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
-//        model.addAttribute("saleShoes", byShoesSizeMinPriceOne);
-//
-//        //즉시 판매가(최고 구매입찰가)
-//        SaleFormResponse byShoesSizeMaxPriceOne = saleService.findByShoesSizeMaxPriceOne(shoesId, size);
-//        model.addAttribute("buyShoes", byShoesSizeMaxPriceOne);
-//
-//        return "domain/order/sale/pricing";
-//    }
-
     // 약관 동의 -> 판매 타입: 판매 입찰
     @PostMapping("/shoes/bid")
     public String saleBid(@RequestParam("shoesId") long shoesId,
@@ -80,11 +60,11 @@ public class SaleController {
 
         //즉시 구매가 (최저 판매입찰가)
         BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
-        model.addAttribute("buyData", byShoesSizeMinPriceOne);
+        model.addAttribute("BuyFormResponse", byShoesSizeMinPriceOne);
 
         //즉시 판매가 (최고 구매입찰가)
         SaleFormResponse byShoesSizeMaxPriceOne = saleService.findByShoesSizeMaxPriceOne(shoesId, size);
-        model.addAttribute("saleData", byShoesSizeMaxPriceOne);
+        model.addAttribute("SaleFormResponse", byShoesSizeMaxPriceOne);
 
         return "domain/order/sale/bidPricing";
     }
@@ -96,11 +76,12 @@ public class SaleController {
 
         //즉시 구매가(최저 판매입찰가)
         BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
-        model.addAttribute("buyData", byShoesSizeMinPriceOne);
+        model.addAttribute("BuyFormResponse", byShoesSizeMinPriceOne);
 
         //즉시 판매가(최고 구매입찰가)
         SaleFormResponse byShoesSizeMaxPriceOne = saleService.findByShoesSizeMaxPriceOne(shoesId, size);
-        model.addAttribute("saleData", byShoesSizeMaxPriceOne);
+        model.addAttribute("SaleFormResponse", byShoesSizeMaxPriceOne);
+        System.out.println("saleNow 머가문제냐");
 
         return "domain/order/sale/nowPricing";
     }
@@ -121,12 +102,11 @@ public class SaleController {
     @PostMapping("/shoes/sale/now")
     public String createSaleNow(CreateSaleRequest saleRequest,
                                 @AuthenticationPrincipal UserPrincipal user,
-                                RedirectAttributes redirectAttributes) {
-
-
+                                Model model) {
+        System.out.println("createSaleNow 머가문제냐");
 
         SaleResponse saleResponse = saleService.createSaleNow(saleRequest, user.getMember());
-        redirectAttributes.addFlashAttribute("saleId", saleResponse.getId());
+        model.addAttribute("saleResponse", saleResponse);
 
         return "redirect:/order/sale/create";
     }
