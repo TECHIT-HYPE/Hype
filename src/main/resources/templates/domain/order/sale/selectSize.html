@@ -38,7 +38,6 @@
                         <input type="radio" id="size" name="size" th:value="${size}">
                         <div class="flex flex-col">
                             <p th:text="${size}"></p>
-<!--                            <p th:text="${shoes.sizeMap.get(size)}"></p>-->
                             <p th:if="${shoes.sizeMap.get(size) == 0}" th:text="'판매 입찰'"></p>
                             <p th:unless="${shoes.sizeMap.get(size) == 0}" th:text="${shoes.sizeMap.get(size)} + '원'"></p>
 
@@ -46,8 +45,35 @@
                     </div>
                 </th:block>
                 <br>
-                <input type="submit" value="판매하기">
+                <input type="submit" value="판매하기" onclick="checkAlreadyBid()">
             </div>
+            <script>
+                async function checkAlreadyBid() {
+
+                    var shoesId = document.querySelector('input[name="shoesId"]').value;
+                    var selectedSize = document.querySelector('input[name="size"]:checked').value;
+                    var data = {
+                        shoesId: shoesId,
+                        size: selectedSize
+                    };
+                    const csrfTokenHeaderName = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+                    const csrfTokenValue = document.querySelector("meta[name='_csrf']").getAttribute("content");
+
+                    const response =  await fetch('/sale/confirm', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            [csrfTokenHeaderName]: csrfTokenValue
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (response.status == 200) {document.getElementById("buyForm").submit();}
+                    if (response.status == 202) {alert("이미 입찰 중인 상품입니다.");}
+                    if (response.status == 400) {alert("알 수 없는 오류가 발생했습니다.");}
+
+                }
+            </script>
         </form>
     </div>
 </div>

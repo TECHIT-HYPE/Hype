@@ -1,8 +1,11 @@
 package com.ll.hype.domain.order.sale.controller;
 
+import com.ll.hype.domain.order.buy.dto.request.BuyConfirmRequest;
 import com.ll.hype.domain.order.buy.dto.response.BuyFormResponse;
 import com.ll.hype.domain.order.buy.service.BuyService;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.order.sale.dto.request.CreateSaleRequest;
+import com.ll.hype.domain.order.sale.dto.request.SaleConfirmRequest;
 import com.ll.hype.domain.order.sale.dto.response.SaleFormResponse;
 import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
 import com.ll.hype.domain.order.sale.dto.response.SaleSizeInfoResponse;
@@ -11,6 +14,8 @@ import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -81,7 +86,6 @@ public class SaleController {
         //즉시 판매가(최고 구매입찰가)
         SaleFormResponse byShoesSizeMaxPriceOne = saleService.findByShoesSizeMaxPriceOne(shoesId, size);
         model.addAttribute("SaleFormResponse", byShoesSizeMaxPriceOne);
-        System.out.println("saleNow 머가문제냐");
 
         return "domain/order/sale/nowPricing";
     }
@@ -103,12 +107,10 @@ public class SaleController {
     public String createSaleNow(CreateSaleRequest saleRequest,
                                 @AuthenticationPrincipal UserPrincipal user,
                                 Model model) {
-        System.out.println("createSaleNow 머가문제냐");
 
-        SaleResponse saleResponse = saleService.createSaleNow(saleRequest, user.getMember());
-        model.addAttribute("saleResponse", saleResponse);
-
-        return "redirect:/order/sale/create";
+        OrderResponse order = saleService.createSaleNow(saleRequest, user.getMember());
+        model.addAttribute("order", order);
+        return "redirect:/";
     }
 
     // 생성 완료: 판매 입찰 내역
@@ -119,5 +121,18 @@ public class SaleController {
         model.addAttribute("saleResponse", saleResponse);
 
         return "domain/order/sale/bidDetail";
+    }
+
+    @PostMapping("/confirm")
+    public ResponseEntity<String> confirmSale(@AuthenticationPrincipal UserPrincipal user,
+                                             @RequestBody SaleConfirmRequest saleRequest) {
+        long shoesId = saleRequest.getShoesId();
+        int size = saleRequest.getSize();
+
+        if (!saleService.confirmSale(user.getMember(), shoesId, size)) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("이미 입찰 중인 신발 및 사이즈 입니다.");
+        }
+
+        return ResponseEntity.ok().body("입찰 가능");
     }
 }

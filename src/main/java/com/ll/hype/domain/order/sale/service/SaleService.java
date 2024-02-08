@@ -3,6 +3,11 @@ package com.ll.hype.domain.order.sale.service;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
+import com.ll.hype.domain.order.order.entity.OrderStatus;
+import com.ll.hype.domain.order.order.entity.Orders;
+import com.ll.hype.domain.order.order.entity.PaymentStatus;
+import com.ll.hype.domain.order.order.repository.OrderRepository;
 import com.ll.hype.domain.order.sale.dto.request.CreateSaleRequest;
 import com.ll.hype.domain.order.sale.dto.response.SaleFormResponse;
 import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
@@ -35,6 +40,7 @@ public class SaleService {
     private final BuyRepository buyRepository;
     private final ShoesRepository shoesRepository;
     private final ShoesSizeRepository shoesSizeRepository;
+    private final OrderRepository orderRepository;
     private final ImageBridgeComponent imageBridgeComponent;
     public ShoesResponse findByShoesId(Long shoesId) {
         Shoes shoes = shoesRepository.findById(shoesId)
@@ -72,14 +78,13 @@ public class SaleService {
     public SaleFormResponse findByShoesSizeMaxPriceOne(Long id, int size) {
         long price = 0L;
         Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
-        Optional<Buy> findByMaxPrice = buyRepository.findHighestPriceBuy(shoes, size);
+        Optional<Buy> highestPriceBuy = buyRepository.findHighestPriceBuy(shoes, size);
 
-        if (findByMaxPrice.isPresent()) {
-            price = findByMaxPrice.get().getPrice();
+        if (highestPriceBuy.isPresent()) {
+            price = highestPriceBuy.get().getPrice();
         }
 
-        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES,
-                shoes.getId());
+        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
 
         return SaleFormResponse.of(shoes, size, price, fullPath);
     }
@@ -110,7 +115,7 @@ public class SaleService {
     }
 
     //즉시 판매 생성
-    public SaleResponse createSaleNow(CreateSaleRequest saleRequest, Member member) {
+    public OrderResponse createSaleNow(CreateSaleRequest saleRequest, Member member) {
         Shoes shoes = shoesRepository.findById(saleRequest.getShoesId())
                 .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
 
@@ -133,6 +138,36 @@ public class SaleService {
 
         saleRepository.save(sale);
 
-        return SaleResponse.of(sale, fullPath);
+        Buy buy = buyRepository.findHighestPriceBuy(shoes, saleRequest.getSize())
+                .orElseThrow(() -> new IllegalArgumentException("구매입찰 내역을 찾을 수 없습니다."));
+
+        buy.updateStatus(Status.BID_COMPLETE);
+
+        if (!buy.getPrice().equals(sale.getPrice())) {
+            throw new IllegalArgumentException("거래 성사 금액이 일치하지 않습니다.");
+        }
+
+        Orders order = Orders.builder()
+                .buy(buy)
+                .sale(sale)
+                .orderDate(LocalDate.now())
+                .orderPrice(buy.getPrice())
+                .receiverName(buy.getReceiverName())
+                .receiverPhoneNumber(buy.getReceiverPhoneNumber())
+                .receiverAddress(buy.getReceiverAddress())
+                .status(OrderStatus.TRADING)
+                .paymentStatus(PaymentStatus.WAIT_PAYMENT)
+                .build();
+        orderRepository.save(order);
+
+        return OrderResponse.of(order, fullPath);
     }
+
+    public boolean confirmSale(Member member, Long id, int size) {
+        Optional<Sale> findOne = saleRepository.findByShoesIdAndMemberAndShoesSizeSize(id, member, size);
+
+        if (findOne.isEmpty()) {return true;}
+        return false;
+    }
+
 }
