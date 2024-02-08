@@ -15,6 +15,7 @@ import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.domain.order.sale.repository.SaleRepository;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
@@ -57,39 +58,33 @@ public class OrderService {
     // + 금액, 모델명, 사이즈가 다르면 거래불가
     // + !! buyResponse 주문 저장되면 status 변경
 
-    public OrderResponse createOrder(OrderRequest orderRequest, SaleResponse saleResponse, Member member) {
-        Shoes shoes = shoesRepository.findById(saleResponse.getShoes().getId())
-                .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
-
-        Buy buy = buyRepository.findHighestPriceBuy(shoes, saleResponse.getShoesSize().getSize()) //orderRequest.getBuy().getId()
-                .orElseThrow(() -> new IllegalArgumentException("조회된 구매 입찰이 없습니다."));
-
-        Sale sale = saleRepository.findById(saleResponse.getId())
-                .orElseThrow(() -> new IllegalArgumentException("조회된 판매 입찰이 없습니다."));
-
-        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, saleResponse.getShoes().getId());
-
-//내가 판매할건데 이미 구매입찰 올라와있는 이 가격에 팔겠다 orderPrice=buy.getPrice
-//        if (!buy.getPrice().equals(sale.getPrice())) {
-//            throw new IllegalArgumentException("거래 성사 금액이 일치하지 않습니다.");
-//        }
-
-        Orders order = Orders.builder()
-                .buy(buy)
-                .sale(sale)
-                .orderDate(LocalDate.now())
-                .orderPrice(buy.getPrice())
-                .receiverName(buy.getReceiverName())
-                .receiverPhoneNumber(buy.getReceiverPhoneNumber())
-                .receiverAddress(buy.getReceiverAddress())
-                .status(OrderStatus.TRADING)
-                .paymentStatus(PaymentStatus.WAIT_PAYMENT)
-                .build();
-        orderRepository.save(order);
-
-//        order.updateTossId(order.createTossId());
-        return OrderResponse.of(order, fullPath);
-    }
+//    public OrderResponse createOrder(OrderRequest orderRequest, SaleResponse saleResponse, Member member) {
+//        Shoes shoes = shoesRepository.findById(saleResponse.getShoes().getId())
+//                .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
+//
+//        Buy buy = buyRepository.findHighestPriceBuy(shoes, saleResponse.getShoesSize().getSize()) //orderRequest.getBuy().getId()
+//                .orElseThrow(() -> new IllegalArgumentException("조회된 구매 입찰이 없습니다."));
+//
+//        Sale sale = saleRepository.findById(saleResponse.getId())
+//                .orElseThrow(() -> new IllegalArgumentException("조회된 판매 입찰이 없습니다."));
+//
+//        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, saleResponse.getShoes().getId());
+//
+//        Orders order = Orders.builder()
+//                .buy(buy)
+//                .sale(sale)
+//                .orderDate(LocalDate.now())
+//                .orderPrice(buy.getPrice())
+//                .receiverName(buy.getReceiverName())
+//                .receiverPhoneNumber(buy.getReceiverPhoneNumber())
+//                .receiverAddress(buy.getReceiverAddress())
+//                .status(OrderStatus.TRADING)
+//                .paymentStatus(PaymentStatus.WAIT_PAYMENT)
+//                .build();
+//        orderRepository.save(order);
+//
+//        return OrderResponse.of(order, fullPath);
+//    }
 
     public void checkAmount(String tossId, String amountStr) {
         Orders order = orderRepository.findByTossId(tossId)

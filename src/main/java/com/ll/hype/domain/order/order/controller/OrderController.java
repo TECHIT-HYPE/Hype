@@ -156,16 +156,16 @@ public class OrderController {
     }
 
     // 즉시 판매 -> 오더생성
-    @PostMapping("/sale/create")
-    public String createOrder(OrderRequest orderRequest,
-                              @ModelAttribute("saleResponse") SaleResponse saleResponse,
-                              @AuthenticationPrincipal UserPrincipal user,
-                              Model model) {
-//        BuyResponse buyResponse = buyService.findByBuyId(orderRequest.getBuy().getId());
-//        model.addAttribute("buyData", buyResponse);
-
-        OrderResponse orderResponse = orderService.createOrder(orderRequest, saleResponse, user.getMember());
-        model.addAttribute("orderResponse", orderResponse);
-        return "domain/order/orderDetail";
-    }
+//    @PostMapping("/sale/create")
+//    public String createOrder(OrderRequest orderRequest,
+//                              @ModelAttribute("saleResponse") SaleResponse saleResponse,
+//                              @AuthenticationPrincipal UserPrincipal user,
+//                              Model model) {
+////        BuyResponse buyResponse = buyService.findByBuyId(orderRequest.getBuy().getId());
+////        model.addAttribute("buyData", buyResponse);
+//
+//        OrderResponse orderResponse = orderService.createOrder(orderRequest, saleResponse, user.getMember());
+//        model.addAttribute("orderResponse", orderResponse);
+//        return "domain/order/orderDetail";
+//    }
 }
