@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -36,15 +37,20 @@ public class SaleService {
     private final ShoesSizeRepository shoesSizeRepository;
     private final ImageBridgeComponent imageBridgeComponent;
     public ShoesResponse findByShoesId(Long shoesId) {
-        return shoesService.findById(shoesId);
+        Shoes shoes = shoesRepository.findById(shoesId)
+                .orElseThrow(() -> new IllegalArgumentException("조회된 객체가 없습니다."));
+        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
+
+        return ShoesResponse.of(shoes, fullPath);
     }
 
     // 판매 입찰 조회
     public SaleResponse findById(long saleId) {
         Sale sale = saleRepository.findById(saleId)
             .orElseThrow(() -> new IllegalArgumentException("조회된 판매 입찰이 없습니다."));
+        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, sale.getShoes().getId());
 
-        return SaleResponse.of(sale);
+        return SaleResponse.of(sale, fullPath);
     }
 
     // 사이즈별 최고가
@@ -57,7 +63,6 @@ public class SaleService {
         for (ShoesSize shoesSize : shoes.getSizes()) {
             sizeMap.put(shoesSize.getSize(), 0L);
         }
-
         for (Buy buy : findByMaxPrice) {
             sizeMap.put(buy.getShoesSize().getSize(), buy.getPrice());
         }
@@ -65,12 +70,18 @@ public class SaleService {
     }
 
     public SaleFormResponse findByShoesSizeMaxPriceOne(Long id, int size) {
+        long price = 0L;
         Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
-        Buy findByMaxPrice = buyRepository.findHighestPriceBuy(shoes, size);
-        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES,
-                findByMaxPrice.getShoes().getId());
+        Optional<Buy> findByMaxPrice = buyRepository.findHighestPriceBuy(shoes, size);
 
-        return SaleFormResponse.of(findByMaxPrice, fullPath);
+        if (findByMaxPrice.isPresent()) {
+            price = findByMaxPrice.get().getPrice();
+        }
+
+        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES,
+                shoes.getId());
+
+        return SaleFormResponse.of(shoes, size, price, fullPath);
     }
 
     // 판매 입찰 생성
@@ -80,6 +91,8 @@ public class SaleService {
 
         ShoesSize shoesSize = shoesSizeRepository.findByShoesAndSize(shoes, saleRequest.getSize())
                 .orElseThrow(() -> new IllegalArgumentException("조회된 사이즈 정보가 없습니다."));
+
+        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
 
         Sale sale = Sale.builder()
                 .shoes(shoes)
@@ -93,7 +106,7 @@ public class SaleService {
 
         saleRepository.save(sale);
 
-        return SaleResponse.of(sale);
+        return SaleResponse.of(sale, fullPath);
     }
 
     //즉시 판매 생성
@@ -104,18 +117,22 @@ public class SaleService {
         ShoesSize shoesSize = shoesSizeRepository.findByShoesAndSize(shoes, saleRequest.getSize())
                 .orElseThrow(() -> new IllegalArgumentException("조회된 사이즈 정보가 없습니다."));
 
+        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
+
         Sale sale = Sale.builder()
                 .shoes(shoes)
                 .shoesSize(shoesSize)
                 .member(member)
                 .price(saleRequest.getPrice())
                 .startDate(LocalDate.now())
-                .endDate(LocalDate.now().plusDays(saleRequest.getEndDate()))
+                .endDate(LocalDate.now())
+                .address(saleRequest.getAddress())
                 .status(Status.BID_COMPLETE)
+                .account(saleRequest.getAccount())
                 .build();
 
         saleRepository.save(sale);
 
-        return SaleResponse.of(sale);
+        return SaleResponse.of(sale, fullPath);
     }
 }
