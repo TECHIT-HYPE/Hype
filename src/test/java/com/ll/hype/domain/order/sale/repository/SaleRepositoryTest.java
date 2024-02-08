@@ -25,14 +25,14 @@ class SaleRepositoryTest {
         Shoes shoes = shoesRepository.findById(1L).get();
         int size = 260;
 
-        Sale sale = saleRepository.findLowestPriceSale(shoes, size);
+        Sale sale = saleRepository.findLowestPriceSale(shoes, size).get();
 
         System.out.println("sale.getStatus() : " + sale.getStatus());
 
         sale.updateStatus(Status.BID_COMPLETE);
         saleRepository.saveAndFlush(sale);
 
-        Sale sale2 = saleRepository.findLowestPriceSale(shoes, size);
+        Sale sale2 = saleRepository.findLowestPriceSale(shoes, size).get();
         System.out.println("sale2.getStatus() : " + sale2.getStatus());
 
 
