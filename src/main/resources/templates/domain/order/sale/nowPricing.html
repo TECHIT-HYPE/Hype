@@ -10,15 +10,15 @@
         <div class="header text-center mb-5">
             <div class="flex">
                 <ul>
-                    <li th:each="path : ${saleData.fullPath}">
+                    <li th:each="path : ${SaleFormResponse.fullPath}">
                         <img th:src="${path}" class="w-20"/>
                     </li>
                 </ul>
                 <div>
-                    <p class="text-l" th:text="${saleData.buy.shoes.model}"></p>
-                    <p class="text-l" th:text="${saleData.buy.shoes.korName}"></p>
-                    <p class="text-l" th:text="${saleData.buy.shoes.engName}"></p>
-                    <p class="text-l" th:text="${saleData.buy.shoesSize.size}"></p>
+                    <p class="text-l" th:text="${SaleFormResponse.shoes.model}"></p>
+                    <p class="text-l" th:text="${SaleFormResponse.shoes.korName}"></p>
+                    <p class="text-l" th:text="${SaleFormResponse.shoes.engName}"></p>
+                    <p class="text-l" th:text="${SaleFormResponse.size}"></p>
                 </div>
             </div>
             <hr>
@@ -28,8 +28,8 @@
                     <th>즉시 판매가</th>
                 </tr>
                 <tr>
-                    <td th:text="${buyData.sale.price}"></td>
-                    <td th:text="${saleData.buy.price}"></td>
+                    <td th:text="${BuyFormResponse.price}"></td>
+                    <td th:text="${SaleFormResponse.price}"></td>
                 </tr>
             </table>
 
@@ -37,29 +37,29 @@
             <div>
                 <div style="display: flex; justify-content: space-around; align-items: center;">
                     <form th:action="@{|/sale/shoes/bid|}" method="post">
-                        <input type="hidden" name="shoesId" th:value="${saleData.buy.shoes.id}"/>
-                        <input type="hidden" name="size" th:value="${saleData.buy.shoesSize.size}"/>
+                        <input type="hidden" name="shoesId" th:value="${SaleFormResponse.shoes.id}"/>
+                        <input type="hidden" name="size" th:value="${SaleFormResponse.size}"/>
                         <button type="submit">판매입찰</button>
                     </form>
 
                     <form th:action="@{|/sale/shoes/now|}" method="post">
-                        <input type="hidden" name="shoesId" th:value="${saleData.buy.shoes.id}"/>
-                        <input type="hidden" name="size" th:value="${saleData.buy.shoesSize.size}"/>
+                        <input type="hidden" name="shoesId" th:value="${SaleFormResponse.shoes.id}"/>
+                        <input type="hidden" name="size" th:value="${SaleFormResponse.size}"/>
                         <button type="submit" disabled>즉시판매</button>
                     </form>
                 </div>
 
-                <form th:action="@{|/order/sale/create|}" method="post" id="now">
-                    <input type="hidden" name="shoesId" th:value="${saleData.buy.shoes.id}"/>
-                    <input type="hidden" name="size" th:value="${saleData.buy.shoesSize.size}"/>
-                    <input type="hidden" name="price" th:value="${saleData.buy.price}"/>
-                    <input type="hidden" name="buyId" th:value="${saleData.buy.id}"/>
-                    <input type="hidden" name="saleId" th:value="${buyData.sale.id}"/>
+                <form th:action="@{|/sale/shoes/sale/now|}" method="post" id="now">
+                    <input type="hidden" name="shoesId" th:value="${SaleFormResponse.shoes.id}"/>
+                    <input type="hidden" name="size" th:value="${SaleFormResponse.size}"/>
+                    <input type="hidden" name="price" th:value="${SaleFormResponse.price}"/>
+                    <input type="hidden" name="buyId" th:value="${SaleFormResponse.id}"/>
+                    <input type="hidden" name="saleId" th:value="${BuyFormResponse.id}"/>
 
                     <div>
                         <label id="immediateSale">
                             <label for="immediateSalePrice">즉시 판매가: </label>
-                            <span id="immediateSalePrice" th:text="${saleData.buy.price}"></span>원
+                            <span id="immediateSalePrice" th:text="${SaleFormResponse.price}"></span>원
                             <p id="immediateSaleFee">수수료: -원</p>
                             <p>배송비 선불 ・ 판매자 부담</p>
                             <hr>
