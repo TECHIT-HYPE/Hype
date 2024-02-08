@@ -61,10 +61,12 @@ public class SaleController {
     @PostMapping("/shoes/bid")
     public String saleBid(@RequestParam("shoesId") long shoesId,
                           @RequestParam("size") int size,
+                          @AuthenticationPrincipal UserPrincipal user,
+
                           Model model) {
 
         //즉시 구매가 (최저 판매입찰가)
-        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
+        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size, user.getMember());
         model.addAttribute("BuyFormResponse", byShoesSizeMinPriceOne);
 
         //즉시 판매가 (최고 구매입찰가)
@@ -77,10 +79,11 @@ public class SaleController {
     @PostMapping("/shoes/now")
     public String saleNow(@RequestParam("shoesId") Long shoesId,
                           @RequestParam("size") int size,
+                          @AuthenticationPrincipal UserPrincipal user,
                           Model model) {
 
         //즉시 구매가(최저 판매입찰가)
-        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
+        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size, user.getMember());
         model.addAttribute("BuyFormResponse", byShoesSizeMinPriceOne);
 
         //즉시 판매가(최고 구매입찰가)

@@ -168,7 +168,7 @@ public class BuyController {
                                @RequestParam("nowPrice") Long nowPrice,
                                @AuthenticationPrincipal UserPrincipal user,
                                Model model) {
-        OrderBuyResponse modifyBuyNow = buyService.createModifyBuyNow(id, nowPrice, user.getMember());
+        OrderResponse modifyBuyNow = buyService.createModifyBuyNow(id, nowPrice, user.getMember());
         model.addAttribute("order", modifyBuyNow);
         return "domain/order/order/order_payment";
     }

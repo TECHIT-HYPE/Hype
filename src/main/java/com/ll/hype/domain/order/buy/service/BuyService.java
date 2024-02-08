@@ -1,10 +1,10 @@
 package com.ll.hype.domain.order.buy.service;
 
 import com.ll.hype.domain.address.address.entity.Address;
-import com.ll.hype.domain.address.address.repository.AddressRepository;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.order.buy.dto.response.BuyFormResponse;
 import com.ll.hype.domain.order.buy.dto.request.CreateBuyRequest;
+import com.ll.hype.domain.order.buy.dto.response.BuyModifyPriceResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuySizeInfoResponse;
 import com.ll.hype.domain.order.buy.entity.Buy;
@@ -22,8 +22,10 @@ import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesSizeRepository;
 import com.ll.hype.global.enums.Status;
+import com.ll.hype.global.exception.custom.EntityNotFoundException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
+import com.ll.hype.domain.order.buy.util.validate.BuyValidator;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -41,12 +43,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class BuyService {
     private final BuyRepository buyRepository;
     private final SaleRepository saleRepository;
-
     private final ShoesRepository shoesRepository;
     private final ShoesSizeRepository shoesSizeRepository;
     private final ImageBridgeComponent imageBridgeComponent;
     private final OrderRepository orderRepository;
-    private final AddressRepository addressRepository;
 
     /**
      * Shoes Id로 Shoes 조회
@@ -56,7 +56,7 @@ public class BuyService {
      */
     public ShoesResponse findByShoesId(Long shoesId) {
         Shoes shoes = shoesRepository.findById(shoesId)
-                .orElseThrow(() -> new IllegalArgumentException("조회된 객체가 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("조회된 객체가 없습니다."));
 
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
         return ShoesResponse.of(shoes, fullPath);
@@ -69,8 +69,8 @@ public class BuyService {
      * @return BuyResponse
      */
     public BuyResponse findByBuyId(long id) {
-        Buy orderRequest = buyRepository.findById(id).get();
-        log.info("[BuyService.findById] id : " + orderRequest.getId());
+        Buy orderRequest = buyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("조회된 구매 내역이 없습니다."));
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, orderRequest.getShoes().getId());
         return BuyResponse.of(orderRequest, fullPath);
     }
@@ -97,9 +97,9 @@ public class BuyService {
      * @param id
      * @return BuySizeInfoResponse
      */
-    public BuySizeInfoResponse findByShoesSizeMinPriceAll(Long id) {
-        Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
-        List<Sale> findByMinPrice = saleRepository.findLowestPriceByShoesId(shoes);
+    public BuySizeInfoResponse findByShoesSizeMinPriceAll(Long id, Member member) {
+        Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("조회된 신발이 없습니다."));
+        List<Sale> findByMinPrice = saleRepository.findLowestPriceByShoesId(shoes, member);
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
         Map<Integer, Long> sizeMap = new LinkedHashMap<>();
 
@@ -122,14 +122,14 @@ public class BuyService {
      * @param size
      * @return BuyFormResponse
      */
-    public BuyFormResponse findByShoesSizeMinPriceOne(Long id, int size) {
+    public BuyFormResponse findByShoesSizeMinPriceOne(Long id, int size, Member member) {
         long price = 0L;
-        Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
+        Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("조회된 신발이 없습니다."));
 
-        Optional<Sale> lowestPriceSale = saleRepository.findLowestPriceSale(shoes, size);
+        Optional<Sale> opSale = saleRepository.findLowestPriceSale(shoes, size, member);
 
-        if (lowestPriceSale.isPresent()) {
-            price = lowestPriceSale.get().getPrice();
+        if (opSale.isPresent()) {
+            price = opSale.get().getPrice();
         }
 
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES,
@@ -148,10 +148,10 @@ public class BuyService {
     @Transactional
     public BuyResponse createBuyBid(CreateBuyRequest buyRequest, Member member) {
         Shoes shoes = shoesRepository.findById(buyRequest.getShoesId())
-                .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("조회된 신발이 없습니다."));
 
         ShoesSize shoesSize = shoesSizeRepository.findByShoesAndSize(shoes, buyRequest.getSize())
-                .orElseThrow(() -> new IllegalArgumentException("조회된 사이즈 정보가 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("조회된 사이즈 정보가 없습니다."));
 
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
 
@@ -181,7 +181,7 @@ public class BuyService {
     }
 
     /**
-     * 즉시 구매 시 Order 객체 생성
+     * 입찰 페이지에서 즉시 구매 시 Order 객체 생성
      *
      * @param buyRequest
      * @param member
@@ -190,10 +190,10 @@ public class BuyService {
     @Transactional
     public OrderResponse createBuyNow(CreateBuyRequest buyRequest, Member member) {
         Shoes shoes = shoesRepository.findById(buyRequest.getShoesId())
-                .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("조회된 신발이 없습니다."));
 
         ShoesSize shoesSize = shoesSizeRepository.findByShoesAndSize(shoes, buyRequest.getSize())
-                .orElseThrow(() -> new IllegalArgumentException("조회된 사이즈 정보가 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("조회된 사이즈 정보가 없습니다."));
 
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
 
@@ -219,12 +219,11 @@ public class BuyService {
 
         buyRepository.save(buy);
 
-        Sale sale = saleRepository.findLowestPriceSale(shoes, buyRequest.getSize())
-                .orElseThrow(() -> new IllegalArgumentException("판매입찰 내역을 찾을 수 없습니다."));
+        Sale sale = saleRepository.findLowestPriceSale(shoes, buyRequest.getSize(), member)
+                .orElseThrow(() -> new EntityNotFoundException("판매입찰 내역을 찾을 수 없습니다."));
 
-        if (!buy.getPrice().equals(sale.getPrice())) {
-            throw new IllegalArgumentException("거래 성사 금액이 일치하지 않습니다.");
-        }
+        BuyValidator.canNotMyDataOrder(sale, member);
+        BuyValidator.checkBuyPriceEqualsSalePrice(buy.getPrice(), sale.getPrice());
 
         Orders order = Orders.builder()
                 .buy(buy)
@@ -243,9 +242,15 @@ public class BuyService {
         return OrderResponse.of(order, fullPath);
     }
 
-    public BuyResponse findById(long highestBidId) {
-        Buy buy = buyRepository.findById(highestBidId)
-                .orElseThrow(() -> new IllegalArgumentException("조회된 구매입찰 내역이 없습니다."));
+    /**
+     * BuyId로 데이터 조회
+     *
+     * @param buyId
+     * @return BuyResponse
+     */
+    public BuyResponse findById(long buyId) {
+        Buy buy = buyRepository.findById(buyId)
+                .orElseThrow(() -> new EntityNotFoundException("조회된 구매입찰 내역이 없습니다."));
 
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES,
                 buy.getShoes().getId());
@@ -253,15 +258,111 @@ public class BuyService {
         return BuyResponse.of(buy, fullPath);
     }
 
+    /**
+     * 사이즈 선택 시 이미 자신이 입찰 중인 상품인지 확인
+     *
+     * @param member
+     * @param id
+     * @param size
+     * @return boolean
+     */
     public boolean confirmBuy(Member member, Long id, int size) {
-//        Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
-        Optional<Buy> findOne = buyRepository.findByShoesIdAndMemberAndShoesSizeSize(id, member
-                , size);
+        Optional<Buy> findOne = buyRepository.findByShoesIdAndMemberAndShoesSizeSizeAndStatus(id, member, size, Status.BIDDING);
+        return findOne.isEmpty();
+    }
 
-        if (findOne.isEmpty()) {
-            return true;
+    /**
+     * 입찰 금액 수정 폼 데이터 전송
+     *
+     * @param id
+     * @param member
+     * @return BuyModifyPriceResponse
+     */
+    public BuyModifyPriceResponse findBuyIdAndMember(Long id, Member member) {
+        Buy buy = buyRepository.findByIdAndMember(id, member)
+                .orElseThrow(() -> new EntityNotFoundException("조회된 구매 입찰 내역이 없습니다."));
+
+        BuyValidator.checkUserMatch(buy, member);
+
+        Long minPrice = 0L;
+        Optional<Sale> findSale =
+                saleRepository.findLowestPriceSale(buy.getShoes(), buy.getShoesSize().getSize(), member);
+
+        if (findSale.isPresent()) {
+            minPrice = findSale.get().getPrice();
         }
 
-        return false;
+        return BuyModifyPriceResponse.of(buy, minPrice);
+    }
+
+    /**
+     * 입찰 금액 수정
+     *
+     * @param id
+     * @param price
+     * @param member
+     */
+    @Transactional
+    public void updatePrice(Long id, Long price, Member member) {
+        Buy buy = buyRepository.findByIdAndMember(id, member)
+                .orElseThrow(() -> new EntityNotFoundException("조회된 구매 입찰 내역이 없습니다."));
+        BuyValidator.checkUserMatch(buy, member);
+        buy.updatePrice(price);
+    }
+
+    /**
+     * 구매 입찰 삭제
+     *
+     * @param id
+     * @param member
+     */
+    @Transactional
+    public void deleteBuy(Long id, Member member) {
+        Buy buy = buyRepository.findByIdAndMember(id, member)
+                .orElseThrow(() -> new EntityNotFoundException("조회된 구매 입찰 내역이 없습니다."));
+        BuyValidator.checkUserMatch(buy, member);
+        buyRepository.delete(buy);
+    }
+
+    /**
+     * 입찰 금액 수정페이지 내 즉시 구매 기능
+     *
+     * @param id
+     * @param nowPrice
+     * @param member
+     * @return OrderBuyResponse
+     */
+    @Transactional
+    public OrderResponse createModifyBuyNow(Long id, Long nowPrice, Member member) {
+        Buy buy = buyRepository.findByIdAndMember(id, member)
+                .orElseThrow(() -> new EntityNotFoundException("조회된 구매 입찰 내역이 없습니다."));
+
+        BuyValidator.checkUserMatch(buy, member);
+
+        Sale sale = saleRepository.findLowestPriceSale(buy.getShoes(), buy.getShoesSize().getSize(), member)
+                .orElseThrow(() -> new EntityNotFoundException("판매입찰 내역을 찾을 수 없습니다."));
+
+        BuyValidator.canNotMyDataOrder(sale, member);
+        BuyValidator.checkBuyPriceEqualsSalePrice(nowPrice, sale.getPrice());
+
+        buy.updatePrice(nowPrice);
+
+        Orders order = Orders.builder()
+                .buy(buy)
+                .sale(sale)
+                .orderDate(LocalDate.now())
+                .orderPrice(buy.getPrice())
+                .receiverName(buy.getReceiverName())
+                .receiverPhoneNumber(buy.getReceiverPhoneNumber())
+                .receiverAddress(buy.getReceiverAddress())
+                .status(OrderStatus.TRADING)
+                .paymentStatus(PaymentStatus.WAIT_PAYMENT)
+                .build();
+        orderRepository.save(order);
+
+        order.updateTossId(order.createTossId());
+
+        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, buy.getShoes().getId());
+        return OrderResponse.of(order, fullPath);
     }
 }
