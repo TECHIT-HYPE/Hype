@@ -31,7 +31,7 @@ public interface BuyRepository extends JpaRepository<Buy, Long> {
             "AND b.price = (SELECT MAX(bb.price) FROM Buy bb " +
             "WHERE bb.shoes = :shoes " +
             "AND bb.shoesSize.size = :size)")
-    Buy findHighestPriceBuy(@Param("shoes") Shoes shoes, @Param("size") int size);
+    Optional<Buy> findHighestPriceBuy(@Param("shoes") Shoes shoes, @Param("size") int size);
 
     Optional<Buy> findByShoesIdAndMemberAndShoesSizeSize(Long id, Member member, int size);
 
