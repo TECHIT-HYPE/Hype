@@ -1,6 +1,7 @@
 package com.ll.hype.domain.social.social.entity;
 
 import com.ll.hype.domain.member.member.entity.Member;
+import com.ll.hype.domain.social.social.dto.SocialUpdateRequest;
 import com.ll.hype.global.jpa.BaseEntity;
 import com.ll.hype.domain.social.socialcomment.entity.SocialComment;
 import jakarta.persistence.CascadeType;
@@ -13,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,4 +35,8 @@ public class Social extends BaseEntity {
 
     @OneToMany(mappedBy = "social", cascade = CascadeType.ALL)
     private List<SocialComment> socialCommentsList = new ArrayList<>();
+
+    public void updateSocial(String content) {
+        this.content = content;
+    }
 }

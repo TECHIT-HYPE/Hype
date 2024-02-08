@@ -58,7 +58,7 @@
                     <div class="vertical-dots" th:if="${#authentication.principal.username eq detailDto.getMember().getEmail()}">
                         <div class="dropdown">
                             <a th:href="@{'/social/feed/delete/' + ${detailDto.socialId}}" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
-                            <a href="#">수정</a>
+                            <a th:href="@{'/social/feed/update/' + ${detailDto.socialId}}">수정</a>
                         </div>
                     </div>
 

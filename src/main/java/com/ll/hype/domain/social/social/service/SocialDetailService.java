@@ -11,6 +11,7 @@ import com.ll.hype.global.s3.image.imagebridge.repository.ImageBridgeRepository;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -46,6 +47,14 @@ public class SocialDetailService {
     public void delete(Long socialId) {
         imageBridgeComponent.delete(ImageType.SOCIAL, socialId);
         socialRepository.deleteById(socialId);
+    }
+
+    public void update(SocialDetailResponse socialDetailResponse, List<MultipartFile> files) {
+        Social social = toEntity(socialDetailResponse);
+
+        socialRepository.save(social);
+
+        imageBridgeComponent.save(ImageType.SOCIAL, social.getId(), files);
     }
 
     private Social toEntity(SocialDetailResponse socialDetailResponse) {
