@@ -1,5 +1,7 @@
 package com.ll.hype.domain.order.sale.repository;
 
+import com.ll.hype.domain.member.member.entity.Member;
+import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
@@ -24,4 +26,10 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             "AND s.price = (SELECT MIN(ss.price) FROM Sale ss WHERE ss.shoes = :shoes AND ss.shoesSize.size = :size)"+
             "AND s.status = 'BIDDING'")
     Optional<Sale> findLowestPriceSale(@Param("shoes") Shoes shoes, @Param("size") int size);
+
+    Optional<Sale> findByShoesIdAndMemberAndShoesSizeSize(Long id, Member member, int size);
+
+    @Query("SELECT s FROM Sale s " +
+            "ORDER BY s.createDate DESC")
+    List<Sale> findByMember(Member member);
 }
