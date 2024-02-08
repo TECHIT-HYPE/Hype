@@ -35,6 +35,24 @@
                     <p class="text-sm">상태 : <span th:text="${buy.status}"></span></p>
                 </div>
             </div>
+            <!-- 추가된 부분 -->
+            <div class="flex flex-col" th:if="${buy.status == T(com.ll.hype.global.enums.Status).BIDDING}">
+                <form th:action="@{|/buy/modify|}" method="post">
+                    <input type="hidden" name="id" th:value="${buy.id}"/>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        입찰 금액 변경
+                    </button>
+                </form>
+
+                <form th:action="@{|/buy/delete|}" method="post" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="id" th:value="${buy.id}"/>
+                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
+                        입찰 취소
+                    </button>
+                </form>
+            </div>
+            <!-- 추가된 부분 끝 -->
         </div>
     </div>
 </div>
