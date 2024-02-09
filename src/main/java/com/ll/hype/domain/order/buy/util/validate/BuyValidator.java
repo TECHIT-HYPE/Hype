@@ -10,7 +10,7 @@ public class BuyValidator {
      * Buy Member와 현재 로그인 정보가 일치하는지 확인
      */
     public static void checkUserMatch(Buy buy, Member member) {
-        if (!buy.getId().equals(member.getId())) {
+        if (!buy.getMember().getId().equals(member.getId())) {
             throw new UserMismatchException("회원정보가 일치하지 않습니다.");
         }
     }
