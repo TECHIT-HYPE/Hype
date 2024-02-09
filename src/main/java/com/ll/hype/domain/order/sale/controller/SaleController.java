@@ -61,10 +61,11 @@ public class SaleController {
     @PostMapping("/shoes/bid")
     public String saleBid(@RequestParam("shoesId") long shoesId,
                           @RequestParam("size") int size,
+                          @AuthenticationPrincipal UserPrincipal user,
                           Model model) {
 
         //즉시 구매가 (최저 판매입찰가)
-        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
+        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size, user.getMember());
         model.addAttribute("BuyFormResponse", byShoesSizeMinPriceOne);
 
         //즉시 판매가 (최고 구매입찰가)
@@ -73,14 +74,16 @@ public class SaleController {
 
         return "domain/order/sale/bidPricing";
     }
+
     // 약관 동의 -> 판매 타입: 즉시 판매
     @PostMapping("/shoes/now")
     public String saleNow(@RequestParam("shoesId") Long shoesId,
                           @RequestParam("size") int size,
+                          @AuthenticationPrincipal UserPrincipal user,
                           Model model) {
 
         //즉시 구매가(최저 판매입찰가)
-        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size);
+        BuyFormResponse byShoesSizeMinPriceOne = buyService.findByShoesSizeMinPriceOne(shoesId, size, user.getMember());
         model.addAttribute("BuyFormResponse", byShoesSizeMinPriceOne);
 
         //즉시 판매가(최고 구매입찰가)
@@ -115,7 +118,7 @@ public class SaleController {
 
     // 생성 완료: 판매 입찰 내역
     @GetMapping("/shoes/sale/bid/detail")
-    public String saleBidDetail(@ModelAttribute("saleId")Long saleId, Model model) {
+    public String saleBidDetail(@ModelAttribute("saleId") Long saleId, Model model) {
 
         SaleResponse saleResponse = saleService.findById(saleId);
         model.addAttribute("saleResponse", saleResponse);
@@ -125,7 +128,7 @@ public class SaleController {
 
     @PostMapping("/confirm")
     public ResponseEntity<String> confirmSale(@AuthenticationPrincipal UserPrincipal user,
-                                             @RequestBody SaleConfirmRequest saleRequest) {
+                                              @RequestBody SaleConfirmRequest saleRequest) {
         long shoesId = saleRequest.getShoesId();
         int size = saleRequest.getSize();
 
