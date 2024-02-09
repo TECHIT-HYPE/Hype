@@ -58,7 +58,8 @@
                                 <div class="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
                                     <div th:each="size, status : ${shoes.sizes}">
                                         <label th:for="'selectSize_' + ${status.index}"
-                                               class="group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 cursor-pointer bg-white text-gray-900 shadow-sm">
+                                               class="group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 cursor-pointer bg-white text-gray-900 shadow-sm"
+                                               th:classappend="${#authorization.expression('isAuthenticated()')} ? '' : 'pointer-events-none'">
                                             <input type="radio" th:id="'selectSize_' + ${status.index}"
                                                    name="selectSize" class="sr-only"
                                                    aria-labelledby="size-choice-1-label" th:value="${size.size}">
