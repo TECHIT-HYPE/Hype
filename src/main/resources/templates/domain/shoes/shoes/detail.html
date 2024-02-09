@@ -98,9 +98,7 @@
                             <div class="card-body">
                                 <h2 id="loginText" class="card-title">로그인 후 이용 가능합니다.</h2>
                                 <div class="card-actions justify-end">
-                                    <form th:action="@{|/member/login|}" method="get">
-                                        <button id="loginBtn" class="btn btn-primary">로그인하러 가기</button>
-                                    </form>
+                                        <a th:href="@{/member/login}" id="loginBtn" class="btn btn-primary">로그인하러 가기</a>
                                 </div>
                             </div>
                         </div>
