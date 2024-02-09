@@ -1,5 +1,6 @@
 package com.ll.hype.domain.wishlist.wishlist.dto;
 
+import java.util.List;
 import lombok.*;
 
 @Getter

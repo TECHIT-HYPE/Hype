@@ -1,7 +1,11 @@
 package com.ll.hype.domain.wishlist.wishlist.repository;
 
+import com.ll.hype.domain.member.member.entity.Member;
+import com.ll.hype.domain.shoes.shoes.entity.Shoes;
+import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.domain.wishlist.wishlist.dto.MyWishlistDto;
 import com.ll.hype.domain.wishlist.wishlist.entity.Wishlist;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,4 +25,9 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
             "GROUP BY b.id, s.id, ss.id, b.engName, s.engName, ss.size " +
             "ORDER BY w.createDate DESC")
     List<MyWishlistDto> findMyWishlistDtoByMemberId(@Param("memberId") Long memberId);
+
+    List<Wishlist> findByMember(Member member);
+
+    Optional<Wishlist> findByMemberAndShoesSize(Member member, ShoesSize shoesSize);
+
 }
