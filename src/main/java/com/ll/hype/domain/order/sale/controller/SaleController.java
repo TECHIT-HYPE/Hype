@@ -31,13 +31,14 @@ public class SaleController {
     private final SaleService saleService;
 
     // TODO
-    // 신발리스트, 상세(1~3장) / 약관 동의, 입찰, 즉시거래, 거래체결 이미지 추가
+    // 신발리스트, 상세(1~3장)
 
     // 신발상세 -> 사이즈 선택
     @PostMapping("/shoes")
     public String saleShoesPickSuccess(@RequestParam("shoesId") long shoesId,
+                                       @AuthenticationPrincipal UserPrincipal user,
                                        Model model) {
-        SaleSizeInfoResponse findByBuyMaxPrice = saleService.findByShoesSizeMaxPrice(shoesId);
+        SaleSizeInfoResponse findByBuyMaxPrice = saleService.findByShoesSizeMaxPrice(shoesId, user.getMember());
         model.addAttribute("shoes", findByBuyMaxPrice);
 
         return "domain/order/sale/selectSize";
@@ -62,7 +63,6 @@ public class SaleController {
     public String saleBid(@RequestParam("shoesId") long shoesId,
                           @RequestParam("size") int size,
                           @AuthenticationPrincipal UserPrincipal user,
-
                           Model model) {
 
         //즉시 구매가 (최저 판매입찰가)
@@ -70,7 +70,7 @@ public class SaleController {
         model.addAttribute("BuyFormResponse", byShoesSizeMinPriceOne);
 
         //즉시 판매가 (최고 구매입찰가)
-        SaleFormResponse byShoesSizeMaxPriceOne = saleService.findByShoesSizeMaxPriceOne(shoesId, size);
+        SaleFormResponse byShoesSizeMaxPriceOne = saleService.findByShoesSizeMaxPriceOne(shoesId, size, user.getMember());
         model.addAttribute("SaleFormResponse", byShoesSizeMaxPriceOne);
 
         return "domain/order/sale/bidPricing";
@@ -87,7 +87,7 @@ public class SaleController {
         model.addAttribute("BuyFormResponse", byShoesSizeMinPriceOne);
 
         //즉시 판매가(최고 구매입찰가)
-        SaleFormResponse byShoesSizeMaxPriceOne = saleService.findByShoesSizeMaxPriceOne(shoesId, size);
+        SaleFormResponse byShoesSizeMaxPriceOne = saleService.findByShoesSizeMaxPriceOne(shoesId, size, user.getMember());
         model.addAttribute("SaleFormResponse", byShoesSizeMaxPriceOne);
 
         return "domain/order/sale/nowPricing";
@@ -126,6 +126,7 @@ public class SaleController {
         return "domain/order/sale/bidDetail";
     }
 
+    // 이미 입찰한 상품에 대해 경고
     @PostMapping("/confirm")
     public ResponseEntity<String> confirmSale(@AuthenticationPrincipal UserPrincipal user,
                                              @RequestBody SaleConfirmRequest saleRequest) {

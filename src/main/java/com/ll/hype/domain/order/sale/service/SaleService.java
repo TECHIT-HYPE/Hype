@@ -60,9 +60,9 @@ public class SaleService {
     }
 
     // 사이즈별 최고가
-    public SaleSizeInfoResponse findByShoesSizeMaxPrice(Long id) {
+    public SaleSizeInfoResponse findByShoesSizeMaxPrice(Long id, Member member) {
         Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
-        List<Buy> findByMaxPrice = buyRepository.findHighestPriceByShoesId(shoes);
+        List<Buy> findByMaxPrice = buyRepository.findHighestPriceByShoesId(shoes, member);
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
         Map<Integer, Long> sizeMap = new LinkedHashMap<>();
 
@@ -75,10 +75,10 @@ public class SaleService {
         return SaleSizeInfoResponse.of(shoes, sizeMap, fullPath);
     }
 
-    public SaleFormResponse findByShoesSizeMaxPriceOne(Long id, int size) {
+    public SaleFormResponse findByShoesSizeMaxPriceOne(Long id, int size, Member member) {
         long price = 0L;
         Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
-        Optional<Buy> highestPriceBuy = buyRepository.findHighestPriceBuy(shoes, size);
+        Optional<Buy> highestPriceBuy = buyRepository.findHighestPriceBuy(shoes, size, member);
 
         if (highestPriceBuy.isPresent()) {
             price = highestPriceBuy.get().getPrice();
@@ -138,7 +138,7 @@ public class SaleService {
 
         saleRepository.save(sale);
 
-        Buy buy = buyRepository.findHighestPriceBuy(shoes, saleRequest.getSize())
+        Buy buy = buyRepository.findHighestPriceBuy(shoes, saleRequest.getSize(), member)
                 .orElseThrow(() -> new IllegalArgumentException("구매입찰 내역을 찾을 수 없습니다."));
 
         buy.updateStatus(Status.BID_COMPLETE);
@@ -165,9 +165,10 @@ public class SaleService {
 
     public boolean confirmSale(Member member, Long id, int size) {
         Optional<Sale> findOne = saleRepository.findByShoesIdAndMemberAndShoesSizeSize(id, member, size);
-
-        if (findOne.isEmpty()) {return true;}
-        return false;
+        return findOne.isEmpty();
     }
+
+    // 판매 입찰 금액 수정
+
 
 }

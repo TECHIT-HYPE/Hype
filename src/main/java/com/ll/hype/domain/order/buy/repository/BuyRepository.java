@@ -23,8 +23,9 @@ public interface BuyRepository extends JpaRepository<Buy, Long> {
             "WHERE bb.shoes.id = :#{#shoes.id} " +
             "AND bb.status = 'BIDDING' " +
             "GROUP BY bb.shoesSize) " +
+            "And b.member.id != :#{#member.id} " +
             "ORDER BY b.shoesSize.size ASC")
-    List<Buy> findHighestPriceByShoesId(Shoes shoes);
+    List<Buy> findHighestPriceByShoesId(Shoes shoes, Member member);
 
     @Query("SELECT b FROM Buy b WHERE b.shoes = :shoes " +
             "AND b.status = 'BIDDING' " +
@@ -33,8 +34,9 @@ public interface BuyRepository extends JpaRepository<Buy, Long> {
             "WHERE bb.shoes = :shoes " +
             "AND bb.shoesSize.size = :size) " +
             "AND b.status = 'BIDDING' " +
+            "And b.member.id != :#{#member.id} " +
             "ORDER BY b.createDate ASC")
-    Optional<Buy> findHighestPriceBuy(@Param("shoes") Shoes shoes, @Param("size") int size);
+    Optional<Buy> findHighestPriceBuy(Shoes shoes, int size, Member member);
 
     Optional<Buy> findByShoesIdAndMemberAndShoesSizeSizeAndStatus(Long id, Member member, int size, Status status);
 
