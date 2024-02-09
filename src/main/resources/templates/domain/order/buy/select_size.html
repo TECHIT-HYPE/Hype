@@ -34,7 +34,7 @@
             <div class="grid-container">
                 <th:block th:each="size : ${shoes.sizeMap.keySet()}">
                     <div class="grid-item">
-                        <input type="radio" id="size" name="size" required th:value="${size}">
+                        <input type="radio" id="size" name="size" required th:value="${size}" th:checked="${size == shoes.selectSize}">
                         <div class="flex flex-col">
                             <p th:text="${size}"></p>
                             <p th:text="${shoes.sizeMap.get(size)}"></p>
@@ -47,6 +47,7 @@
         </form>
     </div>
     <script>
+
         async function checkAlreadyBid() {
             var shoesId = document.querySelector('input[name="shoesId"]').value;
             var selectedSize = document.querySelector('input[name="size"]:checked').value;
