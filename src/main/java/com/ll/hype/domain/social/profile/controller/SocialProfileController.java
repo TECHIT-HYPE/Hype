@@ -34,8 +34,8 @@ public class SocialProfileController {
     }
 
     @GetMapping("/{id}")
-    public String getProfilePage(@PathVariable Long id, Model model) {
-        SocialProfileResponse socialProfileResponse = socialProfileService.findById(id);
+    public String getProfilePage(@PathVariable Long id, Model model, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        SocialProfileResponse socialProfileResponse = socialProfileService.findById(id, userPrincipal.getMember().getId());
 
         // 경준님 화이팅
 
