@@ -7,7 +7,7 @@
     <div class="container mx-auto mt-5">
         <div class="header text-center mb-5">
             <div class="column_img">
-            상품 이미지
+                상품 이미지
             </div>
             <div class="column">
                 <div class="price_info">
@@ -39,28 +39,43 @@
                         </tr>
                     </table>
                 </div>
-                <div class="purchase_info">
+                <div class="flex">
                     <!--즉시 구매가 즉시 판매가, 구매버튼 판매버튼-->
                     <form th:action="@{|/buy/shoes|}" method="post">
                         <input type="hidden" id="shoesId" name="shoesId" th:value="${shoes.id}">
-                        <input type="submit" value="구매진행 ||">
+                        <button type="submit" class="btn btn-outline mr-4">구매 진행</button>
                     </form>
+
                     <form th:action="@{|/sale/shoes|}" method="post">
                         <input type="hidden" id="saleShoesId" name="shoesId" th:value="${shoes.id}">
-                        <input type="submit" value="판매 진행 ||">
+                        <button type="submit" class="btn btn-outline">판매 진행</button>
                     </form>
-                    <!--내 사이즈 가격, 가장 저렴한 사이즈 가격-->
                 </div>
-                <div class="wishlist">
-                    <!--관심상품등록-->
 
+                <div class="flex mt-2">
+<!--                    <div class="dropdown dropdown-hover">-->
+                        <!--                        <div tabindex="0" role="button" class="btn btn-outline p-2 mr-4">사이즈 선택</div>-->
+                        <!--                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">-->
+                        <!--                            <li><a>Item 1</a></li>-->
+                        <!--                            <li><a>Item 2</a></li>-->
+                        <!--                        </ul>-->
+
+<!--                        <p>선택된 사이즈 : </p>-->
+<!--                    </div>-->
+
+                    <div class="wishlist">
+                        <form th:action="@{|/shoes/love|}" id="wishForm" method="post">
+                            <input type="hidden" id="id" name="id" th:value="${shoes.id}">
+                            <div class="dropdown dropdown-hover">
+                                <select id="selectSize" name="selectSize" class="btn btn-outline p-2 mr-4">
+                                    <option th:each="size : ${shoes.sizes}" th:value="${size.size}" th:text="${size.size}"></option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-outline p-2" onclick="checkAlreadyBid()">찜</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="brand_info">
-                    <a class="brand" th:href="@{#}">
-                        <p class="brand_eng_name" th:text="${shoes.brand.engName}"></p>
-                        <p class="brand_kor_name" th:text="${shoes.brand.korName}"></p>
-                    </a>
-                </div>
+
                 <div class="chart">
                     <!--시세-->
                 </div>
@@ -70,6 +85,45 @@
             </div>
         </div>
     </div>
+    <script>
+        async function checkAlreadyBid() {
+            var shoesId = document.querySelector('#id').value;
+            var selectedSize = document.querySelector('#selectSize').value;
+
+            console.log("shoesId : " + shoesId)
+            console.log("selectedSize : " + selectedSize)
+
+            var data = {
+                shoesId: shoesId,
+                size: selectedSize
+            };
+
+            const csrfTokenHeaderName = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+            const csrfTokenValue = document.querySelector("meta[name='_csrf']").getAttribute("content");
+
+            const response =  await fetch('/shoes/love/check', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfTokenHeaderName]: csrfTokenValue
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.status == 200) {
+                document.getElementById("wishForm").submit();
+            }
+
+            if (response.status == 202) {
+                alert("이미 찜한 상품입니다..");
+            }
+
+            if (response.status == 400) {
+                alert("알 수 없는 오류가 발생했습니다.");
+            }
+        }
+    </script>
 </div>
 </body>
 </html>
+
