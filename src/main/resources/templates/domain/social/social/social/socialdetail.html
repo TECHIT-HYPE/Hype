@@ -107,20 +107,30 @@
                 </div>
 
                 <div class="sl__item__contents">
-                    <!-- <div class="sl__item__contents__icon">
-                            <button>
-                                <i th:classappend="${detailDto.likeState} ? 'fas fa-heart active' : 'far fa-heart'"
-                                   th:id="'LikeIcon-' + ${detailDto.imageId}" th:onclick="'toggleLike(' + ${detailDto.imageId} + ')"></i>
+                    <!-- 좋아요 버튼 및 수 -->
+                    <div class="sl__item__contents__icon">
+                        <!-- 좋아요 버튼 -->
+                        <form th:action="@{/social/feed/{id}/likes(id=${detailDto.socialId})}" method="post" th:unless="${detailDto.likesState}">
+                            <button type="submit">
+                                <i class="far fa-heart" th:id="'LikeIcon-' + ${detailDto.socialId}"></i>
                             </button>
-                        </div>
+                        </form>
 
-                        <span class="like"><b th:id="'LikeCount-' + ${detailDto.imageId}"
-                                              th:text="${detailDto.likeCount}">0</b>likes</span>-->
+                        <!-- 좋아요 취소 버튼 -->
+                        <form th:action="@{/social/feed/{id}/unlikes(id=${detailDto.socialId})}" method="post" th:if="${detailDto.likesState}">
+                            <button type="submit">
+                                <i class="fas fa-heart active" th:id="'LikeIcon-' + ${detailDto.socialId}"></i>
+                            </button>
+                        </form>
+                    </div>
 
+                    <span class="like"><b th:text="${detailDto.likesCount}"></b> likes</span>
+                    <!-- 글 내용 -->
                     <div class="sl__item__contents__content">
                         <p th:text="${detailDto.getContent()}"></p>
                     </div>
                 </div>
+
             </div>
         </article>
     </section>

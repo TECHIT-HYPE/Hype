@@ -29,13 +29,13 @@ spring:
     testBucket: hypetestbucket
   jpa:
     hibernate:
+      dialect: org.hibernate.dialect.H2Dialect
       ddl-auto: create
     properties:
       hibernate:
         show_sql: true
         format_sql: true
         use_sql_comments: true
-        dialect: org.hibernate.dialect.H2Dialect
 logging:
   level:
     com.ll.sb20231114: DEBUG

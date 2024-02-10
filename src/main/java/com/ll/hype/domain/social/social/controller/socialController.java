@@ -34,8 +34,8 @@ public class socialController {
     }
 
     @GetMapping("/{id}")
-    public String getFeedById(@PathVariable Long id, Model model, UserPrincipal userPrincipal) {
-        SocialDetailResponse socialDetailResponse = socialDetailService.findSocial(id);
+    public String getFeedById(@PathVariable Long id, Model model, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        SocialDetailResponse socialDetailResponse = socialDetailService.findSocial(id, userPrincipal.getMember().getId());
 
         model.addAttribute("detailDto", socialDetailResponse);
         return "/domain/social/social/social/socialdetail";}
@@ -64,9 +64,9 @@ public class socialController {
         return "redirect:/social/profile/%s".formatted(principalId);
     }
     @GetMapping("/update/{id}") // 수정 폼 표시
-    public String updateSocialForm(@PathVariable Long id, Model model) {
+    public String updateSocialForm(@PathVariable Long id, Model model, @AuthenticationPrincipal UserPrincipal userPrincipal) {
         // 기존의 내용을 가져와서 SocialUpdateRequest 객체에 설정
-        SocialDetailResponse socialDetailResponse = socialDetailService.findSocial(id);
+        SocialDetailResponse socialDetailResponse = socialDetailService.findSocial(id, userPrincipal.getMember().getId());
         SocialUpdateRequest socialUpdateRequest = SocialUpdateRequest.builder()
                 .socialId(socialDetailResponse.getSocialId())
                 .build();
