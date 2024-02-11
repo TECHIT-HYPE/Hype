@@ -4,10 +4,13 @@ import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query("SELECT s FROM Sale s " +
@@ -36,4 +39,9 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     List<Sale> findByMember(Member member);
 
     Optional<Sale> findByIdAndMember(Long id, Member member);
+
+    @Query("SELECT s FROM Sale s " +
+            "WHERE s.endDate < :now AND s.status = 'BIDDING'")
+    List<Sale> findExpiredBids(@Param("now") LocalDate now);
+    // SELECT * FROM Sale WHERE end_date < CURDATE() AND status = 'BIDDING';
 }

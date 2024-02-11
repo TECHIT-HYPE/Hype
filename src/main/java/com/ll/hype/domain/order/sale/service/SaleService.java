@@ -27,6 +27,7 @@ import com.ll.hype.global.exception.custom.EntityNotFoundException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -240,5 +241,16 @@ public class SaleService {
 
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, buy.getShoes().getId());
         return OrderResponse.of(order, fullPath);
+    }
+
+    // 판매 입찰 기한 만료 상태 변경
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 스케줄링 실행
+    @Transactional
+    public void updateExpiredBids() {
+        List<Sale> expiredBids = saleRepository.findExpiredBids(LocalDate.now());
+        for (Sale sale : expiredBids) {
+            sale.updateStatus(Status.BID_EXPIRED);
+            saleRepository.save(sale);
+        }
     }
 }
