@@ -18,5 +18,6 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
             "ORDER BY o.orderDate DESC")
     List<Orders> findTradingByMember(Member member);
 
+    Optional<Orders> findByIdAndSaleMember(Long id, Member member);
 
 }

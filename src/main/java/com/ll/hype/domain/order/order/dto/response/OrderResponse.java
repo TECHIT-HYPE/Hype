@@ -24,7 +24,7 @@ public class OrderResponse {
     private Sale sale;
     private LocalDate orderDate;
     private Long orderPrice;
-    // private Long deliveryNumber;
+    private Long deliveryNumber;
     private String receiverName;
     private Long receiverPhoneNumber;
     private String receiverAddress;
@@ -42,6 +42,7 @@ public class OrderResponse {
                 .sale(order.getSale())
                 .orderDate(order.getOrderDate())
                 .orderPrice(order.getOrderPrice())
+                .deliveryNumber(order.getDeliveryNumber())
                 .receiverName(order.getReceiverName())
                 .receiverPhoneNumber(order.getReceiverPhoneNumber())
                 .receiverAddress(order.getReceiverAddress())

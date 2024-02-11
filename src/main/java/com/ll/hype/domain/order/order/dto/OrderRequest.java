@@ -6,11 +6,10 @@ import com.ll.hype.domain.order.order.entity.Orders;
 import com.ll.hype.domain.order.order.entity.PaymentStatus;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import java.time.LocalDate;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.*;
 
 @Getter
 @Setter
@@ -37,7 +36,6 @@ public class OrderRequest {
                 .sale(orderRequest.getSale())
                 .orderDate(orderRequest.getOrderDate())
                 .orderPrice(orderRequest.getOrderPrice())
-//                .deliveryNumber(orderRequest.getDeliveryNumber())
                 .receiverName(orderRequest.getReceiverName())
                 .receiverPhoneNumber(orderRequest.getReceiverPhoneNumber())
                 .receiverAddress(orderRequest.getReceiverAddress())

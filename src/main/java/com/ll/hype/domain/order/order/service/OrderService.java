@@ -1,25 +1,21 @@
 package com.ll.hype.domain.order.order.service;
 
 import com.ll.hype.domain.member.member.entity.Member;
-import com.ll.hype.domain.order.buy.dto.request.CreateBuyRequest;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
-import com.ll.hype.domain.order.order.dto.OrderRequest;
 import com.ll.hype.domain.order.order.dto.response.OrderResponse;
-import com.ll.hype.domain.order.order.entity.OrderStatus;
 import com.ll.hype.domain.order.order.entity.Orders;
 import com.ll.hype.domain.order.order.entity.PaymentStatus;
 import com.ll.hype.domain.order.order.repository.OrderRepository;
-import com.ll.hype.domain.order.sale.dto.request.CreateSaleRequest;
-import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
+import com.ll.hype.domain.order.order.util.validate.OrderValidator;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.domain.order.sale.repository.SaleRepository;
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
+import com.ll.hype.global.exception.custom.EntityNotFoundException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import lombok.RequiredArgsConstructor;
@@ -116,8 +112,27 @@ public class OrderService {
             List<String> fullPath = imageBridgeComponent.findOneFullPath(
                     ImageType.SHOES, order.getSale().getShoes().getId());
             OrderResponse orderResponse = OrderResponse.of(order, fullPath);
-            orderResponses.add(orderResponse);
+
+            if (order.getBuy().getMember().getId().equals(member.getId()) ||
+                    order.getSale().getMember().getId().equals(member.getId())) {
+                System.out.println("zzzgetOrderNum : " + order.getId());
+                System.out.println("getLoginId : " + member.getId());
+
+                System.out.println("getBuyMemberId : " + order.getBuy().getMember().getId());
+                System.out.println("getSaleMemberId : " + order.getSale().getMember().getId());
+
+                orderResponses.add(orderResponse);
+            }
         }
         return orderResponses;
+    }
+
+    // 운송장번호 수정(등록)
+    @Transactional
+    public void updateDeliveryNumber(long id, long deliveryNumber, Member member) {
+        Orders order = orderRepository.findByIdAndSaleMember(id, member)
+                .orElseThrow(() -> new EntityNotFoundException("조회된 거래 내역이 없습니다."));
+        OrderValidator.checkUserMatch(order, member);
+        order.updateDeliveryNumber(deliveryNumber);
     }
 }

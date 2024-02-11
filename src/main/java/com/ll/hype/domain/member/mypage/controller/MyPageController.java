@@ -227,6 +227,15 @@ public class MyPageController {
         return "domain/member/mypage/tradingOrder";
     }
 
+    //운송장번호 등록(수정)
+    @PostMapping("/order/trading/modify")
+    public String tradingOrderModify(@RequestParam("id") long id,
+                                     @RequestParam("deliveryNumber") long deliveryNumber,
+                                     @AuthenticationPrincipal UserPrincipal user) {
+        System.out.println("MyPageController.tradingOrderModify) order.id: " + id);
+        orderService.updateDeliveryNumber(id, deliveryNumber, user.getMember());
+        return "redirect:/mypage/order/trading";
+    }
 
 
 }
