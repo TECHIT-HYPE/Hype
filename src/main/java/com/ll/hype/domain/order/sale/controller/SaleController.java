@@ -2,11 +2,13 @@ package com.ll.hype.domain.order.sale.controller;
 
 import com.ll.hype.domain.order.buy.dto.request.BuyConfirmRequest;
 import com.ll.hype.domain.order.buy.dto.response.BuyFormResponse;
+import com.ll.hype.domain.order.buy.dto.response.BuyModifyPriceResponse;
 import com.ll.hype.domain.order.buy.service.BuyService;
 import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.order.sale.dto.request.CreateSaleRequest;
 import com.ll.hype.domain.order.sale.dto.request.SaleConfirmRequest;
 import com.ll.hype.domain.order.sale.dto.response.SaleFormResponse;
+import com.ll.hype.domain.order.sale.dto.response.SaleModifyPriceResponse;
 import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
 import com.ll.hype.domain.order.sale.dto.response.SaleSizeInfoResponse;
 import com.ll.hype.domain.order.sale.service.SaleService;
@@ -138,5 +140,43 @@ public class SaleController {
         }
 
         return ResponseEntity.ok().body("입찰 가능");
+    }
+
+    //판매 입찰 금액 수정 폼
+    @PostMapping("/modify")
+    public String saleModifyForm(@RequestParam("id") Long id,
+                                 @AuthenticationPrincipal UserPrincipal user,
+                                 Model model) {
+        SaleModifyPriceResponse saleIdAndMember = saleService.findSaleIdAndMember(id, user.getMember());
+        model.addAttribute("data", saleIdAndMember);
+        return "domain/order/sale/bid_modify_price_form";
+    }
+
+    // 금액 수정
+    @PutMapping("/modify")
+    public String saleModify(@RequestParam("id") Long id,
+                            @RequestParam("price") Long price,
+                            @AuthenticationPrincipal UserPrincipal user) {
+        saleService.updatePrice(id, price, user.getMember());
+        return "redirect:/mypage/sale/history";
+    }
+
+    // 금액 수정 페이지 즉시 판매
+    @PostMapping("/modify/now")
+    public String saleModifyNow(@RequestParam("id") Long id,
+                               @RequestParam("nowPrice") Long nowPrice,
+                               @AuthenticationPrincipal UserPrincipal user,
+                               Model model) {
+        OrderResponse modifySaleNow = saleService.createModifySaleNow(id, nowPrice, user.getMember());
+        model.addAttribute("order", modifySaleNow);
+        return "domain/order/sale/saleNow";
+    }
+
+    // 판매 입찰 삭제
+    @DeleteMapping("/delete")
+    public String saleDelete(@RequestParam("id") Long id,
+                            @AuthenticationPrincipal UserPrincipal user) {
+        saleService.deleteSale(id, user.getMember());
+        return "redirect:/mypage/sale/history";
     }
 }

@@ -1,6 +1,7 @@
 package com.ll.hype.domain.order.sale.repository;
 
 import com.ll.hype.domain.member.member.entity.Member;
+import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import java.util.List;
@@ -33,4 +34,6 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query("SELECT s FROM Sale s " +
             "ORDER BY s.createDate DESC")
     List<Sale> findByMember(Member member);
+
+    Optional<Sale> findByIdAndMember(Long id, Member member);
 }
