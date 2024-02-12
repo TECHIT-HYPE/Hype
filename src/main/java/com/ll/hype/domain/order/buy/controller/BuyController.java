@@ -104,10 +104,9 @@ public class BuyController {
      */
     @PostMapping("/shoes/buy/bid")
     public String createBuyBid(CreateBuyRequest buyRequest,
-                               @AuthenticationPrincipal UserPrincipal user,
-                               Model model) {
-        BuyResponse buy = buyService.createBuyBid(buyRequest, user.getMember());
-        return "redirect:/";
+                               @AuthenticationPrincipal UserPrincipal user) {
+        buyService.createBuyBid(buyRequest, user.getMember());
+        return "redirect:/mypage/buy/history";
     }
 
     /**
