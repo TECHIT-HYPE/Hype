@@ -1,35 +1,43 @@
-<html layout:decorate="~{global/usrLayout}">
+<html layout:decorate="~{global/user_layout}">
 <head>
-  <title>신발 검색</title>
+  <title>검색</title>
+  <style>
+    #keyword {
+      border-style: solid;
+      border-width: 1px;
+      border-color: #CCCCCC;
+    }
+  </style>
 </head>
 <body layout:fragment="content">
 <div class="container mx-auto mt-8">
-  <h1 class="text-3xl font-bold mb-4">Shoes Search</h1>
-
-  <form th:action method="post">
-    <label for="keyword">검색어:</label>
-    <input type="text" id="keyword" name="keyword" required>
-    <button type="submit">검색</button>
-  </form>
+  <div class="flex items-center justify-between mb-8">
+    <form class="relative w-full" th:action="@{|/shoes/search/keyword|}" method="GET" role="search">
+      <input type="text"
+             class="w-full border-gray-300 pl-10 pr-12 py-5 rounded-full focus:outline-none focus:shadow-outline-blue"
+             placeholder="Search..."
+             name="keyword"
+             id="keyword"
+             aria-label="Search"
+             required>
+      <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
+        <!-- 돋보기 아이콘 -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-gray-400" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 15.36l2.42 2.42L19 17.34l-2.42-2.42a8 8 0 1 0-1.42 1.42zM10 16a6 6 0 1 1 6-6 6 6 0 0 1-6 6z"/>
+        </svg>
+      </div>
+      <button class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white rounded-full p-2"
+              type="submit">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+        </svg>
+      </button>
+    </form>
+  </div>
 </div>
 </body>
 </html>
-
-
-<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--  <meta charset="UTF-8">-->
-<!--  <title>신발 검색</title>-->
-<!--</head>-->
-<!--<body>-->
-
-<!--<h2>신발 검색</h2>-->
-
-<!--<form th:action method="post">-->
-<!--  <label for="keyword">검색어:</label>-->
-<!--  <input type="text" id="keyword" name="keyword" required>-->
-<!--  <button type="submit">검색</button>-->
-<!--</form>-->
-
-<!--</body>-->
-<!--</html>-->

@@ -73,11 +73,11 @@
             }
 
             if (response.status == 202) {
-                alert("이미 입찰 중인 상품입니다.");
+                customAlert.alert("이미 입찰 중인 상품입니다.");
             }
 
             if (response.status == 400) {
-                alert("알 수 없는 오류가 발생했습니다.");
+                customAlert.alert("알 수 없는 오류가 발생했습니다.");
             }
         }
     </script>

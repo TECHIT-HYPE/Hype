@@ -1,9 +1,9 @@
-<html layout:decorate="~{global/usrLayout}">
+<html layout:decorate="~{global/user_layout}">
 <head>
     <title>회원가입</title>
 </head>
 <body>
-<div layout:fragment="content" class="container mx-auto mt-8 p-4 bg-white rounded shadow-md">
+<div layout:fragment="content" class="container mx-auto p-4 bg-white rounded">
     <form th:action method="post" th:object="${joinRequest}" class="max-w-md mx-auto" enctype="multipart/form-data">
         <h1 class="text-3xl font-bold mb-4">Join</h1>
         <!-- error message -->

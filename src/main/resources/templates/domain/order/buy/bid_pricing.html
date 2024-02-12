@@ -163,7 +163,7 @@
             function checkPriceAndSubmit() {
                 const price = thprice;
                 if (price === 0) {
-                    alert("즉시 구매가 가능한 상품이 없습니다.");
+                    customAlert.alert("즉시 구매가 가능한 상품이 없습니다.");
                     return;
                 }
                 document.getElementById("buyNow").submit();
