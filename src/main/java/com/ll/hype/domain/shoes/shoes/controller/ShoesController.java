@@ -1,5 +1,7 @@
 package com.ll.hype.domain.shoes.shoes.controller;
 
+import com.ll.hype.domain.order.order.dto.response.OrderPriceResponse;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesCategory;
 import com.ll.hype.domain.shoes.shoes.service.ShoesService;
@@ -27,13 +29,17 @@ public class ShoesController {
     // 1. 랭킹: 조회수 + 1 관심 + 10
     // 2. 사이즈등록 O: 상세페이지에 본인 사이즈 → 내 사이즈의 즉시 구매, 판매가
     //    사이즈등록 X: 모든 사이즈 보기 → 최저 즉시 구매가, 최고 즉시 판매가
-    // 3. 최근 거래가
 
     //신발 상세
     @GetMapping("/{id}")
     public String shoesDetail(@PathVariable("id") long id, Model model){
         ShoesResponse findOne = shoesService.findById(id);
         model.addAttribute("shoes", findOne);
+
+//        OrderPriceResponse recentOrder = shoesService.getLatestTradePrice(id);
+//        model.addAttribute("order", recentOrder);
+        Optional<OrderPriceResponse> recentOrder = shoesService.getLatestTradePrice(id);
+        recentOrder.ifPresent(order -> model.addAttribute("order", order));
 
         return "domain/shoes/shoes/detail";
     }

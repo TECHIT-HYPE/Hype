@@ -31,7 +31,8 @@
                             <th>색상</th>
                         </tr>
                         <tr>
-                            <td>{최근 거래가}</td>
+
+                            <td th:text="${order != null ? (order.orderPrice != null ? order.orderPrice : '-') : '-'}"></td>
                             <td th:text="${shoes.price}"></td>
                             <td th:text="${shoes.model}"></td>
                             <td th:text="${shoes.release}"></td>

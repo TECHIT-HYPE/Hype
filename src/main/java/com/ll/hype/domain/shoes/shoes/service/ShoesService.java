@@ -1,6 +1,9 @@
 package com.ll.hype.domain.shoes.shoes.service;
 
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
+import com.ll.hype.domain.order.order.dto.response.OrderPriceResponse;
+import com.ll.hype.domain.order.order.entity.Orders;
+import com.ll.hype.domain.order.order.repository.OrderRepository;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesCategory;
@@ -10,6 +13,7 @@ import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,6 +23,7 @@ import java.util.stream.Collectors;
 public class ShoesService {
     private final ShoesRepository shoesRepository;
     private final BuyRepository buyRepository;
+    private final OrderRepository orderRepository;
     private final ImageBridgeComponent imageBridgeComponent;
     public ShoesResponse findById(long id) {
         Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
@@ -60,4 +65,10 @@ public class ShoesService {
         return shoesList;
     }
 
+    // 최근 거래가
+    @Transactional
+    public Optional<OrderPriceResponse> getLatestTradePrice(long id) {
+        return orderRepository.findByShoesId(id)
+                .map(OrderPriceResponse::of);
+    }
 }
