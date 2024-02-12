@@ -6,6 +6,10 @@ import com.ll.hype.domain.social.likes.repository.LikesRepository;
 import com.ll.hype.domain.social.social.dto.SocialDetailResponse;
 import com.ll.hype.domain.social.social.entity.Social;
 import com.ll.hype.domain.social.social.repository.SocialRepository;
+import com.ll.hype.domain.social.socialcomment.dto.SocialCommentRequest;
+import com.ll.hype.domain.social.socialcomment.entity.SocialComment;
+import com.ll.hype.domain.social.socialcomment.repository.SocialCommentRepository;
+import com.ll.hype.domain.social.socialcomment.service.SocialCommentService;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import com.ll.hype.global.s3.image.imagebridge.entity.ImageBridge;
@@ -15,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,6 +30,8 @@ public class SocialDetailService {
     private final SocialRepository socialRepository;
     private final LikesRepository likesRepository;
     private final ImageBridgeComponent imageBridgeComponent;
+    private final SocialCommentRepository socialCommentRepository;
+    private final SocialCommentService socialCommentService;
 
     public SocialDetailResponse findSocial(Long socialId, Long principalId) {
         Social social = socialRepository.socialDetail(socialId, principalId);
@@ -38,6 +45,15 @@ public class SocialDetailService {
             Long likesCount = likesRepository.countBySocialId(socialId); // 좋아요 수
             boolean likesState = likesRepository.existsBySocialIdAndMemberId(socialId, principalId); // 좋아요 상태
 
+            // 댓글 목록 가져오기
+            List<SocialComment> comments = socialCommentRepository.findBySocialId(socialId);
+            List<SocialCommentRequest> commentRequests = new ArrayList<>();
+
+            for (SocialComment comment : comments) {
+                SocialCommentRequest request = new SocialCommentRequest(comment);
+                commentRequests.add(request);
+            }
+
             // SocialDetailResponse 객체 생성 및 반환
             return SocialDetailResponse.builder()
                     .socialId(social.getId())
@@ -48,12 +64,12 @@ public class SocialDetailService {
                     .createDate(social.getCreateDate())
                     .likesCount(likesCount)
                     .likesState(likesState)
+                    .socialCommentRequestList(commentRequests)
                     .build();
         } else {
             throw new NoSuchElementException("해당 id에 대한 Social를 찾을 수 없습니다.");
         }
     }
-
 
     public void delete(Long socialId) {
         imageBridgeComponent.delete(ImageType.SOCIAL, socialId);

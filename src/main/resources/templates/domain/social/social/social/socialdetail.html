@@ -129,6 +129,27 @@
                     <div class="sl__item__contents__content">
                         <p th:text="${detailDto.getContent()}"></p>
                     </div>
+
+                    <div th:id="'storyCommentList-' + ${detailDto.socialId}">
+                        <div th:each="comment : ${detailDto.socialCommentRequestList}" class="sl__item__contents__comment" th:id="'storyCommentItem-' + ${comment.id}">
+                            <p><b th:text="${comment.nickname} + ' :'"></b> <span th:text="${comment.content}"></span></p>
+                            <div th:if="${#authentication.principal.nickname eq comment.getNickname()}">
+                                <form th:action="@{/social/feed/{socialId}/comment/{commentId}/delete(socialId=${detailDto.socialId}, commentId=${comment.id})}" method="post">
+                                    <button type="submit">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="commentForm" th:action="@{'/social/feed/' + ${detailDto.socialId} + '/comment/post'}" method="post">
+                        <div class="sl__item__input">
+                            <input type="text" placeholder="댓글 달기..." id="storyCommentInput" name="content" />
+                            <button type="submit">게시</button> <!-- type을 submit으로 변경 -->
+                        </div>
+                    </form>
+
                 </div>
 
             </div>

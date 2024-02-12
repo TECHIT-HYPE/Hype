@@ -6,6 +6,7 @@ import com.ll.hype.domain.social.social.dto.SocialUploadRequest;
 import com.ll.hype.domain.social.social.service.SocialDetailService;
 import com.ll.hype.domain.social.social.service.SocialUpdateService;
 import com.ll.hype.domain.social.social.service.SocialUploadService;
+import com.ll.hype.domain.social.socialcomment.dto.SocialCommentRequest;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,9 @@ public class socialController {
         SocialDetailResponse socialDetailResponse = socialDetailService.findSocial(id, userPrincipal.getMember().getId());
 
         model.addAttribute("detailDto", socialDetailResponse);
+        model.addAttribute("comment", new SocialCommentRequest());
         return "/domain/social/social/social/socialdetail";}
+
 
     @PostMapping("/upload")
     public String uploadSocial(@RequestParam("content") String content,
