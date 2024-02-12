@@ -50,38 +50,6 @@ public class OrderService {
         return null;
     }
 
-    // TODO
-    // + 금액, 모델명, 사이즈가 다르면 거래불가
-    // + !! buyResponse 주문 저장되면 status 변경
-
-//    public OrderResponse createOrder(OrderRequest orderRequest, SaleResponse saleResponse, Member member) {
-//        Shoes shoes = shoesRepository.findById(saleResponse.getShoes().getId())
-//                .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
-//
-//        Buy buy = buyRepository.findHighestPriceBuy(shoes, saleResponse.getShoesSize().getSize()) //orderRequest.getBuy().getId()
-//                .orElseThrow(() -> new IllegalArgumentException("조회된 구매 입찰이 없습니다."));
-//
-//        Sale sale = saleRepository.findById(saleResponse.getId())
-//                .orElseThrow(() -> new IllegalArgumentException("조회된 판매 입찰이 없습니다."));
-//
-//        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, saleResponse.getShoes().getId());
-//
-//        Orders order = Orders.builder()
-//                .buy(buy)
-//                .sale(sale)
-//                .orderDate(LocalDate.now())
-//                .orderPrice(buy.getPrice())
-//                .receiverName(buy.getReceiverName())
-//                .receiverPhoneNumber(buy.getReceiverPhoneNumber())
-//                .receiverAddress(buy.getReceiverAddress())
-//                .status(OrderStatus.TRADING)
-//                .paymentStatus(PaymentStatus.WAIT_PAYMENT)
-//                .build();
-//        orderRepository.save(order);
-//
-//        return OrderResponse.of(order, fullPath);
-//    }
-
     public void checkAmount(String tossId, String amountStr) {
         Orders order = orderRepository.findByTossId(tossId)
                 .orElseThrow(() -> new IllegalArgumentException("찾는 주문이 없습니다."));
@@ -115,12 +83,6 @@ public class OrderService {
 
             if (order.getBuy().getMember().getId().equals(member.getId()) ||
                     order.getSale().getMember().getId().equals(member.getId())) {
-                System.out.println("zzzgetOrderNum : " + order.getId());
-                System.out.println("getLoginId : " + member.getId());
-
-                System.out.println("getBuyMemberId : " + order.getBuy().getMember().getId());
-                System.out.println("getSaleMemberId : " + order.getSale().getMember().getId());
-
                 orderResponses.add(orderResponse);
             }
         }
