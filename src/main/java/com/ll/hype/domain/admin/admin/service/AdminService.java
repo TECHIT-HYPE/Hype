@@ -1,5 +1,6 @@
 package com.ll.hype.domain.admin.admin.service;
 
+import com.ll.hype.domain.admin.admin.dto.response.MemberListResponse;
 import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.dto.BrandResponse;
 import com.ll.hype.domain.brand.brand.entity.Brand;
@@ -101,7 +102,6 @@ public class AdminService {
                     .size(size)
                     .build();
 
-
             shoes.addSize(shoesSizeRepository.save(shoesSize));
         }
 
@@ -172,5 +172,20 @@ public class AdminService {
 
         return QuestionResponse.of(question);
     }
-    //============== CS End Start ==============
+    //============== CS End ==============
+
+
+    //============== Member Start ==============
+    public List<MemberListResponse> getMembers() {
+        List<Member> findMembers = memberRepository.findAll();
+        List<MemberListResponse> members = new ArrayList<>();
+
+        for (Member member : findMembers) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.MEMBER, member.getId());
+            members.add(MemberListResponse.of(member, fullPath));
+        }
+
+        return members;
+    }
+    //============== Member End ==============
 }
