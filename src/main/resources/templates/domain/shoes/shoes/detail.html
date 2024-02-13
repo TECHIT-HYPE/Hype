@@ -195,6 +195,15 @@
 
         function saleSubmit(form) {
             form.action = '/sale/shoes';
+            var selectedSizeInput = document.querySelector('input[name="selectSize"]:checked');
+            if (!selectedSizeInput) {
+                // 선택된 사이즈가 없을 경우
+                var hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'selectSize';
+                hiddenInput.value = 0;
+                form.appendChild(hiddenInput);
+            }
             form.submit();
         }
     </script>

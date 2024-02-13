@@ -1,8 +1,6 @@
 package com.ll.hype.domain.order.sale.controller;
 
-import com.ll.hype.domain.order.buy.dto.request.BuyConfirmRequest;
 import com.ll.hype.domain.order.buy.dto.response.BuyFormResponse;
-import com.ll.hype.domain.order.buy.dto.response.BuyModifyPriceResponse;
 import com.ll.hype.domain.order.buy.service.BuyService;
 import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.order.sale.dto.request.CreateSaleRequest;
@@ -14,7 +12,6 @@ import com.ll.hype.domain.order.sale.dto.response.SaleSizeInfoResponse;
 import com.ll.hype.domain.order.sale.service.SaleService;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.global.security.authentication.UserPrincipal;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +34,8 @@ public class SaleController {
 
     // 신발상세 -> 사이즈 선택
     @PostMapping("/shoes")
-    public String saleShoesPickSuccess(@RequestParam("shoesId") long shoesId,
+    public String saleShoesPickSuccess(@RequestParam("id") long shoesId,
+                                       @RequestParam("selectSize") int size,
                                        @AuthenticationPrincipal UserPrincipal user,
                                        Model model) {
         SaleSizeInfoResponse findByBuyMaxPrice = saleService.findByShoesSizeMaxPrice(shoesId, user.getMember());
