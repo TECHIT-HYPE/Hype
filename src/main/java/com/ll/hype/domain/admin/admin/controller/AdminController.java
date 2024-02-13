@@ -1,5 +1,6 @@
 package com.ll.hype.domain.admin.admin.controller;
 
+import com.ll.hype.domain.admin.admin.dto.response.MemberListResponse;
 import com.ll.hype.domain.admin.admin.service.AdminService;
 import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.dto.BrandResponse;
@@ -38,7 +39,17 @@ public class AdminController {
     //============== Main End ==============
 
     //============== Member Start ==============
+    @GetMapping("/member/main")
+    public String memberHome() {
+        return "domain/admin/member/main";
+    }
 
+    @GetMapping("/member/list")
+    public String memberList(Model model) {
+        List<MemberListResponse> members = adminService.getMembers();
+        model.addAttribute("data", members);
+        return "domain/admin/member/list";
+    }
     //============== Member End ==============
 
 

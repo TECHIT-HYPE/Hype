@@ -48,7 +48,7 @@
             }
 
             if (price == 0) {
-                alert("0원은 입력이 불가능합니다.");
+                customAlert.alert("0원은 입력이 불가능합니다.");
                 return;
             }
 
@@ -57,7 +57,7 @@
 
         function checkMinPriceZero() {
             if (thminPrice == 0) {
-                alert("즉시 구매 상품이 없습니다.");
+                customAlert.alert("즉시 구매 상품이 없습니다.");
                 return;
             }
             document.getElementById("nowForm").submit();

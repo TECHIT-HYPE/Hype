@@ -53,9 +53,13 @@ public class Orders extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private OrderStatus status;
 
-    @Comment("정산상태")
+    @Comment("구매자정산상태")
     @Enumerated(value = EnumType.STRING)
     private PaymentStatus paymentStatus;
+
+    @Comment("판매자정산상태")
+    @Enumerated(value = EnumType.STRING)
+    private DepositStatus depositStatus;
 
     public String createTossId() {
         return super.getId() + "-" + orderDate;

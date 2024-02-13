@@ -97,22 +97,24 @@ public class BuyService {
      * @param id
      * @return BuySizeInfoResponse
      */
-    public BuySizeInfoResponse findByShoesSizeMinPriceAll(Long id, Member member) {
+    public BuySizeInfoResponse findByShoesSizeMinPriceAll(Long id, Member member, int selectSize) {
         Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("조회된 신발이 없습니다."));
         List<Sale> findByMinPrice = saleRepository.findLowestPriceByShoesId(shoes, member);
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
         Map<Integer, Long> sizeMap = new LinkedHashMap<>();
 
         for (ShoesSize shoesSize : shoes.getSizes()) {
+            log.info("[BuyService.findByShoesSizeMinPriceAll] shoesSize : " + shoesSize.getSize());
             sizeMap.put(shoesSize.getSize(), 0L);
         }
 
         // size 전체를 가져와서 그걸 링크드해시맵에 써야해
         for (Sale sale : findByMinPrice) {
+            log.info("[BuyService.findByShoesSizeMinPriceAll] sale : " + sale.getPrice());
             sizeMap.put(sale.getShoesSize().getSize(), sale.getPrice());
         }
 
-        return BuySizeInfoResponse.of(shoes, sizeMap, fullPath);
+        return BuySizeInfoResponse.of(shoes, sizeMap, fullPath, selectSize);
     }
 
     /**
@@ -279,8 +281,13 @@ public class BuyService {
      * @return BuyModifyPriceResponse
      */
     public BuyModifyPriceResponse findBuyIdAndMember(Long id, Member member) {
+        log.info("[BuyService.findBuyIdAndMember] id : " + id);
+        log.info("[BuyService.findBuyIdAndMember] member : " + member);
         Buy buy = buyRepository.findByIdAndMember(id, member)
                 .orElseThrow(() -> new EntityNotFoundException("조회된 구매 입찰 내역이 없습니다."));
+
+        log.info("[BuyService.findBuyIdAndMember] buy : " + buy);
+        log.info("[BuyService.findBuyIdAndMember] member : " + member);
 
         BuyValidator.checkUserMatch(buy, member);
 
@@ -321,7 +328,7 @@ public class BuyService {
         Buy buy = buyRepository.findByIdAndMember(id, member)
                 .orElseThrow(() -> new EntityNotFoundException("조회된 구매 입찰 내역이 없습니다."));
         BuyValidator.checkUserMatch(buy, member);
-        buyRepository.delete(buy);
+        buy.updateStatus(Status.BID_CANCEL);
     }
 
     /**

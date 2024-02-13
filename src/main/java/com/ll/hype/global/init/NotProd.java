@@ -105,8 +105,8 @@ public class NotProd {
                 .build();
 
         memberService.join(member, profileFiles);
-        Member findMember = memberRepository.findByEmail("admin@admin.com").get();
-        findMember.updateRole(MemberRole.ADMIN);
+        Member admin = memberRepository.findByEmail("admin@admin.com").get();
+        admin.updateRole(MemberRole.ADMIN);
 
         JoinRequest member2 = JoinRequest.builder()
                 .email("test@test.com")
@@ -124,6 +124,22 @@ public class NotProd {
                 .orElseThrow(() -> new IllegalArgumentException("NotProd userMember 생성 중 조회 오류 발생"));
         userMember.updateRole(MemberRole.MEMBER);
 
+        JoinRequest member3 = JoinRequest.builder()
+                .email("test2@test.com")
+                .password("test")
+                .passwordConfirm("test")
+                .name("테스트2")
+                .nickname("test2")
+                .phoneNumber(1000001112L)
+                .birthday(LocalDate.of(2000, 1, 1))
+                .gender(Gender.FEMALE)
+                .shoesSize(230)
+                .build();
+        memberService.join(member3, profileFiles);
+        Member userMember2 = memberRepository.findByEmail("test2@test.com")
+                .orElseThrow(() -> new IllegalArgumentException("NotProd userMember 생성 중 조회 오류 발생"));
+        userMember2.updateRole(MemberRole.MEMBER);
+
         // ===== 이미지 객체 불러오기 시작 =====
         File file = new File(
                 getClass().getClassLoader().getResource("img/KakaoTalk_Photo_2022-09-07-14-41-27.jpeg").getFile());
@@ -132,7 +148,13 @@ public class NotProd {
                 stream);
 
         List<MultipartFile> files = new ArrayList<>();
+        List<MultipartFile> filesMulti = new ArrayList<>();
         files.add(mockMultipartFile);
+        filesMulti.add(mockMultipartFile);
+        filesMulti.add(mockMultipartFile);
+        filesMulti.add(mockMultipartFile);
+        filesMulti.add(mockMultipartFile);
+        filesMulti.add(mockMultipartFile);
         // ===== 이미지 객체 불러오기 끝 =====
 
         IntStream.rangeClosed(1, 2).forEach(i -> {
@@ -158,8 +180,24 @@ public class NotProd {
         List<Integer> sizes = List.of(220, 230, 240, 250, 260, 270);
         log.info("[size create size(0)] : " + sizes);
 
-        IntStream.rangeClosed(1, 3).forEach(i -> {
-            ShoesRequest shoesRequest =
+        ShoesRequest shoesRequest =
+                ShoesRequest.builder()
+                        .brand(brandRepository.findById(1L).get())
+                        .korName("나이키 에어맥스")
+                        .engName("NIKE AIRMAX")
+                        .gender(Gender.MALE)
+                        .model("NikeModel")
+                        .status(StatusCode.ENABLE)
+                        .shoesCategory(ShoesCategory.RUNNING)
+                        .release(LocalDate.of(2024, 1, 24))
+                        .price(1000)
+                        .color("yellow")
+                        .build();
+
+        adminService.saveShoes(shoesRequest, sizes, filesMulti);
+
+        IntStream.rangeClosed(2, 3).forEach(i -> {
+            ShoesRequest shoesRequest2 =
                     ShoesRequest.builder()
                             .brand(brandRepository.findById(1L).get())
                             .korName("나이키 에어맥스" + i)
@@ -173,11 +211,11 @@ public class NotProd {
                             .color("yellow")
                             .build();
 
-            adminService.saveShoes(shoesRequest, sizes, files);
+            adminService.saveShoes(shoesRequest2, sizes, files);
         });
 
         IntStream.rangeClosed(1, 3).forEach(i -> {
-            ShoesRequest shoesRequest =
+            ShoesRequest shoesRequest3 =
                     ShoesRequest.builder()
                             .brand(brandRepository.findById(1L).get())
                             .korName("아디다스 쌈바" + i)
@@ -191,11 +229,11 @@ public class NotProd {
                             .color("yellow")
                             .build();
 
-            adminService.saveShoes(shoesRequest, sizes, files);
+            adminService.saveShoes(shoesRequest3, sizes, files);
         });
 
         Address address = Address.builder()
-                .member(findMember)
+                .member(admin)
                 .addressName("관리자 집 지번")
                 .postcode("07685")
                 .address("서울시 강서구 화곡동 993-15")
@@ -207,7 +245,7 @@ public class NotProd {
         addressRepository.save(address);
 
         Address address2 = Address.builder()
-                .member(findMember)
+                .member(admin)
                 .addressName("관리자 집 도로명")
                 .postcode("07685")
                 .address("서울 강서구 화곡로55길 33-14")
@@ -219,7 +257,7 @@ public class NotProd {
         addressRepository.save(address2);
 
         Address address3 = Address.builder()
-                .member(userMember)
+                .member(userMember2)
                 .addressName("TEST 집 지번")
                 .postcode("123456")
                 .address("경기도 화성시 오산동 17-115")
@@ -231,7 +269,7 @@ public class NotProd {
         addressRepository.save(address3);
 
         Address address4 = Address.builder()
-                .member(userMember)
+                .member(userMember2)
                 .addressName("TEST 집 도로명")
                 .postcode("123456")
                 .address("경기도 화성시 동탄대로 17")
@@ -251,7 +289,7 @@ public class NotProd {
         Buy orderRequest = Buy.builder()
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(1))
-                .member(userMember)
+                .member(admin)
                 .price(125000L)
                 .startDate(LocalDate.of(2024, 1, 25))
                 .endDate(LocalDate.of(2024, 1, 30))
@@ -264,7 +302,7 @@ public class NotProd {
         Buy orderRequest2 = Buy.builder()
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(2))
-                .member(userMember)
+                .member(admin)
                 .price(150000L)
                 .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
@@ -276,7 +314,7 @@ public class NotProd {
         Sale saleRequest = Sale.builder()
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(3))
-                .member(findMember)
+                .member(userMember2)
                 .price(300000L)
                 .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
@@ -289,7 +327,7 @@ public class NotProd {
         Sale saleRequest2 = Sale.builder()
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(4))
-                .member(findMember)
+                .member(userMember2)
                 .price(400000L)
                 .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
@@ -302,7 +340,7 @@ public class NotProd {
         Sale saleRequest3 = Sale.builder()
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(5))
-                .member(findMember)
+                .member(userMember2)
                 .price(400000L)
                 .startDate(LocalDate.of(2024, 1, 1)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 1, 31)) // 다른 종료 날짜
@@ -315,7 +353,7 @@ public class NotProd {
         Sale saleRequest4 = Sale.builder()
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(5))
-                .member(findMember)
+                .member(userMember2)
                 .price(450000L)
                 .startDate(LocalDate.of(2024, 1, 1)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 1, 31)) // 다른 종료 날짜
@@ -326,19 +364,19 @@ public class NotProd {
         saleRepository.save(saleRequest4);
 
         Wishlist wishlist = Wishlist.builder()
-                .member(userMember)
+                .member(admin)
                 .shoesSize(shoes.getSizes().get(1))
                 .build();
         wishlistRepository.save(wishlist);
 
         Wishlist wishlist2 = Wishlist.builder()
-                .member(userMember)
+                .member(admin)
                 .shoesSize(shoes.getSizes().get(2))
                 .build();
         wishlistRepository.save(wishlist2);
 
         Wishlist wishlist3 = Wishlist.builder()
-                .member(userMember)
+                .member(admin)
                 .shoesSize(shoes.getSizes().get(3))
                 .build();
         wishlistRepository.save(wishlist3);

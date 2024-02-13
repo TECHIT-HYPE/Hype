@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
 
     <link rel="stylesheet" href="/resource/global.css">
+    <link rel="stylesheet" type="text/css" href="/css/alert_css.css">
+    <script src="/js/alert_js.js"></script>
     <script src="/resource/global.js"></script>
 
     <meta name="_csrf" th:content="${_csrf.token}"/>
@@ -25,7 +27,7 @@
 
 <th:block layout:fragment="header"></th:block>
 
-<div class="con mx-auto flex">
+<div class="con mx-auto">
     <th:block layout:fragment="content"></th:block>
 </div>
 

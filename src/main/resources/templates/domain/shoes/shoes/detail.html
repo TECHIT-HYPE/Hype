@@ -1,95 +1,147 @@
-<html layout:decorate="~{global/usrLayout}">
+<html layout:decorate="~{global/user_layout}" xmlns="http://www.w3.org/1999/html">
 <head>
     <title>신발 상세페이지</title>
+    <style>
+        img {
+            width: 400px;
+            height: 00px;
+            object-fit: cover;
+        }
+
+        input[type="radio"]:checked + span {
+            font-weight: bold;
+            color: #FF0000;
+        }
+
+        #loginBtn {
+            width: 100%;
+        }
+
+        #loginText {
+            align-self: center;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="container mx-auto mt-5">
-        <div class="header text-center mb-5">
-            <div class="column_img">
-                상품 이미지
+    <div class="bg-white">
+        <div class="pt-6">
+            <!-- Image -->
+            <div class="carousel carousel-center p-4 space-x-4 rounded-box">
+                <div class="carousel-item" th:each="path : ${shoes.fullPath}">
+                    <img th:src="${path}" class="rounded-box"/>
+                </div>
             </div>
-            <div class="column">
-                <div class="price_info">
-                    <p>즉시 구매가</p>
-                    <!--내 사이즈 즉시구매가-->
-                    <!--가장 저렴한 즉시구매가-->
-                    <!--내 사이즈 즉시구매 가능하면 내 사이즈 즉시 구매가 노출
-                        없으면 가장 저렴한 즉시 구매가 노출-->
-                </div>
-                <div class="name">
-                    <p class="eng_name" th:text="${shoes.engName}"></p>
-                    <p class="kor_name" th:text="${shoes.korName}"></p>
-                </div>
-                <div class="shoes_info">
-                    <table class="flex flex-col items-center">
-                        <tr>
-                            <th>최근거래가</th>
-                            <th>발매가</th>
-                            <th>모델번호</th>
-                            <th>출시일</th>
-                            <th>색상</th>
-                        </tr>
-                        <tr>
-
-                            <td th:text="${order != null ? (order.orderPrice != null ? order.orderPrice : '-') : '-'}"></td>
-                            <td th:text="${shoes.price}"></td>
-                            <td th:text="${shoes.model}"></td>
-                            <td th:text="${shoes.release}"></td>
-                            <td th:text="${shoes.color}"></td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="flex">
-                    <!--즉시 구매가 즉시 판매가, 구매버튼 판매버튼-->
-                    <form th:action="@{|/buy/shoes|}" method="post">
-                        <input type="hidden" id="shoesId" name="shoesId" th:value="${shoes.id}">
-                        <button type="submit" class="btn btn-outline mr-4">구매 진행</button>
-                    </form>
-
-                    <form th:action="@{|/sale/shoes|}" method="post">
-                        <input type="hidden" id="saleShoesId" name="shoesId" th:value="${shoes.id}">
-                        <button type="submit" class="btn btn-outline">판매 진행</button>
-                    </form>
+            <!-- Product info -->
+            <div class="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
+                <div class="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
+                    <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl"
+                        th:text="${shoes.korName}"></h1>
                 </div>
 
-                <div class="flex mt-2">
-<!--                    <div class="dropdown dropdown-hover">-->
-                        <!--                        <div tabindex="0" role="button" class="btn btn-outline p-2 mr-4">사이즈 선택</div>-->
-                        <!--                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">-->
-                        <!--                            <li><a>Item 1</a></li>-->
-                        <!--                            <li><a>Item 2</a></li>-->
-                        <!--                        </ul>-->
+                <!-- Options -->
+                <div class="lg:row-span-3 lg:mt-0">
+                    <h2 class="sr-only">Product information</h2>
+                    <form method="post" th:action id="submitForm">
+                        <input type="hidden" id="id" name="id" th:value="${shoes.id}">
 
-<!--                        <p>선택된 사이즈 : </p>-->
-<!--                    </div>-->
 
-                    <div class="wishlist">
-                        <form th:action="@{|/shoes/love|}" id="wishForm" method="post">
-                            <input type="hidden" id="id" name="id" th:value="${shoes.id}">
-                            <div class="dropdown dropdown-hover">
-                                <select id="selectSize" name="selectSize" class="btn btn-outline p-2 mr-4">
-                                    <option th:each="size : ${shoes.sizes}" th:value="${size.size}" th:text="${size.size}"></option>
-                                </select>
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-sm font-medium text-gray-900">Size</h3>
                             </div>
-                            <button type="button" class="btn btn-outline p-2" onclick="checkAlreadyBid()">찜</button>
-                        </form>
-                    </div>
+
+                            <fieldset>
+                                <legend class="sr-only">Choose a size</legend>
+                                <div class="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
+                                    <div th:each="size, status : ${shoes.sizes}">
+                                        <label th:for="'selectSize_' + ${status.index}"
+                                               class="group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 cursor-pointer bg-white text-gray-900 shadow-sm"
+                                               th:classappend="${#authorization.expression('isAuthenticated()')} ? '' : 'pointer-events-none'">
+                                            <input type="radio" th:id="'selectSize_' + ${status.index}"
+                                                   name="selectSize" class="sr-only"
+                                                   aria-labelledby="size-choice-1-label" th:value="${size.size}">
+                                            <span id="size-choice-1-label" th:text="${size.size}"></span>
+                                            <span class="pointer-events-none absolute -inset-px rounded-md"
+                                                  aria-hidden="true">
+                                                <svg th:unless="${#authorization.expression('isAuthenticated()')}"
+                                                     class="absolute inset-0 h-full w-full stroke-2 text-gray-200"
+                                                     viewBox="0 0 100 100" preserveAspectRatio="none"
+                                                     stroke="currentColor">
+                      <line x1="0" y1="100" x2="100" y2="0" vector-effect="non-scaling-stroke"/>
+                    </svg>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                        </div>
+
+                        <div sec:authorize="isAuthenticated()">
+                            <button type="button"
+                                    class="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                    onclick="checkAlreadyBid(this.form)">
+                                상품 찜
+                            </button>
+
+                            <button type="button"
+                                    class="mt-2 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                    onclick="buySubmit(this.form)">
+                                구매 입찰
+                            </button>
+
+                            <button type="button"
+                                    class="mt-2 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                    onclick="saleSubmit(this.form)">
+                                판매 입찰
+                            </button>
+                        </div>
+
+                        <div sec:authorize="isAnonymous()"
+                             class="card w-96 bg-base-100">
+                            <div class="card-body">
+                                <h2 id="loginText" class="card-title">로그인 후 이용 가능합니다.</h2>
+                                <div class="card-actions justify-end">
+                                    <a th:href="@{/member/login}" id="loginBtn" class="btn btn-primary">로그인하러 가기</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
 
-                <div class="chart">
-                    <!--시세-->
-                </div>
-                <div class="social">
-                    <!--인스타-->
+                <div class="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
+                    <div>
+                        <h3 class="text-base font-medium text-gray-900">상품 정보</h3>
+
+                        <div class="mt-2">
+                            <ul role="list" class="list-disc space-y-2 pl-4 text-sm">
+                                <li class="text-gray-400"><span class="text-gray-600"
+                                                                th:text="'브랜드 : ' + ${shoes.brand.korName}"></span></li>
+                                <li class="text-gray-400"><span class="text-gray-600"
+                                                                th:text="'한글명 : ' + ${shoes.korName}"></span></li>
+                                <li class="text-gray-400"><span class="text-gray-600"
+                                                                th:text="'영문명 : ' + ${shoes.engName}"></span></li>
+                                <li class="text-gray-400"><span class="text-gray-600"
+                                                                th:text="'모델명 : ' + ${shoes.model}"></span></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <!--    -->
     <script>
-        async function checkAlreadyBid() {
+        async function checkAlreadyBid(form) {
             var shoesId = document.querySelector('#id').value;
-            var selectedSize = document.querySelector('#selectSize').value;
+            try {
+                var selectedSize = document.querySelector('input[name="selectSize"]:checked').value;
+            } catch (error) {
+                alert('사이즈를 선택해주세요.');
+                return;
+            }
 
             console.log("shoesId : " + shoesId)
             console.log("selectedSize : " + selectedSize)
@@ -102,7 +154,7 @@
             const csrfTokenHeaderName = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
             const csrfTokenValue = document.querySelector("meta[name='_csrf']").getAttribute("content");
 
-            const response =  await fetch('/shoes/love/check', {
+            const response = await fetch('/shoes/love/check', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -112,16 +164,38 @@
             });
 
             if (response.status == 200) {
-                document.getElementById("wishForm").submit();
+                form.action = '/shoes/love';
+                // alert("'" + selectedSize + "' 사이즈의 상품을 찜 했습니다.", "완료")
+                customAlert.alert("'" + selectedSize + "' 사이즈의 상품을 찜 했습니다.")
+                form.submit();
             }
 
             if (response.status == 202) {
-                alert("이미 찜한 상품입니다..");
+                customAlert.alert("'" + selectedSize + "' 사이즈의 상품을 찜 했습니다.")
             }
 
             if (response.status == 400) {
-                alert("알 수 없는 오류가 발생했습니다.");
+                customAlert.alert("알 수 없는 오류가 발생했습니다.");
             }
+        }
+
+        function buySubmit(form) {
+            form.action = '/buy/shoes';
+            var selectedSizeInput = document.querySelector('input[name="selectSize"]:checked');
+            if (!selectedSizeInput) {
+                // 선택된 사이즈가 없을 경우
+                var hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'selectSize';
+                hiddenInput.value = 0;
+                form.appendChild(hiddenInput);
+            }
+            form.submit();
+        }
+
+        function saleSubmit(form) {
+            form.action = '/sale/shoes';
+            form.submit();
         }
     </script>
 </div>

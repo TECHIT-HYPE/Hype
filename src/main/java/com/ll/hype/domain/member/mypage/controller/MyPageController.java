@@ -12,6 +12,7 @@ import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.order.order.service.OrderService;
 import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
 import com.ll.hype.domain.wishlist.wishlist.dto.MyWishlistDto;
+import com.ll.hype.domain.wishlist.wishlist.dto.WishListResponse;
 import com.ll.hype.domain.wishlist.wishlist.entity.Wishlist;
 import com.ll.hype.domain.wishlist.wishlist.service.WishlistService;
 import com.ll.hype.global.security.authentication.UserPrincipal;
@@ -101,10 +102,12 @@ public class MyPageController {
     }
 
     @GetMapping("/wishlist")
-    public String myWishlistForm(@AuthenticationPrincipal UserPrincipal userPrincipal, Model model) {
-        List<MyWishlistDto> wishlist = wishlistService.getMyWishlist(userPrincipal.getMember().getId());
+    public String myWishlistForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                 Model model) {
+        // List<MyWishlistDto> wishlist = wishlistService.getMyWishlist(userPrincipal.getMember().getId());
+        List<WishListResponse> wishListResponses = wishlistService.myWishList(userPrincipal.getMember());
 
-        model.addAttribute("wishlist", wishlist);
+        model.addAttribute("data", wishListResponses);
         return "domain/member/mypage/wishlist";
     }
 
@@ -236,6 +239,5 @@ public class MyPageController {
         orderService.updateDeliveryNumber(id, deliveryNumber, user.getMember());
         return "redirect:/mypage/order/trading";
     }
-
 
 }

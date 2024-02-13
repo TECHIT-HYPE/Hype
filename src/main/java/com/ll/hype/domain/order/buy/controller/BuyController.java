@@ -50,10 +50,11 @@ public class BuyController {
      * 신발상세(구매입찰 진행) -> 사이즈 선택 페이지로
      */
     @PostMapping("/shoes")
-    public String buyShoesPickSuccess(@RequestParam("shoesId") Long shoesId,
+    public String buyShoesPickSuccess(@RequestParam("id") Long id,
+                                      @RequestParam("selectSize") int size,
                                       @AuthenticationPrincipal UserPrincipal user,
                                       Model model) {
-        BuySizeInfoResponse findBySalesMinPrice = buyService.findByShoesSizeMinPriceAll(shoesId, user.getMember());
+        BuySizeInfoResponse findBySalesMinPrice = buyService.findByShoesSizeMinPriceAll(id, user.getMember(), size);
         model.addAttribute("shoes", findBySalesMinPrice);
         return "domain/order/buy/select_size";
     }
@@ -103,10 +104,9 @@ public class BuyController {
      */
     @PostMapping("/shoes/buy/bid")
     public String createBuyBid(CreateBuyRequest buyRequest,
-                               @AuthenticationPrincipal UserPrincipal user,
-                               Model model) {
-        BuyResponse buy = buyService.createBuyBid(buyRequest, user.getMember());
-        return "redirect:/";
+                               @AuthenticationPrincipal UserPrincipal user) {
+        buyService.createBuyBid(buyRequest, user.getMember());
+        return "redirect:/mypage/buy/history";
     }
 
     /**
@@ -127,10 +127,7 @@ public class BuyController {
     @PostMapping("/confirm")
     public ResponseEntity<String> confirmBuy(@RequestBody BuyConfirmRequest buyRequest,
                                              @AuthenticationPrincipal UserPrincipal user) {
-        long shoesId = buyRequest.getShoesId();
-        int size = buyRequest.getSize();
-
-        if (!buyService.confirmBuy(user.getMember(), shoesId, size)) {
+        if (!buyService.confirmBuy(user.getMember(), buyRequest.getShoesId(), buyRequest.getSize())) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("이미 입찰 중인 신발 및 사이즈 입니다.");
         }
 

@@ -1,4 +1,4 @@
-<html layout:decorate="~{global/usrLayout}">
+<html layout:decorate="~{global/user_layout}">
 <head>
     <title>신발 목록</title>
 </head>
@@ -14,13 +14,14 @@
                             <div class="flex">
                                 <input type="checkbox" th:id="${category.name()}" th:value="${category.name()}"
                                        th:name="categories"
-                                       th:checked="${selectedCategories != null && selectedCategories.contains(category.name())}">
+                                       th:checked="${selectedCategories != null && selectedCategories.contains(category.name())}"
+                                        onchange="formSubmit()">
                                 <label th:for="${category.name()}" th:text="${category}"></label>
                             </div>
                         </li>
                     </ul>
                 </div>
-                <button onclick="formSubmit()" class="hover:cursor-custom"><i class="fa-solid fa-magnifying-glass fa-2xl flex justify-center items-center h-full"></i></button>
+            <!--<button onclick="formSubmit()" class="hover:cursor-custom"><i class="fa-solid fa-magnifying-glass fa-2xl flex justify-center items-center h-full"></i></button>-->
             </div>
         </form>
     </div>

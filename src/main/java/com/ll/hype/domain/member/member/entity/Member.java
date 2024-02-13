@@ -36,12 +36,12 @@ public class Member extends BaseEntity {
 
     @Comment("회원 본명")
     @NotNull
-    private String name; // 본명
+    private String name;
 
     @Comment("회원 별명")
     @NotNull
     @Column(unique = true)
-    private String nickname; // 별명
+    private String nickname;
 
     @Comment("회원 연락처")
     @NotNull
@@ -63,7 +63,7 @@ public class Member extends BaseEntity {
     private MemberRole role;
 
     @Comment("신발 사이즈")
-    private Integer shoesSize; // 회원 신발 사이즈
+    private Integer shoesSize;
 
     public void changeToEncodedPassword(String encodedPassword) {
         this.password = encodedPassword;

@@ -77,6 +77,7 @@ public class SaleController {
 
         return "domain/order/sale/bidPricing";
     }
+
     // 약관 동의 -> 판매 타입: 즉시 판매
     @PostMapping("/shoes/now")
     public String saleNow(@RequestParam("shoesId") Long shoesId,
@@ -120,7 +121,7 @@ public class SaleController {
 
     // 생성 완료: 판매 입찰 내역
     @GetMapping("/shoes/sale/bid/detail")
-    public String saleBidDetail(@ModelAttribute("saleId")Long saleId, Model model) {
+    public String saleBidDetail(@ModelAttribute("saleId") Long saleId, Model model) {
 
         SaleResponse saleResponse = saleService.findById(saleId);
         model.addAttribute("saleResponse", saleResponse);
@@ -131,7 +132,7 @@ public class SaleController {
     // 이미 입찰한 상품에 대해 경고
     @PostMapping("/confirm")
     public ResponseEntity<String> confirmSale(@AuthenticationPrincipal UserPrincipal user,
-                                             @RequestBody SaleConfirmRequest saleRequest) {
+                                              @RequestBody SaleConfirmRequest saleRequest) {
         long shoesId = saleRequest.getShoesId();
         int size = saleRequest.getSize();
 

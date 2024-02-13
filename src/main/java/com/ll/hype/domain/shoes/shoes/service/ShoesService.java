@@ -9,6 +9,7 @@ import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesCategory;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
 import com.ll.hype.global.enums.StatusCode;
+import com.ll.hype.global.exception.custom.EntityNotFoundException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class ShoesService {
     private final OrderRepository orderRepository;
     private final ImageBridgeComponent imageBridgeComponent;
     public ShoesResponse findById(long id) {
-        Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
+        Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Shoes Not Found"));
         List<String> fullPath = imageBridgeComponent.findAllFullPath(ImageType.SHOES, shoes.getId());
         return ShoesResponse.of(shoes, fullPath);
     }
