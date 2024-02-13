@@ -124,6 +124,22 @@ public class NotProd {
                 .orElseThrow(() -> new IllegalArgumentException("NotProd userMember 생성 중 조회 오류 발생"));
         userMember.updateRole(MemberRole.MEMBER);
 
+        JoinRequest member3 = JoinRequest.builder()
+                .email("test2@test.com")
+                .password("test")
+                .passwordConfirm("test")
+                .name("테스트2")
+                .nickname("test2")
+                .phoneNumber(1000001112L)
+                .birthday(LocalDate.of(2000, 1, 1))
+                .gender(Gender.FEMALE)
+                .shoesSize(230)
+                .build();
+        memberService.join(member3, profileFiles);
+        Member userMember2 = memberRepository.findByEmail("test2@test.com")
+                .orElseThrow(() -> new IllegalArgumentException("NotProd userMember 생성 중 조회 오류 발생"));
+        userMember2.updateRole(MemberRole.MEMBER);
+
         // ===== 이미지 객체 불러오기 시작 =====
         File file = new File(
                 getClass().getClassLoader().getResource("img/KakaoTalk_Photo_2022-09-07-14-41-27.jpeg").getFile());
@@ -241,7 +257,7 @@ public class NotProd {
         addressRepository.save(address2);
 
         Address address3 = Address.builder()
-                .member(userMember)
+                .member(userMember2)
                 .addressName("TEST 집 지번")
                 .postcode("123456")
                 .address("경기도 화성시 오산동 17-115")
@@ -253,7 +269,7 @@ public class NotProd {
         addressRepository.save(address3);
 
         Address address4 = Address.builder()
-                .member(userMember)
+                .member(userMember2)
                 .addressName("TEST 집 도로명")
                 .postcode("123456")
                 .address("경기도 화성시 동탄대로 17")
@@ -298,7 +314,7 @@ public class NotProd {
         Sale saleRequest = Sale.builder()
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(3))
-                .member(userMember)
+                .member(userMember2)
                 .price(300000L)
                 .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
@@ -311,7 +327,7 @@ public class NotProd {
         Sale saleRequest2 = Sale.builder()
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(4))
-                .member(userMember)
+                .member(userMember2)
                 .price(400000L)
                 .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
@@ -324,7 +340,7 @@ public class NotProd {
         Sale saleRequest3 = Sale.builder()
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(5))
-                .member(userMember)
+                .member(userMember2)
                 .price(400000L)
                 .startDate(LocalDate.of(2024, 1, 1)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 1, 31)) // 다른 종료 날짜
@@ -337,7 +353,7 @@ public class NotProd {
         Sale saleRequest4 = Sale.builder()
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(5))
-                .member(userMember)
+                .member(userMember2)
                 .price(450000L)
                 .startDate(LocalDate.of(2024, 1, 1)) // 다른 시작 날짜
                 .endDate(LocalDate.of(2024, 1, 31)) // 다른 종료 날짜
