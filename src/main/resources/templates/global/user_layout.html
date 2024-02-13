@@ -35,11 +35,11 @@
                     <div class="hidden sm:ml-6 sm:block">
                         <div class="flex space-x-4">
                             <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                            <a href="/shoes/list"
+                            <a th:href="@{/shoes/list}"
                                class="text-black-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Store</a>
-                            <a href="#"
+                            <a th:href="@{#}"
                                class="text-black-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Social</a>
-                            <a href="/cs/main"
+                            <a th:href="@{/cs/main}"
                                class="text-black-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Contact</a>
                         </div>
                     </div>
@@ -67,14 +67,19 @@
                                     <div class="dropdown-content right-0 z-10 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
                                         <!-- Unknown -->
                                         <div sec:authorize="isAnonymous()">
-                                            <a href="/member/login" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Sign in</a>
-                                            <a href="/member/join" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Sign up</a>
+                                            <a th:href="@{/member/login}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Sign in</a>
+                                            <a th:href="@{/member/join}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Sign up</a>
                                         </div>
 
                                         <!-- Member -->
                                         <div sec:authorize="isAuthenticated()">
-                                            <a href="/mypage/profile" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-4">MyPage</a>
-                                            <a href="/logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-5">Sign out</a>
+                                            <a th:href="@{/mypage/profile}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-4">MyPage</a>
+
+                                            <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                                                <a th:href="@{/admin/main}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1">Admin Page</a>
+                                            </div>
+
+                                            <a th:href="@{/member/logout}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-5">Sign out</a>
                                         </div>
                                     </div>
                                 </div>
@@ -88,7 +93,7 @@
         <!-- Mobile -->
         <div class="sm:hidden" id="mobile-menu">
             <div class="space-y-1 px-2 pb-3 pt-2">
-                <a href="/shoes/list"
+                <a th:href="@{/shoes/list}"
                    class="text-black-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Store</a>
                 <a href="#"
                    class="text-black-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Social</a>
