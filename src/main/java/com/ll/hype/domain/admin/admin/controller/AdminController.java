@@ -155,6 +155,16 @@ public class AdminController {
         model.addAttribute("shoes", shoes);
         return "domain/admin/shoes/list";
     }
+
+    @GetMapping("/shoes/{id}")
+    public String shoesDetail(@PathVariable("id") Long id,
+                              ShoesRequest shoesRequest,
+                              Model model) {
+        ShoesResponse shoes = adminService.shoesFind(id);
+        model.addAttribute("data", shoes);
+        model.addAttribute("brands", adminService.brandFindEnable());
+        return "domain/admin/shoes/detail";
+    }
     //============== Shoes End ==============
 
 

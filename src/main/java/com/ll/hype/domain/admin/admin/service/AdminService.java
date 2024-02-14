@@ -146,6 +146,16 @@ public class AdminService {
         }
         return severalShoes;
     }
+
+    // Shoes 상세 조회
+    public ShoesResponse shoesFind(Long id) {
+        Shoes findShoes = shoesRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Shoes Not Found"));
+        List<String> fullPath = imageBridgeComponent.findAllFullPath(ImageType.SHOES, findShoes.getId());
+
+        return ShoesResponse.of(findShoes, fullPath);
+    }
+
     //============== Shoes End ==============
 
 
