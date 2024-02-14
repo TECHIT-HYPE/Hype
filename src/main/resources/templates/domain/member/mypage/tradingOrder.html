@@ -63,6 +63,29 @@
                             <p class="text-sm">거래 상태 : <span th:text="${order.status}"></span></p>
                             <p class="text-sm">구매자 거래 상태 : <span th:text="${order.paymentStatus}"></span></p>
                             <p class="text-sm">운송장번호 : <span th:text="${order.deliveryNumber}"></span></p>
+
+                            <div class="flex justify-end"
+                                 th:if="${order.paymentStatus == T(com.ll.hype.domain.order.order.entity.PaymentStatus).WAIT_PAYMENT}">
+                                <div class="card-actions mr-2" >
+                                    <form th:action method="post">
+                                        <input type="hidden" name="id" th:value="${order.id}"/>
+                                        <button type="submit" class="btn btn-warning card-action">
+                                            결제하기
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div class="card-actions"
+                                     th:if="${order.deliveryNumber != null}">
+                                    <form th:action method="post" onsubmit="return confirm('상품을 수령하셨습니까?');">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="id" th:value="${order.id}"/>
+                                        <button type="submit" class="btn btn-error card-action">
+                                            구매 확정
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
