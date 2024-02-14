@@ -19,6 +19,8 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
             "ORDER BY o.orderDate DESC")
     List<Orders> findTradingByMember(Member member);
 
+    @Query("SELECT o FROM Orders o WHERE o.paymentStatus = 'COMPLETE_PAYMENT' " +
+            "ORDER BY o.orderDate DESC")
     Optional<Orders> findByIdAndSaleMember(Long id, Member member);
     @Query("SELECT o FROM Orders o " +
             "WHERE o.sale.member.id = :#{#member.id} "+
@@ -28,6 +30,6 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
     @Query("SELECT o FROM Orders o " +
             "WHERE o.buy.shoes.id = :shoesId " +
             "ORDER BY o.orderDate DESC")
-//    "AND (o.status = 'TRADING' OR o.status = 'TRADE_COMPLETE') " +
+//    "AND (o.status = 'TRADE_COMPLETE') " +
     Optional<Orders> findByShoesId(@Param("shoesId") long shoesId);
 }

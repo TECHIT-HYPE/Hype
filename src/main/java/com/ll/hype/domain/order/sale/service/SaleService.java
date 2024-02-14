@@ -167,7 +167,7 @@ public class SaleService {
         Buy buy = buyRepository.findHighestPriceBuy(shoes, saleRequest.getSize(), member)
                 .orElseThrow(() -> new IllegalArgumentException("구매입찰 내역을 찾을 수 없습니다."));
 
-        buy.updateStatus(Status.BID_COMPLETE);
+//        buy.updateStatus(Status.BID_COMPLETE);
 
         if (!buy.getPrice().equals(sale.getPrice())) {
             throw new IllegalArgumentException("거래 성사 금액이 일치하지 않습니다.");
@@ -183,10 +183,13 @@ public class SaleService {
                 .receiverAddress(buy.getReceiverAddress())
                 .status(OrderStatus.TRADING)
                 .paymentStatus(PaymentStatus.WAIT_PAYMENT)
+                .depositStatus(DepositStatus.WAIT_DEPOSIT)
                 .build();
         orderRepository.save(order);
 
-        order.updateDepositStatus(DepositStatus.WAIT_DEPOSIT);// 판매자 정산 상태
+//        order.updateDepositStatus(DepositStatus.WAIT_DEPOSIT); // 판매자 정산 상태
+        order.updateBuySaleStatus(Status.BID_COMPLETE); // buy.status, sale.status
+        //====== 판매자 택배 발송 전 프로세스
         return OrderResponse.of(order, fullPath);
     }
 
