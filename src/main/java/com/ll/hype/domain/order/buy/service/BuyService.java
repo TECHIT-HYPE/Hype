@@ -10,6 +10,7 @@ import com.ll.hype.domain.order.buy.dto.response.BuySizeInfoResponse;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
 import com.ll.hype.domain.order.order.dto.response.OrderResponse;
+import com.ll.hype.domain.order.order.entity.DepositStatus;
 import com.ll.hype.domain.order.order.entity.OrderStatus;
 import com.ll.hype.domain.order.order.entity.Orders;
 import com.ll.hype.domain.order.order.entity.PaymentStatus;
@@ -240,6 +241,7 @@ public class BuyService {
                 .build();
         orderRepository.save(order);
 
+        order.updateDepositStatus(DepositStatus.WAIT_DEPOSIT);// 판매자 정산 상태
         order.updateTossId(order.createTossId());
         return OrderResponse.of(order, fullPath);
     }

@@ -34,14 +34,15 @@ public class SaleSizeInfoResponse {
     private String color;
     private Gender gender;
     private StatusCode status;
+    private int selectSize;
     private List<String> fullPath;
     private String account;
 
     @Builder.Default
     private Map<Integer, Long> sizeMap = new LinkedHashMap<>();
 
-    public static SaleSizeInfoResponse of(Shoes shoes, Map<Integer, Long> sizeMap, List<String> fullPath
-    ) {
+    public static SaleSizeInfoResponse of(Shoes shoes, Map<Integer, Long> sizeMap, List<String> fullPath,
+                                          int selectSize) {
         return SaleSizeInfoResponse.builder()
                 .id(shoes.getId())
                 .createDate(shoes.getCreateDate())
@@ -57,8 +58,8 @@ public class SaleSizeInfoResponse {
                 .gender(shoes.getGender())
                 .status(shoes.getStatus())
                 .sizeMap(sizeMap)
+                .selectSize(selectSize)
                 .fullPath(fullPath)
                 .build();
     }
-
 }

@@ -97,4 +97,20 @@ public class OrderService {
         OrderValidator.checkUserMatch(order, member);
         order.updateDeliveryNumber(deliveryNumber);
     }
+
+    // 판매 정산 내역
+    public List<OrderResponse> settlementOrder(Member member) {
+        List<Orders> saleOrder = orderRepository.findBySaleMember(member);
+        List<OrderResponse> orderResponses = new ArrayList<>();
+
+        for (Orders order : saleOrder) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(
+                    ImageType.SHOES, order.getSale().getShoes().getId());
+            OrderResponse orderResponse = OrderResponse.of(order, fullPath);
+                orderResponses.add(orderResponse);
+        }
+        return orderResponses;
+    }
+
+
 }

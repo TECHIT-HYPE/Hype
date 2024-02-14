@@ -31,7 +31,8 @@ public class SaleResponse {
     private LocalDate endDate;
     private String address;
     private Status status;
-    private String account;
+    private String accountBank;
+    private String accountNumber;
 
     @Builder.Default
     private List<String> fullPath = new ArrayList<>();
@@ -49,7 +50,8 @@ public class SaleResponse {
                 .endDate(sale.getEndDate())
                 .address(sale.getAddress())
                 .status(sale.getStatus())
-                .account(sale.getAccount())
+                .accountBank(sale.getAccountBank())
+                .accountNumber(sale.getAccountNumber())
                 .fullPath(fullPath)
                 .build();
     }

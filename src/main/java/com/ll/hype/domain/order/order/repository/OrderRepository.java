@@ -20,6 +20,10 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
     List<Orders> findTradingByMember(Member member);
 
     Optional<Orders> findByIdAndSaleMember(Long id, Member member);
+    @Query("SELECT o FROM Orders o " +
+            "WHERE o.sale.member.id = :#{#member.id} "+
+            "ORDER BY o.createDate DESC")
+    List<Orders> findBySaleMember(Member member);
 
     @Query("SELECT o FROM Orders o " +
             "WHERE o.buy.shoes.id = :shoesId " +

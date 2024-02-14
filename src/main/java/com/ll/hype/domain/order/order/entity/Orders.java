@@ -78,4 +78,7 @@ public class Orders extends BaseEntity {
     public void updateDeliveryNumber(Long deliveryNumber) {
         this.deliveryNumber = deliveryNumber;
     }
+    public void updateDepositStatus(DepositStatus depositStatus) {
+        this.depositStatus = depositStatus;
+    }
 }

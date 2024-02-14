@@ -1,6 +1,7 @@
 package com.ll.hype.domain.order.order.dto.response;
 
 import com.ll.hype.domain.order.buy.entity.Buy;
+import com.ll.hype.domain.order.order.entity.DepositStatus;
 import com.ll.hype.domain.order.order.entity.OrderStatus;
 import com.ll.hype.domain.order.order.entity.Orders;
 import com.ll.hype.domain.order.order.entity.PaymentStatus;
@@ -30,6 +31,7 @@ public class OrderResponse {
     private String receiverAddress;
     private OrderStatus status;
     private PaymentStatus paymentStatus;
+    private DepositStatus depositStatus;
 
     @Builder.Default
     private List<String> fullPath = new ArrayList<>();
@@ -48,6 +50,7 @@ public class OrderResponse {
                 .receiverAddress(order.getReceiverAddress())
                 .status(order.getStatus())
                 .paymentStatus(order.getPaymentStatus())
+                .depositStatus(order.getDepositStatus())
                 .fullPath(fullPath)
                 .build();
     }

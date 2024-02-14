@@ -16,6 +16,11 @@ public class CreateSaleRequest {
     private Long price;
     private int endDate;
 
+    private String postCode;
     private String address;
-    private String account;
+    private String detailAddress;
+    private String extraAddress;
+
+    private String accountBank;
+    private String accountNumber;
 }
