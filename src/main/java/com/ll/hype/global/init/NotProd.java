@@ -352,7 +352,7 @@ public class NotProd {
                         .engName("Asics")
                         .status(StatusCode.ENABLE)
                         .build();
-        files = List.of(getMultipartFile("img/as_logo.jpeg"));
+        files = List.of(getMultipartFile("img/as_logo.jpg"));
         adminService.saveBrand(brandRequest4, files);
 
         BrandRequest brandRequest5 =
@@ -1150,7 +1150,8 @@ public class NotProd {
                 .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
                 .address(address2.getFullAddress())
                 .status(Status.BIDDING)
-                .account("1234-5678-999999-10")
+                .accountBank("신한은행")
+                .accountNumber("1234-5678-999999-10")
                 .build();
         saleRepository.save(saleRequest);
 
@@ -1163,7 +1164,8 @@ public class NotProd {
                 .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
                 .address(address2.getFullAddress())
                 .status(Status.BIDDING)
-                .account("1234-5678-999999-10")
+                .accountBank("신한은행")
+                .accountNumber("1234-5678-999999-10")
                 .build();
         saleRepository.save(saleRequest2);
 
@@ -1176,7 +1178,8 @@ public class NotProd {
                 .endDate(LocalDate.of(2024, 1, 31)) // 다른 종료 날짜
                 .address(address2.getFullAddress())
                 .status(Status.BID_EXPIRED)
-                .account("1234-5678-999999-10")
+                .accountBank("신한은행")
+                .accountNumber("1234-5678-999999-10")
                 .build();
         saleRepository.save(saleRequest3);
 
@@ -1189,7 +1192,8 @@ public class NotProd {
                 .endDate(LocalDate.of(2024, 1, 31)) // 다른 종료 날짜
                 .address(address2.getFullAddress())
                 .status(Status.BID_EXPIRED)
-                .account("1234-5678-999999-10")
+                .accountBank("신한은행")
+                .accountNumber("1234-5678-999999-10")
                 .build();
         saleRepository.save(saleRequest4);
 
