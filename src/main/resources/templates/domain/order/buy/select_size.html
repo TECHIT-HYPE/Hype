@@ -14,11 +14,31 @@
             justify-content: center;
             align-items: center;
         }
+
+        .grid-item label {
+            width: 150px;
+            height: 60px;
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"] + label {
+            cursor: pointer;
+        }
+
+        input[type="radio"]:checked + label {
+            font-weight: bold;
+            color: #FF0000;
+        }
     </style>
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="flex justify-center mt-5">구매하기</div>
+    <div class="flex justify-center mt-5">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">구매하기</h2>
+    </div>
     <div class="container mx-auto mt-5">
         <div class="header mb-5 flex">
             <img th:src="${shoes.fullPath.get(0)}" class="w-20">
@@ -31,19 +51,31 @@
 
         <form th:action="@{|/buy/shoes/bid|}" method="post" id="buyForm">
             <input type="hidden" id="shoesId" name="shoesId" th:value="${shoes.id}">
-            <div class="grid-container">
-                <th:block th:each="size : ${shoes.sizeMap.keySet()}">
-                    <div class="grid-item">
-                        <input type="radio" id="size" name="size" required th:value="${size}" th:checked="${size == shoes.selectSize}">
-                        <div class="flex flex-col">
-                            <p th:text="${size}"></p>
-                            <p th:text="${shoes.sizeMap.get(size)}"></p>
+            <fieldset>
+                <legend class="sr-only">Choose a size</legend>
+                <div class="grid-container">
+                    <th:block th:each="size, iterStatus : ${shoes.sizeMap.keySet()}">
+                        <div class="grid-item">
+                            <input type="radio" th:id="${'size_' + iterStatus.index}" name="size" required
+                                   aria-labelledby="size-choice-1-label" th:value="${size}"
+                                   th:checked="${size == shoes.selectSize}" class="sr-only">
+                            <label th:for="${'size_' + iterStatus.index}"
+                                   class="group relative flex items-center justify-center rounded-md border py-3 px-4
+                                   text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none cursor-pointer bg-white text-gray-900 shadow-sm">
+                                <div class="flex flex-col items-center">
+                                    <span id="size-choice-1-label" th:text="${size}"></span>
+                                    <p th:if="${shoes.sizeMap.get(size) == 0}">구매 입찰</p>
+                                    <p th:unless="${shoes.sizeMap.get(size) == 0}"
+                                       th:text="${shoes.sizeMap.get(size)} + '원'"></p>
+                                </div>
+                            </label>
                         </div>
-                    </div>
-                </th:block>
-                <br>
-                <input type="button" value="구매하기" onclick="checkAlreadyBid()">
-            </div>
+                    </th:block>
+                    <br>
+                    <br>
+                    <input class="text-xl font-semibold" type="button" value="구매하기" onclick="checkAlreadyBid()">
+                </div>
+            </fieldset>
         </form>
     </div>
     <script>
