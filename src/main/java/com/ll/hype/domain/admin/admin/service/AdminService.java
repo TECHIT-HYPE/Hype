@@ -1,5 +1,6 @@
 package com.ll.hype.domain.admin.admin.service;
 
+import com.ll.hype.domain.admin.admin.dto.request.MemberModifyRequest;
 import com.ll.hype.domain.admin.admin.dto.response.MemberListResponse;
 import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.dto.BrandResponse;
@@ -12,6 +13,9 @@ import com.ll.hype.domain.customer.question.entity.Question;
 import com.ll.hype.domain.customer.question.repository.QuestionRepository;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.repository.MemberRepository;
+import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
+import com.ll.hype.domain.order.buy.entity.Buy;
+import com.ll.hype.domain.order.buy.repository.BuyRepository;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
@@ -19,15 +23,20 @@ import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesSizeRepository;
 import com.ll.hype.global.enums.StatusCode;
+import com.ll.hype.global.exception.custom.EntityNotFoundException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AdminService {
@@ -38,6 +47,8 @@ public class AdminService {
     private final AnswerRepository csARepository;
     private final ImageBridgeComponent imageBridgeComponent;
     private final MemberRepository memberRepository;
+    private final BuyRepository buyRepository;
+    private final PasswordEncoder passwordEncoder;
 
     //============== Brand Start ==============
     // Brand 저장
@@ -143,6 +154,7 @@ public class AdminService {
         return questions;
     }
 
+    @Transactional
     // Answer 생성
     public QuestionResponse createAnswer(Long id, String content, String email) {
         Member findMember = memberRepository.findByEmail(email)
@@ -162,6 +174,7 @@ public class AdminService {
         return QuestionResponse.of(customerQ);
     }
 
+    @Transactional
     // Answer 삭제
     public QuestionResponse deleteAnswer(Long id) {
         Answer customerA = csARepository.findById(id)
@@ -187,5 +200,78 @@ public class AdminService {
 
         return members;
     }
+
+    public MemberListResponse getMember(Long id) {
+        Member findMember = memberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Member Not Found"));
+        List<String> fullPath = imageBridgeComponent.findAllFullPath(ImageType.MEMBER, findMember.getId());
+
+        return MemberListResponse.of(findMember, fullPath);
+    }
+
+    @Transactional
+    public void clearMemberPw(Long id) {
+        Member findMember = memberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Member Not Found"));
+
+        findMember.clearPw(passwordEncoder.encode("1234"));
+    }
+
+    @Transactional
+    public void modifyMember(MemberModifyRequest request) {
+        Member findMember = memberRepository.findById(request.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Member Not Found"));
+
+        findMember.modifyProfile(
+                request.getEmail(),
+                request.getName(),
+                request.getNickname(),
+                request.getPhoneNumber(),
+                request.getGender(),
+                request.getShoesSize());
+
+        log.info("[AdminService.modifyMember] name : " + request.getFiles().get(0).getOriginalFilename());
+        log.info("[AdminService.modifyMember] size : " + request.getFiles().size());
+
+        if (request.getFiles().get(0).isEmpty()) {
+            log.info("[AdminService.modifyMember] 비어있음! ");
+            return;
+        }
+
+        if (!imageBridgeComponent.findAllFullPath(ImageType.MEMBER, findMember.getId()).isEmpty()) {
+            imageBridgeComponent.delete(ImageType.MEMBER, findMember.getId());
+        }
+
+        imageBridgeComponent.save(ImageType.MEMBER, findMember.getId(), request.getFiles());
+        log.info("[AdminService.modifyMember] 프로필 이미지 변경함! ");
+    }
+
+    @Transactional
+    public void memberDelete(Long id) {
+        Member findMember = memberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Member Not Found"));
+
+        memberRepository.delete(findMember);
+    }
     //============== Member End ==============
+
+
+    //============== Buy Start ==============
+    public List<BuyResponse> buyFindAll() {
+        List<Buy> findAll = buyRepository.findAll();
+        List<BuyResponse> buys = new ArrayList<>();
+
+        for (Buy buy : findAll) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, buy.getShoes().getId());
+            buys.add(BuyResponse.of(buy,fullPath));
+        }
+
+        return buys;
+    }
+
+    public void buyDelete(Long id) {
+        Buy buy = buyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Data Not Found"));
+        buyRepository.delete(buy);
+    }
+    //============== Buy End ==============
 }

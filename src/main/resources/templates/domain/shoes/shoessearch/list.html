@@ -50,16 +50,6 @@
         </h2>
         <div class="carousel carousel-center p-4 space-x-4 rounded-box">
             <div class="carousel-item" th:each="brand : ${data.brands}">
-                <!--                <div th:each="path : ${brand.fullPath}">-->
-                <!--                    <div class="card card-compact w-48 bg-base-100 shadow-xl">-->
-                <!--                        <figure><img th:src="${path}" alt="Shoes"/></figure>-->
-                <!--                        <div class="card-body">-->
-                <!--                            <h2 class="card-title" th:text="'브랜드 '  + ${brand.korName}"></h2>-->
-                <!--                            <p>If a dog chews shoes whose shoes does he choose?</p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
-
                 <a class="avatar">
                     <div class="w-48 h-48 rounded-full">
                         <div th:each="path : ${brand.fullPath}">

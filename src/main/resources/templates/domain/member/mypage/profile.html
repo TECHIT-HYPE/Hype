@@ -63,7 +63,7 @@
 
         <div class="mb-4">
             <label for="shoesSize" class="block text-gray-700 text-sm font-bold mb-2">신발 사이즈:</label>
-            <select id="shoesSize" name="gender" th:field="*{shoesSize}"
+            <select id="shoesSize" name="shoesSize" th:field="*{shoesSize}"
                     class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
                 <option value="">&#45;&#45; 선택 &#45;&#45;</option>
                 <option th:each="shoesSize : ${shoesSizeList}" th:value="${shoesSize}" th:text="${shoesSize}" />

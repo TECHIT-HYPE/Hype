@@ -60,19 +60,7 @@ public class BuyController {
     }
 
     /**
-     * 사이즈 선택 완료 -> 약관 동의 페이지로
-     */
-    @PostMapping("/shoes/size")
-    public String buySizePickSuccess(@RequestParam("shoesId") Long shoesId,
-                                     @RequestParam("size") int size,
-                                     Model model) {
-        model.addAttribute("shoesId", shoesId);
-        model.addAttribute("size", size);
-        return "domain/order/buy/approve";
-    }
-
-    /**
-     * 약관 동의 페이지 -> 구매 입찰 상세페이지
+     * 사이즈 선택 완료 -> 구매 입찰 상세페이지
      */
     @PostMapping("/shoes/bid")
     public String buyBid(@RequestParam("shoesId") Long shoesId,
