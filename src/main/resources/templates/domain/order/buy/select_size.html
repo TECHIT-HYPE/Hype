@@ -1,4 +1,4 @@
-<html layout:decorate="~{global/usrLayout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html layout:decorate="~{global/user_layout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <title>구매 입찰 사이즈 선택</title>
     <style>
@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <form th:action="@{|/buy/shoes/size|}" method="post" id="buyForm">
+        <form th:action="@{|/buy/shoes/bid|}" method="post" id="buyForm">
             <input type="hidden" id="shoesId" name="shoesId" th:value="${shoes.id}">
             <div class="grid-container">
                 <th:block th:each="size : ${shoes.sizeMap.keySet()}">
