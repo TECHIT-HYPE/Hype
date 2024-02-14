@@ -36,7 +36,9 @@
             <td class="p-3 border-b" th:text="${shoes.createDate}"></td>
             <td class="p-3 border-b" th:text="${shoes.modifyDate}"></td>
             <td class="p-3 border-b" th:text="${shoes.brand.korName}"></td>
-            <td class="p-3 border-b" th:text="${shoes.korName}"></td>
+            <td class="p-3 border-b">
+                <a th:href="@{|/admin/shoes/${shoes.id}|}" th:text="${shoes.korName}"></a>
+            </td>
             <td class="p-3 border-b" th:text="${shoes.engName}"></td>
             <td class="p-3 border-b" th:text="${shoes.model}"></td>
             <td class="p-3 border-b" th:text="${shoes.price}"></td>
