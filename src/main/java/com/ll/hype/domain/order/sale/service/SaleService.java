@@ -98,21 +98,31 @@ public class SaleService {
     // 판매 입찰 생성
     public SaleResponse createSaleBid(CreateSaleRequest saleRequest, Member member) {
         Shoes shoes = shoesRepository.findById(saleRequest.getShoesId())
-                .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("조회된 신발이 없습니다."));
 
         ShoesSize shoesSize = shoesSizeRepository.findByShoesAndSize(shoes, saleRequest.getSize())
-                .orElseThrow(() -> new IllegalArgumentException("조회된 사이즈 정보가 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("조회된 사이즈 정보가 없습니다."));
 
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
+
+        Address address = Address.builder()
+                .address(saleRequest.getAddress())
+                .postcode(saleRequest.getPostCode())
+                .detailAddress(saleRequest.getDetailAddress())
+                .extraAddress(saleRequest.getExtraAddress())
+                .build();
 
         Sale sale = Sale.builder()
                 .shoes(shoes)
                 .shoesSize(shoesSize)
                 .member(member)
                 .price(saleRequest.getPrice())
+                .address(address.getFullAddress())
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusDays(saleRequest.getEndDate()))
                 .status(Status.BIDDING)
+                .accountBank(saleRequest.getAccountBank())
+                .accountNumber(saleRequest.getAccountNumber())
                 .build();
 
         saleRepository.save(sale);
@@ -130,6 +140,13 @@ public class SaleService {
 
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
 
+        Address address = Address.builder()
+                .address(saleRequest.getAddress())
+                .postcode(saleRequest.getPostCode())
+                .detailAddress(saleRequest.getDetailAddress())
+                .extraAddress(saleRequest.getExtraAddress())
+                .build();
+
         Sale sale = Sale.builder()
                 .shoes(shoes)
                 .shoesSize(shoesSize)
@@ -137,9 +154,10 @@ public class SaleService {
                 .price(saleRequest.getPrice())
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now())
-                .address(saleRequest.getAddress())
+                .address(address.getFullAddress())
                 .status(Status.BID_COMPLETE)
-                .account(saleRequest.getAccount())
+                .accountBank(saleRequest.getAccountBank())
+                .accountNumber(saleRequest.getAccountNumber())
                 .build();
 
         saleRepository.save(sale);
@@ -166,11 +184,12 @@ public class SaleService {
                 .build();
         orderRepository.save(order);
 
+        order.updateDepositStatus(DepositStatus.WAIT_DEPOSIT);// 판매자 정산 상태
         return OrderResponse.of(order, fullPath);
     }
 
     public boolean confirmSale(Member member, Long id, int size) {
-        Optional<Sale> findOne = saleRepository.findByShoesIdAndMemberAndShoesSizeSize(id, member, size);
+        Optional<Sale> findOne = saleRepository.findByShoesIdAndMemberAndShoesSizeSizeAndStatus(id, member, size, Status.BIDDING);
         return findOne.isEmpty();
     }
 
