@@ -18,9 +18,9 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="flex justify-center">구매하기</div>
+    <div class="flex justify-center mt-5">구매하기</div>
     <div class="container mx-auto mt-5">
-        <div class="header text-center mb-5 flex">
+        <div class="header mb-5 flex">
             <img th:src="${shoes.fullPath.get(0)}" class="w-20">
             <div>
                 <p class="text-l" th:text="${shoes.model}"></p>
@@ -42,7 +42,7 @@
                     </div>
                 </th:block>
                 <br>
-                <input type="button" value="Submit" onclick="checkAlreadyBid()">
+                <input type="button" value="구매하기" onclick="checkAlreadyBid()">
             </div>
         </form>
     </div>
