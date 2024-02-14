@@ -2,9 +2,7 @@ package com.ll.hype.domain.social.follow.entity;
 
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.global.jpa.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,13 +13,19 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name="follow_uk",
+                        columnNames = {"toMemberId", "fromMemberId"}
+                )
+        }
+)
 public class Follow extends BaseEntity {
-    @ManyToOne
-    @JoinColumn(name = "from_member_id")
-    private Member fromMember;
+    private Long toMemberId;
 
-    @ManyToOne
-    @JoinColumn(name = "to_member_id")
-    private Member toMember;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fromMemberId")
+    private Member fromMember;
 }

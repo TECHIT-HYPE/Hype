@@ -6,7 +6,6 @@ function closePopup(obj) {
     $(obj).css("display", "none");
 }
 
-
 function modalInfo() {
     $(".modal-info").css("display", "none");
 }
@@ -27,10 +26,11 @@ function openPopup() {
 }
 
 // 페이지 로드 시 모달 숨기기
-document.addEventListener("DOMContentLoaded", function() {
+window.onload = function() {
     var modal = document.getElementById('profileModal');
     modal.style.display = 'none';
-});
+};
+
 
 // 모달 닫기
 function closePopup() {
@@ -45,6 +45,8 @@ window.onclick = function (event) {
         modal.style.display = 'none';
     }
 }
+
+
 
 
 

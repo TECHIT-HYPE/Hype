@@ -2,6 +2,7 @@ package com.ll.hype.domain.social.profile.service;
 
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.member.member.repository.MemberRepository;
+import com.ll.hype.domain.social.follow.repository.FollowRepository;
 import com.ll.hype.domain.social.profile.dto.SocialProfileResponse;
 import com.ll.hype.domain.social.social.entity.Social;
 import com.ll.hype.domain.social.social.repository.SocialRepository;
@@ -25,15 +26,15 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class SocialProfileService {
-    @Autowired
     private final MemberRepository memberRepository;
     private final SocialRepository socialRepository;
+    private final FollowRepository followRepository;
     private final ImageBridgeComponent imageBridgeComponent;
 
 
     @Transactional
-    public SocialProfileResponse findById(Long id) {
-        Optional<Member> memberOptional = memberRepository.findById(id);
+    public SocialProfileResponse findById(Long profileMemberId, Long principalId) {
+        Optional<Member> memberOptional = memberRepository.findById(profileMemberId);
 
 
         if (memberOptional.isPresent()) {
@@ -47,6 +48,11 @@ public class SocialProfileService {
                     .profileImage(profileImage)
                     .socials(socialList)
                     .build();
+
+            Long followCount = followRepository.countByToMemberId(profileMemberId);
+            Long feedCount = (long) socialList.size();
+            boolean followstate = followRepository.existsByToMemberIdAndFromMemberId(profileMemberId, principalId);
+            socialProfileResponse.updateCounts(followCount, feedCount, followstate);
 
             return socialProfileResponse;
         } else {
