@@ -1,5 +1,6 @@
 package com.ll.hype.domain.member.member.entity;
 
+import com.ll.hype.domain.admin.admin.dto.request.MemberModifyRequest;
 import com.ll.hype.global.enums.Gender;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.Column;
@@ -18,6 +19,7 @@ import org.hibernate.annotations.Comment;
 import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails.Address;
 
 import java.time.LocalDate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
@@ -78,5 +80,18 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
         this.shoesSize = shoesSize;
+    }
+
+    public void modifyProfile(String email, String name, String nickname, Long phoneNumber, Gender gender, Integer shoesSize) {
+        this.email = email;
+        this.name = name;
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+        this.shoesSize = shoesSize;
+    }
+
+    public void clearPw(String encodedPassword) {
+        this.password = encodedPassword;
     }
 }
