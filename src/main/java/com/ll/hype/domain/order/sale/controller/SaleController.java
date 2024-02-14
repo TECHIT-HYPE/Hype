@@ -34,31 +34,31 @@ public class SaleController {
 
     // 신발상세 -> 사이즈 선택
     @PostMapping("/shoes")
-    public String saleShoesPickSuccess(@RequestParam("id") long shoesId,
+    public String saleShoesPickSuccess(@RequestParam("id") long id,
                                        @RequestParam("selectSize") int size,
                                        @AuthenticationPrincipal UserPrincipal user,
                                        Model model) {
-        SaleSizeInfoResponse findByBuyMaxPrice = saleService.findByShoesSizeMaxPrice(shoesId, user.getMember());
+        SaleSizeInfoResponse findByBuyMaxPrice = saleService.findByShoesSizeMaxPrice(id, user.getMember(), size);
         model.addAttribute("shoes", findByBuyMaxPrice);
 
         return "domain/order/sale/selectSize";
     }
 
     // 사이즈 선택 -> 약관 동의
-    @PostMapping("/shoes/size")
-    public String saleSizePickSuccess(@RequestParam("shoesId") long shoesId,
-                                      @RequestParam("size") int size,
-                                      Model model) {
-        ShoesResponse shoes = saleService.findByShoesId(shoesId);
-        model.addAttribute("shoes", shoes);
+//    @PostMapping("/shoes/size")
+//    public String saleSizePickSuccess(@RequestParam("shoesId") long shoesId,
+//                                      @RequestParam("size") int size,
+//                                      Model model) {
+//        ShoesResponse shoes = saleService.findByShoesId(shoesId);
+//        model.addAttribute("shoes", shoes);
+//
+//        model.addAttribute("shoesId", shoesId);
+//        model.addAttribute("size", size);
+//
+//        return "domain/order/sale/approve";
+//    }
 
-        model.addAttribute("shoesId", shoesId);
-        model.addAttribute("size", size);
-
-        return "domain/order/sale/approve";
-    }
-
-    // 약관 동의 -> 판매 타입: 판매 입찰
+    // 사이즈 선택 -> 판매 타입: 판매 입찰 + 약관 동의
     @PostMapping("/shoes/bid")
     public String saleBid(@RequestParam("shoesId") long shoesId,
                           @RequestParam("size") int size,
@@ -123,7 +123,6 @@ public class SaleController {
 
         SaleResponse saleResponse = saleService.findById(saleId);
         model.addAttribute("saleResponse", saleResponse);
-
         return "domain/order/sale/bidDetail";
     }
 
@@ -131,13 +130,10 @@ public class SaleController {
     @PostMapping("/confirm")
     public ResponseEntity<String> confirmSale(@AuthenticationPrincipal UserPrincipal user,
                                               @RequestBody SaleConfirmRequest saleRequest) {
-        long shoesId = saleRequest.getShoesId();
-        int size = saleRequest.getSize();
-
-        if (!saleService.confirmSale(user.getMember(), shoesId, size)) {
+        if (!saleService.confirmSale(user.getMember(), saleRequest.getShoesId(), saleRequest.getSize())) {
+            System.out.println("ㅋㅋ입찰불가");
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("이미 입찰 중인 신발 및 사이즈 입니다.");
         }
-
         return ResponseEntity.ok().body("입찰 가능");
     }
 

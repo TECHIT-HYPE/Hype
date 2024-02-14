@@ -8,7 +8,7 @@
     <div class="flex justify-center mt-5">판매하기</div>
     <div class="container mx-auto mt-5">
         <div class="header text-center mb-5">
-            <div class="flex">
+            <div>
                 <ul>
                     <li th:each="path : ${SaleFormResponse.fullPath}">
                         <img th:src="${path}" class="w-20"/>
@@ -56,12 +56,12 @@
                     <div>
                         <label id="bidSaleInput">
                             <label for="bidSalePrice">판매 희망가</label>
-                            <input id="bidSalePrice" name="price" placeholder="판매 희망가 입력" type="number"> 원
+                            <input id="bidSalePrice" name="price" placeholder="판매 희망가 입력" type="number" onchange="test()"> 원
                             <p id="bidSaleFee">수수료 -원</p>
                             <p>배송비 선불 ・ 판매자 부담</p>
 
                             <p>입찰 마감기한</p>
-                            <div class="flex space-x-4">
+                            <div class="space-x-4">
                                 <label class="inline-flex items-center">
                                     <input type="radio" class="form-radio" name="endDate" value="7" checked>
                                     <span class="ml-2">7일</span>
@@ -84,9 +84,69 @@
                             </div>
                             <hr>
                             <p id="finalBidSaleAmount"></p>
+                            <br>
+                            <div>
+                                <h2 class="text-xl font-bold">판매 약관 동의</h2>
+                                <div>
+                                    <input type="checkbox" id="term1" name="terms" class="checkbox" required>
+                                    <label for="term1">판매하려는 상품이 맞습니다.</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="term2" name="terms" class="checkbox" required>
+                                    <label for="term2">국내/해외에서 발매한 정품·새상품입니다.</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="term3" name="terms" class="checkbox" required>
+                                    <label for="term3">박스/패키지의 상태를 확인합니다.</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="term4" name="terms" class="checkbox" required>
+                                    <label for="term4">이중 포장하여 선불 발송합니다.</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="term5" name="terms" class="checkbox" required>
+                                    <label for="term5">HYPE의 최신 이용정책을 모두 확인하였으며, 판매를 계속합니다.</label>
+                                </div>
+                            </div>
+                            <hr>
+                            <br>
+                            <div>
+                                <h2 class="text-xl font-bold">판매 정산 계좌</h2>
+                                <label for="accountBank">은행</label>
+                                <input type="text" id="accountBank" name="accountBank" placeholder="plz bank">
+                                <br>
+                                <label for="accountNumber">계좌번호</label>
+                                <input  type="text" id="accountNumber" name="accountNumber" placeholder="plz account number..">
+                            </div>
+                            <br>
+                            <div>
+                                <h2 class="text-xl font-bold">반송 주소</h2>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">받는 사람 이름</label>
+                                    <input type="text" id="receiverName" name="receiverName" placeholder="받는 사람의 이름을 입력해 주세요.">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">받는 사람 연락처</label>
+                                    <input type="text" id="receiverPhoneNumber" name="receiverPhoneNumber"
+                                           placeholder="연락처를 입력해주세요.">
+                                </div>
+                                <br>
+                                <label>
+                                    <input type="text" id="sample6_postcode" name="postCode" placeholder="우편번호" readonly required>
+                                    <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+                                    <input type="text" id="sample6_address" name="address" placeholder="주소" readonly required><br>
+                                    <input type="text" id="sample6_detailAddress" name="detailAddress" placeholder="상세주소">
+                                    <input type="text" id="sample6_extraAddress" name="extraAddress" placeholder="참고항목" readonly
+                                           required>
+                                </label>
+                                <hr>
+                            </div>
+<!--                            <input type="hidden" name="bidSaleFee" id="commissionFee">-->
+<!--                            <input type="hidden" name="finalBidSaleAmount" id="finalAmount">-->
+
+                            <br>
                             <button type="submit">판매 입찰하기</button>
                         </label>
-
                     </div>
                 </form>
 
@@ -94,34 +154,86 @@
                     const thprice = /*[[ ${SaleFormResponse.price} ]]*/ null;
                 </script>
 
+                <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
                 <script>
-                    // 판매 희망가 > 즉시 판매가
-                    document.getElementById('bidSalePrice').addEventListener('input', function () { // bidPrice 입력 필드에 값이 입력될 때 마다 실행
-                        var bidSalePrice = parseFloat(this.value) || 0;
-                        var immediateSalePrice = parseFloat(document.getElementById('immediateSalePrice').textContent) || 0;
+                    function sample6_execDaumPostcode() {
+                        new daum.Postcode({
+                            oncomplete: function (data) {
+                                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
 
-                        if (bidSalePrice <= immediateSalePrice) {
-                            alert('판매 희망가는 즉시 판매가보다 높아야 합니다.');
-                            this.value = immediateSalePrice + 1; // 최소 판매 희망가 자동 설정
+                                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                                var addr = ''; // 주소 변수
+                                var extraAddr = ''; // 참고항목 변수
+
+                                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                                    addr = data.roadAddress;
+                                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                                    addr = data.jibunAddress;
+                                }
+
+                                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                                if (data.userSelectedType === 'R') {
+                                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                                    if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                                        extraAddr += data.bname;
+                                    }
+                                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                                    if (data.buildingName !== '' && data.apartment === 'Y') {
+                                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                                    }
+                                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                                    if (extraAddr !== '') {
+                                        extraAddr = ' (' + extraAddr + ')';
+                                    }
+                                    // 조합된 참고항목을 해당 필드에 넣는다.
+                                    document.getElementById("sample6_extraAddress").value = extraAddr;
+
+                                } else {
+                                    document.getElementById("sample6_extraAddress").value = '';
+                                }
+
+                                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                                document.getElementById('sample6_postcode').value = data.zonecode;
+                                document.getElementById("sample6_address").value = addr;
+                                // 커서를 상세주소 필드로 이동한다.
+                                document.getElementById("sample6_detailAddress").focus();
+                            }
+                        }).open();
+                    }
+
+                    function test() {
+                        var bidSalePrice = document.getElementById('bidSalePrice').value;
+
+                        if (bidSalePrice <= thprice) {
+                            customAlert.alert('판매 희망가는 즉시 판매가보다 높아야 합니다.');
+                            bidSalePrice = thprice + 1;
+                            document.getElementById('bidSalePrice').value = bidSalePrice;
                         }
-                    });
 
-                    // // 판매 희망가 > 즉시 판매가 폼 제출 방지
+                        calculateAndDisplayFinalAmount(bidSalePrice)
+                    }
+
+                    // // TODO
+                    // // 온클릭 메서드로 구현하기 *판매 희망가 > 즉시 판매가 폼 제출 방지
                     // document.querySelector('form').addEventListener('submit', function(event) {
                     //     var bidPrice = parseFloat(document.getElementById('bidPrice').value) || 0;
                     //     var immediateSalePrice = parseFloat(document.getElementById('immediateSalePrice').textContent) || 0;
                     //
                     //     if (bidPrice <= immediateSalePrice) {
-                    //         alert('판매 희망가는 즉시 판매가보다 높아야 합니다.');
+                    //         customAlert.alert('판매 희망가는 즉시 판매가보다 높아야 합니다.');
                     //         event.preventDefault();
                     //     }
+                    //     // document.getElementById("bid").submit();
                     // });
 
                     // 즉시 판매 상품 없을 때 즉시 판매 방지
                     function checkPriceAndSubmit() {
                         const price = thprice;
                         if (price === 0) {
-                            alert("즉시 판매가 가능한 상품이 없습니다.");
+                            customAlert.alert("즉시 판매가 가능한 상품이 없습니다.");
                             return;
                         }
                         document.getElementById("saleNow").submit();
@@ -131,16 +243,16 @@
                     function calculateFees(price) { return price * 0.055;}
 
                     // 정산 금액 계산 및 표시 함수
-                    function calculateAndDisplayFinalAmount() {
-                        // 판매 희망가 입력 필드 이벤트 리스너 설정
-                        var bidSaleInput = document.getElementById('bidSalePrice');
-                        bidSaleInput.addEventListener('input', function() {
-                            var bidSalePrice = parseFloat(this.value) || 0;
-                            var bidSaleFee = calculateFees(bidSalePrice);
-                            var finalBidSaleAmount = bidSalePrice - bidSaleFee;
-                            document.getElementById('bidSaleFee').textContent = '수수료: ' + bidSaleFee.toFixed(0) + '원';
-                            document.getElementById('finalBidSaleAmount').textContent = '정산금액: ' + finalBidSaleAmount.toFixed(0) + '원';
-                        });
+                    function calculateAndDisplayFinalAmount(price) {
+                        var bidSaleFee = calculateFees(price);
+                        var finalBidSaleAmount = price - bidSaleFee;
+
+                        document.getElementById('bidSaleFee').textContent = '수수료: ' + bidSaleFee.toFixed(0) + '원';
+                        document.getElementById('finalBidSaleAmount').textContent = '정산금액: ' + finalBidSaleAmount.toFixed(0) + '원';
+
+                        // hidden 필드에 값 설정
+                        // document.getElementById('commissionFee').value = bidSaleFee.toFixed(0);
+                        // document.getElementById('finalAmount').value = finalBidSaleAmount.toFixed(0);
                     }
                     // 페이지 로드 시 정산 금액 계산 및 표시
                     window.addEventListener('load', calculateAndDisplayFinalAmount);
