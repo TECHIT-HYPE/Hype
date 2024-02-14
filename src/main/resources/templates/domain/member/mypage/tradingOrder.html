@@ -11,6 +11,7 @@
         #wishlist-card {
             width: 100%;
         }
+
         #wishlist-card2 {
             width: 100%;
         }
@@ -33,7 +34,7 @@
         <div role="list" class="container mx-auto divide-y divide-gray-100">
             <div th:each="order : ${data}" class="flex justify-between gap-x-6 p-5 hover:bg-gray-100"
                  th:if="${order.buy.member.email == #authentication.principal.username}">
-            <div class="card card-side bg-base-100 shadow-xl" id="wishlist-card2">
+                <div class="card card-side bg-base-100 shadow-xl" id="wishlist-card2">
                     <figure>
                         <ul>
                             <li th:each="path : ${order.fullPath}">
@@ -62,6 +63,28 @@
                             <p class="text-sm">받는 사람 이름 : <span th:text="${order.receiverName}"></span></p>
                             <p class="text-sm">거래 상태 : <span th:text="${order.status}"></span></p>
                             <p class="text-sm">운송장번호 : <span th:text="${order.deliveryNumber}"></span></p>
+                        </div>
+
+                        <div class="flex justify-end">
+<!--                            th:if="${order.paymentStatus == T(com.ll.hype.domain.order.order.entity.PaymentStatus).WAIT_PAYMENT}"-->
+                            <div class="card-actions mr-2" >
+                                <form th:action method="post">
+                                    <input type="hidden" name="id" th:value="${order.id}"/>
+                                    <button type="submit" class="btn btn-warning card-action">
+                                        결제하기
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="card-actions">
+                                <form th:action method="post" onsubmit="return confirm('상품을 수령하셨습니까?');">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="id" th:value="${order.id}"/>
+                                    <button type="submit" class="btn btn-error card-action">
+                                        입찰 취소
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -107,9 +130,11 @@
                                 <input type="hidden" th:name="id" th:value="${order.id}"/>
                                 <label>운송장번호</label>
                                 <input type="text" th:name="deliveryNumber" th:value="${order.deliveryNumber}"
-                                       class="border border-gray-400 p-1"  style="width:110px;height:30px;font-size:15px;"/>
+                                       class="border border-gray-400 p-1"
+                                       style="width:110px;height:30px;font-size:15px;"/>
                                 <button type="submit" style="width:45px;height:30px;font-size:12px;"
-                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">수정</button>
+                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">수정
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -124,13 +149,13 @@
             });
         }
 
-        document.getElementById("buyTab").addEventListener("click", function() {
+        document.getElementById("buyTab").addEventListener("click", function () {
             setActiveTab(this.id);
             document.getElementById("buyContent").style.display = "block";
             document.getElementById("sellContent").style.display = "none";
         });
 
-        document.getElementById("sellTab").addEventListener("click", function() {
+        document.getElementById("sellTab").addEventListener("click", function () {
             setActiveTab(this.id);
             document.getElementById("buyContent").style.display = "none";
             document.getElementById("sellContent").style.display = "block";
@@ -138,6 +163,6 @@
 
         setActiveTab("buyTab");
     </script>
-    </div>
+</div>
 </body>
 </html>

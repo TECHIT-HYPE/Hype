@@ -35,10 +35,6 @@ public class ShoesController {
     public String shoesDetail(@PathVariable("id") long id, Model model) {
         ShoesResponse findOne = shoesService.findById(id);
         model.addAttribute("shoes", findOne);
-
-//        Optional<OrderPriceResponse> recentOrder = shoesService.getLatestTradePrice(id);
-//        recentOrder.ifPresent(order -> model.addAttribute("order", order));
-
         return "domain/shoes/shoes/detail";
     }
 
@@ -69,7 +65,6 @@ public class ShoesController {
     @PostMapping("/love/check")
     public ResponseEntity<String> checkWish(@RequestBody ShoesWishCheckRequest shoesWishCheckRequest,
                                             @AuthenticationPrincipal UserPrincipal user) {
-
         log.info("[ShoesController.checkWish] id : " + shoesWishCheckRequest.getShoesId());
         log.info("[ShoesController.checkWish] size : " + shoesWishCheckRequest.getSize());
         if (!wishlistService.checkShoesWish(shoesWishCheckRequest, user.getMember())) {

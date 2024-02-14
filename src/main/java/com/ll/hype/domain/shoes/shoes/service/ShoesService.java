@@ -2,7 +2,6 @@ package com.ll.hype.domain.shoes.shoes.service;
 
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
 import com.ll.hype.domain.order.order.dto.response.OrderPriceResponse;
-import com.ll.hype.domain.order.order.entity.Orders;
 import com.ll.hype.domain.order.order.repository.OrderRepository;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
@@ -12,12 +11,13 @@ import com.ll.hype.global.enums.StatusCode;
 import com.ll.hype.global.exception.custom.EntityNotFoundException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service

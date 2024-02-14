@@ -9,6 +9,7 @@ import com.ll.hype.domain.brand.brand.dto.BrandResponse;
 import com.ll.hype.domain.customer.question.dto.QuestionRequest;
 import com.ll.hype.domain.customer.question.dto.QuestionResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
+import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import java.security.Principal;
@@ -271,4 +272,19 @@ public class AdminController {
         return "redirect:/admin/buy/list";
     }
     //============== Buy End ==============
+
+    //============== Sale Start ==============
+    @GetMapping("/sale/list")
+    public String saleFindAll(Model model) {
+        List<SaleResponse> saleResponses = adminService.saleFindAll();
+        model.addAttribute("data", saleResponses);
+        return "domain/admin/sale/list";
+    }
+
+    @DeleteMapping("/sale/delete")
+    public String deleteSale(@RequestParam("id") Long id) {
+        adminService.saleDelete(id);
+        return "redirect:/admin/sale/list";
+    }
+    //============== Sale End ==============
 }

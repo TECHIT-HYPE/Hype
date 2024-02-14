@@ -17,6 +17,9 @@ import com.ll.hype.domain.member.member.repository.MemberRepository;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
+import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
+import com.ll.hype.domain.order.sale.entity.Sale;
+import com.ll.hype.domain.order.sale.repository.SaleRepository;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
@@ -30,15 +33,14 @@ import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,6 +48,7 @@ import java.util.List;
 public class AdminService {
     private final BrandRepository brandRepository;
     private final ShoesRepository shoesRepository;
+    private final SaleRepository saleRepository;
     private final ShoesSizeRepository shoesSizeRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
@@ -114,7 +117,9 @@ public class AdminService {
     // Brand 삭제
     public void brandDelete(Long id) {
         Brand brand = brandRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Data Not Found"));
-        if(shoesRepository.existsByBrand(brand)) throw new EntityNotFoundException("Brand in Use");
+        if (shoesRepository.existsByBrand(brand)) {
+            throw new EntityNotFoundException("Brand in Use");
+        }
 
         brandRepository.delete(brand);
     }
@@ -152,8 +157,8 @@ public class AdminService {
     }
     //============== Shoes End ==============
 
-
     //============== CS Question Start ==============
+
     /**
      * Question Find One
      */
@@ -319,7 +324,7 @@ public class AdminService {
 
         for (Buy buy : findAll) {
             List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, buy.getShoes().getId());
-            buys.add(BuyResponse.of(buy,fullPath));
+            buys.add(BuyResponse.of(buy, fullPath));
         }
 
         return buys;
@@ -331,4 +336,25 @@ public class AdminService {
         buy.updateStatus(Status.BID_CANCEL);
     }
     //============== Buy End ==============
+
+
+    //============== Sale Start ==============
+    public List<SaleResponse> saleFindAll() {
+        List<Sale> findAll = saleRepository.findAll();
+        List<SaleResponse> sales = new ArrayList<>();
+
+        for (Sale sale : findAll) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, sale.getShoes().getId());
+            sales.add(SaleResponse.of(sale, fullPath));
+        }
+
+        return sales;
+    }
+
+    @Transactional
+    public void saleDelete(Long id) {
+        Sale sale = saleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Data Not Found"));
+        sale.updateStatus(Status.BID_CANCEL);
+    }
+    //============== Sale End ==============
 }
