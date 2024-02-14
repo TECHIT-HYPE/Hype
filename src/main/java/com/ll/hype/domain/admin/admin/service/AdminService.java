@@ -8,6 +8,7 @@ import com.ll.hype.domain.brand.brand.entity.Brand;
 import com.ll.hype.domain.brand.brand.repository.BrandRepository;
 import com.ll.hype.domain.customer.answer.entity.Answer;
 import com.ll.hype.domain.customer.answer.repository.AnswerRepository;
+import com.ll.hype.domain.customer.question.dto.QuestionRequest;
 import com.ll.hype.domain.customer.question.dto.QuestionResponse;
 import com.ll.hype.domain.customer.question.entity.Question;
 import com.ll.hype.domain.customer.question.repository.QuestionRepository;
@@ -22,13 +23,13 @@ import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesSizeRepository;
+import com.ll.hype.global.enums.Status;
 import com.ll.hype.global.enums.StatusCode;
 import com.ll.hype.global.exception.custom.EntityNotFoundException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,8 +44,8 @@ public class AdminService {
     private final BrandRepository brandRepository;
     private final ShoesRepository shoesRepository;
     private final ShoesSizeRepository shoesSizeRepository;
-    private final QuestionRepository csQRepository;
-    private final AnswerRepository csARepository;
+    private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
     private final ImageBridgeComponent imageBridgeComponent;
     private final MemberRepository memberRepository;
     private final BuyRepository buyRepository;
@@ -134,9 +135,11 @@ public class AdminService {
 
 
     //============== CS Question Start ==============
-    // Question 상세 조회
+    /**
+     * Question Find One
+     */
     public QuestionResponse findQuestion(Long id) {
-        Question question = csQRepository.findById(id)
+        Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 문의가 없습니다."));
 
         List<String> fullPath = imageBridgeComponent.findAllFullPath(ImageType.QUESTION, question.getId());
@@ -144,23 +147,54 @@ public class AdminService {
         return QuestionResponse.of(question, fullPath);
     }
 
-    // Question 전체 조회
+    /**
+     * Question Find All
+     */
     public List<QuestionResponse> findQuestionAll() {
         List<QuestionResponse> questions = new ArrayList<>();
-        for (Question customerQ : csQRepository.findAll()) {
+        for (Question customerQ : questionRepository.findAll()) {
             List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.QUESTION, customerQ.getId());
             questions.add(QuestionResponse.of(customerQ, fullPath));
         }
         return questions;
     }
 
+    /**
+     * Question Delete
+     */
+    @Transactional
+    public void questionDelete(Long id) {
+        Question findQuestion = questionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Question Not Found"));
+
+        imageBridgeComponent.delete(ImageType.QUESTION, findQuestion.getId());
+        answerRepository.deleteAll(findQuestion.getAnswers());
+        questionRepository.delete(findQuestion);
+    }
+
+    /**
+     * Question Update
+     */
+    @Transactional
+    public void questionUpdate(Long id, QuestionRequest request) {
+        Question findQuestion = questionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("조회된 문의사항이 없습니다."));
+
+        Question customerQ = QuestionRequest.toEntity(request);
+        findQuestion.update(customerQ);
+    }
+
+
+    /**
+     * Answre Create
+     */
     @Transactional
     // Answer 생성
     public QuestionResponse createAnswer(Long id, String content, String email) {
         Member findMember = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 사용자가 없습니다."));
 
-        Question customerQ = csQRepository.findById(id)
+        Question customerQ = questionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 문의가 없습니다."));
 
         Answer csA = Answer.builder()
@@ -169,19 +203,21 @@ public class AdminService {
                 .member(findMember)
                 .build();
 
-        csARepository.save(csA);
+        answerRepository.save(csA);
         customerQ.getAnswers().add(csA);
         return QuestionResponse.of(customerQ);
     }
 
+    /**
+     * Answer Delete
+     */
     @Transactional
-    // Answer 삭제
     public QuestionResponse deleteAnswer(Long id) {
-        Answer customerA = csARepository.findById(id)
+        Answer customerA = answerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 답변이 없습니다."));
 
         Question question = customerA.getQuestion();
-        csARepository.delete(customerA);
+        answerRepository.delete(customerA);
 
         return QuestionResponse.of(question);
     }
@@ -270,9 +306,10 @@ public class AdminService {
         return buys;
     }
 
+    @Transactional
     public void buyDelete(Long id) {
         Buy buy = buyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Data Not Found"));
-        buyRepository.delete(buy);
+        buy.updateStatus(Status.BID_CANCEL);
     }
     //============== Buy End ==============
 }
