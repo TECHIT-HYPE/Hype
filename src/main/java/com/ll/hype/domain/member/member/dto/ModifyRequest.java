@@ -2,6 +2,8 @@ package com.ll.hype.domain.member.member.dto;
 
 import com.ll.hype.global.enums.Gender;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,8 +29,7 @@ public class ModifyRequest {
     @NotBlank(message = "별명은 필수 항목입니다.")
     private String nickname; // 별명
 
-    @NotBlank(message = "전화번호는 필수 항목입니다.")
-    @Pattern(regexp="^[0-9]+$", message="올바른 전화번호 형식을 입력해주세요.")
+    @NotNull
     private Long phoneNumber; // 010-1234-5678
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

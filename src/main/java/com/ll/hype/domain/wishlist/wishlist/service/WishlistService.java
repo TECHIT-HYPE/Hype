@@ -15,12 +15,14 @@ import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -30,7 +32,7 @@ public class WishlistService {
     private final ShoesRepository shoesRepository;
     private final ShoesSizeRepository shoesSizeRepository;
 
-    public void addWishShoes(Long id, int size, Member member) {
+    public boolean addWishShoes(Long id, int size, Member member) {
         Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("조회된 데이터가 없습니다."));
         ShoesSize shoesSize = shoesSizeRepository.findByShoesAndSize(shoes, size)
                 .orElseThrow(() -> new EntityNotFoundException("조회된 데이터가 없습니다."));
@@ -38,15 +40,17 @@ public class WishlistService {
         Optional<Wishlist> findWish = wishlistRepository.findByMemberAndShoesSize(member, shoesSize);
 
         if (findWish.isPresent()) {
-            throw new IllegalArgumentException("이미 자는 아니고 이미 찜목록에 데이터가 존재합니다.");
+            log.info("[WishlistService.addWishShoes] findWish is Not null");
+            return false;
         }
 
         Wishlist wish = Wishlist.builder()
                 .member(member)
                 .shoesSize(shoesSize)
                 .build();
-
         wishlistRepository.save(wish);
+
+        return true;
     }
 
     public boolean checkShoesWish(ShoesWishCheckRequest request, Member member) {
