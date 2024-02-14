@@ -240,8 +240,9 @@ public class BuyService {
                 .paymentStatus(PaymentStatus.WAIT_PAYMENT)
                 .build();
         orderRepository.save(order);
-
         order.updateDepositStatus(DepositStatus.WAIT_DEPOSIT);// 판매자 정산 상태
+        order.updateBuySaleStatus(Status.BID_COMPLETE);
+
         order.updateTossId(order.createTossId());
         return OrderResponse.of(order, fullPath);
     }

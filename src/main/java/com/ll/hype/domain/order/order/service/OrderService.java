@@ -68,7 +68,6 @@ public class OrderService {
     public void setPaymentComplete(String tossId) {
         Orders order = orderRepository.findByTossId(tossId)
                 .orElseThrow(() -> new IllegalArgumentException("찾는 주문이 없습니다."));
-        log.info("[OrderService.setPaymentComplete] 여기까지는 오나?");
         order.updatePaymentStatus(PaymentStatus.COMPLETE_PAYMENT);
     }
 
