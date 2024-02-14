@@ -72,6 +72,9 @@ public class OrderController {
         String failCode = request.getParameter("code");
         String failMessage = request.getParameter("message");
 
+        // TODO
+        // 실패 시 로직 구현
+
         model.addAttribute("code", failCode);
         model.addAttribute("message", failMessage);
         return "domain/order/order/fail";
@@ -140,7 +143,6 @@ public class OrderController {
             throw new IllegalArgumentException("결제 실패");
         }
 
-        orderService.setPaymentComplete(orderId);
         Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8);
         JSONObject jsonObject = (JSONObject) parser.parse(reader);
         responseStream.close();
@@ -152,20 +154,7 @@ public class OrderController {
     public String paymentComplete(@RequestParam String tossId,
                                   Model model) {
         log.info("[OrderController.paymentComplete] 진입 : " + tossId);
-        return "redirect:/";
+        orderService.setPaymentComplete(tossId);
+        return "redirect:/mypage/buy/history";
     }
-
-    // 즉시 판매 -> 오더생성
-//    @PostMapping("/sale/create")
-//    public String createOrder(OrderRequest orderRequest,
-//                              @ModelAttribute("saleResponse") SaleResponse saleResponse,
-//                              @AuthenticationPrincipal UserPrincipal user,
-//                              Model model) {
-////        BuyResponse buyResponse = buyService.findByBuyId(orderRequest.getBuy().getId());
-////        model.addAttribute("buyData", buyResponse);
-//
-//        OrderResponse orderResponse = orderService.createOrder(orderRequest, saleResponse, user.getMember());
-//        model.addAttribute("orderResponse", orderResponse);
-//        return "domain/order/orderDetail";
-//    }
 }
