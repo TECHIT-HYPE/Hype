@@ -99,8 +99,13 @@ public class ImageBridgeComponent {
     }
 
     public void delete(ImageType imageType, Long typeId) {
-        ImageBridge imageBridge = imageBridgeRepository.findByTypeAndTypeId(imageType, typeId)
-                .orElseThrow(() -> new IllegalArgumentException("조회된 데이터가 없습니다."));
+        Optional<ImageBridge> byTypeAndTypeId = imageBridgeRepository.findByTypeAndTypeId(imageType, typeId);
+
+        if (byTypeAndTypeId.isEmpty()) {
+            return;
+        }
+
+        ImageBridge imageBridge = byTypeAndTypeId.get();
 
         for (Image image : imageBridge.getImages()) {
             imageComponent.delete(image);
