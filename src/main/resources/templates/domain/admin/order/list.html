@@ -1,0 +1,91 @@
+<html layout:decorate="~{global/adLayout}">
+<head>
+    <title>관리자 거래 내역 목록</title>
+    <style>
+        img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        #wishlist-card {
+            width: 100%;
+        }
+
+        button {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="ad_page_content">
+    <div role="list" class="container mx-auto divide-y divide-gray-100">
+        <div th:each="order : ${data}" class="flex justify-between gap-x-6 p-5 hover:bg-gray-100">
+            <div class="card card-side bg-base-100 shadow-xl" id="wishlist-card">
+                <figure id="card-figure">
+                    <ul>
+                        <li th:each="path : ${order.fullPath}">
+                            <img th:src="${path}" id="card-image"/>
+                        </li>
+                    </ul>
+                </figure>
+
+                <div class="card-body" style="padding: 1rem;">
+                    <h2 class="card-title" th:text="${order.buy.shoes.korName}"></h2>
+                    <div class="flex">
+                        <div class="mr-10">
+                            <label class="block text-gray-700 text-lg font-bold mb-2">상품 정보</label>
+                            <p class="text-sm">한글명 : <span th:text="${order.buy.shoes.korName}"></span></p>
+                            <p class="text-sm">영문명 : <span th:text="${order.buy.shoes.engName}"></span></p>
+                            <p class="text-sm">모델명 : <span th:text="${order.buy.shoes.model}"></span></p>
+                            <p class="text-sm">사이즈 : <span th:text="${order.buy.shoesSize.size}"></span></p>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-lg font-bold mb-2">주문 정보</label>
+                            <p class="text-sm">금액 : <span th:text="${order.orderPrice}"></span></p>
+                            <p class="text-sm">주문일 : <span th:text="${order.orderDate}"></span></p>
+                            <p class="text-sm">주문상태 : <span th:text="${order.status}"></span></p>
+                            <p class="text-sm">주문번호 : <span th:text="${order.tossId}"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="flex">
+                        <div class="mr-10">
+                            <label class="block text-gray-700 text-lg font-bold mb-2">구매자 정보</label>
+                            <p class="text-sm">주문자 : <span th:text="${order.buy.member.name}"></span></p>
+                            <p class="text-sm">주소 : <span
+                                    th:text="${order.receiverAddress} + ' [' + ${order.receiverName} +']'"></span></p>
+                            <p class="text-sm">연락처 : <span th:text="${order.receiverPhoneNumber}"></span></p>
+                            <p class="text-sm">결제 상태 : <span th:text="${order.paymentStatus}"></span></p>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-lg font-bold mb-2">판매자 정보</label>
+                            <p class="text-sm">판매자 : <span th:text="${order.sale.member.name}"></span></p>
+                            <p class="text-sm">반송주소 : <span th:text="${order.sale.address}"></span></p>
+                            <p class="text-sm">계좌정보 : <span
+                                    th:text="'[' + ${order.sale.accountBank} + '] ' + ${order.sale.accountNumber}"></span>
+                            </p>
+                            <p class="text-sm">정산상태 : <span th:text="${order.depositStatus}"></span></p>
+                        </div>
+                    </div>
+                    <div th:if="${order.depositStatus == T(com.ll.hype.domain.order.order.entity.DepositStatus).NEED_DEPOSIT}">
+                        <div class="flex justify-end">
+                            <div class="card-actions">
+                                <form th:action="@{/admin/order/deposit/complete}" method="post"
+                                      onsubmit="return confirm('정산처리 하시겠습니까?');">
+                                    <input type="hidden" name="_method" value="PUT">
+                                    <input type="hidden" name="id" th:value="${order.id}"/>
+                                    <button type="submit" class="btn btn-error card-action">
+                                        정산
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

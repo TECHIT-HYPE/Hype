@@ -9,6 +9,7 @@ import com.ll.hype.domain.brand.brand.dto.BrandResponse;
 import com.ll.hype.domain.customer.question.dto.QuestionRequest;
 import com.ll.hype.domain.customer.question.dto.QuestionResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
@@ -287,4 +288,20 @@ public class AdminController {
         return "redirect:/admin/sale/list";
     }
     //============== Sale End ==============
+
+    //============== Order Start ==============
+    @GetMapping("/order/list")
+    public String orderFindAll(Model model) {
+        List<OrderResponse> orderResponses = adminService.orderFindAll();
+        model.addAttribute("data", orderResponses);
+        return "domain/admin/order/list";
+    }
+
+    @PutMapping("/order/deposit/complete")
+    public String orderDepositComplete(@RequestParam("id") Long id) {
+        adminService.orderDepositComplete(id);
+        return "redirect:/admin/order/list";
+    }
+    //============== Order End ==============
+
 }

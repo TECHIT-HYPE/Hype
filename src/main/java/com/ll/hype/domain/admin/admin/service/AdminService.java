@@ -17,6 +17,10 @@ import com.ll.hype.domain.member.member.repository.MemberRepository;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
+import com.ll.hype.domain.order.order.entity.DepositStatus;
+import com.ll.hype.domain.order.order.entity.Orders;
+import com.ll.hype.domain.order.order.repository.OrderRepository;
 import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.domain.order.sale.repository.SaleRepository;
@@ -56,6 +60,7 @@ public class AdminService {
     private final MemberRepository memberRepository;
     private final BuyRepository buyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OrderRepository orderRepository;
 
     //============== Brand Start ==============
     // Brand 저장
@@ -357,4 +362,25 @@ public class AdminService {
         sale.updateStatus(Status.BID_CANCEL);
     }
     //============== Sale End ==============
+
+    //============== Order Start ==============
+    public List<OrderResponse> orderFindAll() {
+        List<Orders> findAll = orderRepository.findAll();
+        List<OrderResponse> orders = new ArrayList<>();
+
+        for (Orders order : findAll) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES,
+                    order.getBuy().getShoes().getId());
+            orders.add(OrderResponse.of(order, fullPath));
+        }
+
+        return orders;
+    }
+
+    @Transactional
+    public void orderDepositComplete(Long id) {
+        Orders orders = orderRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order Not Found"));
+        orders.updateDepositStatus(DepositStatus.COMPLETE_DEPOSIT);
+    }
+    //============== Order End ==============
 }
