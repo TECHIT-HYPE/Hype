@@ -26,15 +26,15 @@ import com.ll.hype.global.enums.StatusCode;
 import com.ll.hype.global.exception.custom.EntityNotFoundException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -98,6 +98,15 @@ public class AdminService {
         brand.updateStatus(StatusCode.DISABLE);
     }
 
+    // Brand 상세 조회
+    public BrandResponse brandFind(Long id) {
+
+        Brand findBrand = brandRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Brand Not Found"));
+        List<String> fullPath = imageBridgeComponent.findAllFullPath(ImageType.BRAND, findBrand.getId());
+
+        return BrandResponse.of(findBrand, fullPath);
+    }
     //============== Brand End ==============
 
 

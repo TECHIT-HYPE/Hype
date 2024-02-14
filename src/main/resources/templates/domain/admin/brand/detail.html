@@ -1,0 +1,90 @@
+<html layout:decorate="~{global/adLayout}">
+<head>
+    <title>관리자 브랜드 상세</title>
+    <style>
+        #files {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="ad_page_content" class="container bg-white rounded">
+    <form th:action="@{/admin/brand/modify}" method="post" class="max-w-md mx-auto" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="PUT">
+        <input type="hidden" name="id" th:value="${data.id}"/>
+
+        <div class="carousel carousel-center p-4 space-x-4 rounded-box">
+            <div class="carousel-item">
+                <a class="avatar">
+                    <div class="w-48 h-48 rounded-full">
+                        <div th:each="path : ${data.fullPath}">
+                            <img id="brand_img" class="hover:blur rounded-full overflow-hidden" th:src="${path}"/>
+                            <div class="rounded-full overflow-hidden absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-50 text-white text-center">
+                                <label for="files" th:text="변경"></label>
+                                <input type="file" id="files" name="files" onchange="readURL(this)">
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <br/>
+
+        <!-- existing code -->
+        <div class="mb-4">
+            <label for="korName" class="block text-gray-700 text-sm font-bold mb-2">Korean Name:</label>
+            <input type="text" id="korName" name="korName" th:value="${data.korName}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="engName" class="block text-gray-700 text-sm font-bold mb-2">English Name:</label>
+            <input type="text" id="engName" name="engName" th:value="${data.engName}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Status:</label>
+            <select id="status" name="status" th:value="${data.status}" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                <option th:each="status : ${T(com.ll.hype.global.enums.StatusCode).values()}"
+                        th:value="${status}"
+                        th:text="${status}"></option>
+            </select>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue">
+            수정
+        </button>
+
+    </form>
+
+    <form th:action="@{|/admin/brand/delete|}" method="post" onsubmit="return confirm('정말로 삭제 하시겠습니까?');" class="max-w-md mx-auto">
+        <input type="hidden" name="id" th:value="${data.id}">
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit"
+                class="mt-2 w-full bg-red-500 text-white p-3 rounded-md hover:bg-red-600 focus:outline-none focus:shadow-outline-blue">
+            삭제
+        </button>
+    </form>
+
+    <script th:inline="javascript">
+        const thMemberId = /*[[ ${data.id} ]]*/ null;
+    </script>
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('brand_img').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+</div>
+</body>
+</html>
