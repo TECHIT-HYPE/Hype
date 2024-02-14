@@ -1,0 +1,142 @@
+<html layout:decorate="~{global/adLayout}">
+<head>
+    <title>관리자 회원 상세</title>
+    <style>
+        #files {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="ad_page_content" class="container bg-white rounded">
+    <form th:action="@{/admin/member/modify}" method="post" class="max-w-md mx-auto" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="PUT">
+        <input type="hidden" name="id" th:value="${data.id}"/>
+
+        <div class="carousel carousel-center p-4 space-x-4 rounded-box">
+            <div class="carousel-item">
+                <a class="avatar">
+                    <div class="w-48 h-48 rounded-full">
+                        <div th:each="path : ${data.fullPath}">
+                            <img id="profile_img" class="hover:blur rounded-full overflow-hidden" th:src="${path}"/>
+                            <div class="rounded-full overflow-hidden absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-50 text-white text-center">
+                                <label for="files" th:text="변경"></label>
+                                <input type="file" id="files" name="files" onchange="readURL(this)">
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <br/>
+
+        <!-- existing code -->
+        <div class="mb-4">
+            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">이메일:</label>
+            <input type="email" id="email" name="email" th:value="${data.email}"
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <!-- 비밀번호 초기화 버튼 -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">비밀번호:</label>
+            <button type="button" class="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-2 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" onclick="resetPw()">비밀번호 초기화</button>
+        </div>
+
+        <div class="mb-4">
+            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">이름:</label>
+            <input type="text" id="name" name="name" th:value="${data.name}"
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="nickname" class="block text-gray-700 text-sm font-bold mb-2">별명:</label>
+            <input type="text" id="nickname" name="nickname" th:value="${data.nickname}"
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="phoneNumber" class="block text-gray-700 text-sm font-bold mb-2">전화번호:</label>
+            <input type="tel" id="phoneNumber" name="phoneNumber" th:value="${data.phoneNumber}"
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="gender" class="block text-gray-700 text-sm font-bold mb-2">성별:</label>
+            <select id="gender" name="gender" th:value="${data.gender}" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                <option th:each="gender : ${T(com.ll.hype.global.enums.Gender).values()}" th:value="${gender}"
+                        th:text="${gender}"/>
+            </select>
+        </div>
+
+
+        <div class="mb-4">
+            <label for="shoesSize" class="block text-gray-700 text-sm font-bold mb-2">신발 사이즈:</label>
+            <select id="shoesSize" name="shoesSize" th:value="${data.shoesSize}"
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                <option th:each="size : ${T(com.ll.hype.global.util.ShoesSizeGenerator).getSizes()}" th:value="${size}"
+                        th:text="${size}"/>
+            </select>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue">
+            수정
+        </button>
+
+    </form>
+
+    <form th:action="@{|/admin/member/delete|}" method="post" onsubmit="return confirm('정말로 삭제 하시겠습니까?');" class="max-w-md mx-auto">
+        <input type="hidden" name="id" th:value="${data.id}">
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit"
+                class="mt-2 w-full bg-red-500 text-white p-3 rounded-md hover:bg-red-600 focus:outline-none focus:shadow-outline-blue">
+            삭제
+        </button>
+    </form>
+
+    <script th:inline="javascript">
+        const thMemberId = /*[[ ${data.id} ]]*/ null;
+    </script>
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profile_img').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function resetPw() {
+            var data = {
+                id: thMemberId
+            }
+            const csrfTokenHeaderName = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+            const csrfTokenValue = document.querySelector("meta[name='_csrf']").getAttribute("content");
+
+            const response = await fetch('/admin/member/clearPw', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfTokenHeaderName]: csrfTokenValue
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.status == 200) {
+                customAlert.alert("비밀번호가 초기화 되었습니다.")
+            }
+
+            if (response.status == 400) {
+                customAlert.alert("알 수 없는 오류가 발생했습니다.");
+            }
+        }
+    </script>
+
+</div>
+</body>
+</html>

@@ -5,14 +5,16 @@
     <div class="con mx-auto flex">
         <div class="ml-10 mr-10 w-[150px]">
             <div class="text-xl font-bold mt-12 mb-2">관리</div>
-            <a th:href="@{/admin/member/main}"
+            <a th:href="@{/admin/member/list}"
                class="block text-black hover:text-blue-500">회원 관리</a>
-            <a href="/admin/main/brand"
+            <a th:href="@{/admin/main/brand}"
                class="block text-black hover:text-blue-500">브랜드 관리</a>
-            <a href="/admin/main/shoes"
+            <a th:href="@{/admin/main/shoes}"
                class="block text-black hover:text-blue-500">상품 관리</a>
-            <a href="/admin/cs/question/list"
+            <a th:href="@{/admin/cs/question/list}"
                class="block text-black hover:text-blue-500">고객센터 관리</a>
+            <a th:href="@{/admin/buy/list}"
+               class="block text-black hover:text-blue-500">구매입찰 관리</a>
         </div>
 
         <div class="flex-grow mt-8 p-6">
