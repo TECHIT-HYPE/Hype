@@ -228,7 +228,8 @@ public class AdminService {
                 request.getNickname(),
                 request.getPhoneNumber(),
                 request.getGender(),
-                request.getShoesSize());
+                request.getShoesSize(),
+                request.getRole());
 
         log.info("[AdminService.modifyMember] name : " + request.getFiles().get(0).getOriginalFilename());
         log.info("[AdminService.modifyMember] size : " + request.getFiles().size());

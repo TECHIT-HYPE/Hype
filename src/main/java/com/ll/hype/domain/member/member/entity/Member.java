@@ -82,13 +82,14 @@ public class Member extends BaseEntity {
         this.shoesSize = shoesSize;
     }
 
-    public void modifyProfile(String email, String name, String nickname, Long phoneNumber, Gender gender, Integer shoesSize) {
+    public void modifyProfile(String email, String name, String nickname, Long phoneNumber, Gender gender, Integer shoesSize, MemberRole role) {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.shoesSize = shoesSize;
+        this.role = role;
     }
 
     public void clearPw(String encodedPassword) {
