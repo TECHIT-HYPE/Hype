@@ -26,7 +26,7 @@
         </form>
     </div>
     <div class="flex flex-wrap -mx-4 z-0">
-        <div class="w-full md:w-1/5 px-4" th:each="shoes : ${shoesList}">
+        <div class="w-full md:w-1/4 px-4" th:each="shoes : ${shoesList}">
             <a th:href="@{|/shoes/${shoes.id}|}">
                 <div class="card card-compact bg-base-100 shadow-xl mb-4">
                     <figure>
@@ -38,7 +38,7 @@
                     </figure>
 
                     <div class="card-body">
-                        <h2 class="card-title" th:text="${shoes.korName}"></h2>
+                        <h2 class="card-title text-sm" th:text="${shoes.korName}"></h2>
                         <p th:text="${shoes.engName}"></p>
                         <p th:text="${shoes.model}"></p>
                         <div class="badge badge-primary text-xs" th:text="${shoes.shoesCategory}"></div>
