@@ -100,12 +100,19 @@ public class AdminService {
 
     // Brand 상세 조회
     public BrandResponse brandFind(Long id) {
-
         Brand findBrand = brandRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Brand Not Found"));
         List<String> fullPath = imageBridgeComponent.findAllFullPath(ImageType.BRAND, findBrand.getId());
 
         return BrandResponse.of(findBrand, fullPath);
+    }
+
+    // Brand 삭제
+    public void brandDelete(Long id) {
+        Brand brand = brandRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Data Not Found"));
+        if(shoesRepository.existsByBrand(brand)) throw new EntityNotFoundException("Brand in Use");
+
+        brandRepository.delete(brand);
     }
     //============== Brand End ==============
 

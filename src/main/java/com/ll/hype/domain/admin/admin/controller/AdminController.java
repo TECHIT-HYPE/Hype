@@ -120,6 +120,11 @@ public class AdminController {
         return "domain/admin/brand/detail";
     }
 
+    @DeleteMapping("/brand/delete")
+    public String brandDelete(@RequestParam("id") Long id) {
+        adminService.brandDelete(id);
+        return "redirect:/admin/brand/list";
+    }
     //============== Brand End ==============
 
 
