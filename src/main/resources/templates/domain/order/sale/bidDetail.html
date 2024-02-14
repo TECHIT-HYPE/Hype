@@ -5,23 +5,43 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="flex justify-center mt-5">판매 입찰 내역</div>
+    <div class="flex justify-center mt-5"><h3>판매 입찰 내역</h3></div>
     <div class="container mx-auto mt-5">
         <div class="header text-center mb-5">
 
             <div class="sale-details">
                 <div class="sale-info">
-                    <p>입찰 번호: [[${saleResponse.id}]]</p>
+<!--                    <p>입찰 번호: [[${saleResponse.id}]]</p>-->
                     <p>신발 모델: [[${saleResponse.shoes.model}]]</p>
                     <p>사이즈: [[${saleResponse.shoesSize.size}]]</p>
                     <p>판매 입찰가: [[${saleResponse.price}]]원</p>
                     <p>입찰 시작일: [[${saleResponse.startDate}]]</p>
                     <p>입찰 종료일: [[${saleResponse.endDate}]]</p>
-                    <p>상태: [[${saleResponse.status}]]</p>
+<!--                    <p>상태: [[${saleResponse.status}]]</p>-->
                     <p>반송 주소: [[${saleResponse.address}]]</p>
-                    <p>정산 계좌: [[${saleResponse.account}]]</p>
+                    <p>정산 계좌 은행: [[${saleResponse.accountBank}]]</p>
+                    <p>정산 계좌 번호: [[${saleResponse.accountNumber}]]</p>
                     <hr>
-                    <p>최종 주문 정보: 입찰금액/수수료/정산 예정 금액</p>
+                    <p>최종 주문 정보</p>
+<!--                    <p>수수료: <span id="commissionFee"></span>원</p>-->
+<!--                    <p>정산 예정 금액: <span id="finalAmount"></span>원</p>-->
+                    <p>입찰 금액: <span id="bidAmount">[[${saleResponse.price}]]</span>원</p>
+                    <p>수수료: <span id="commission"></span>원</p>
+                    <p>정산 예정 금액: <span id="settlementAmount"></span>원</p>
+
+                    <script>
+                        // 서버로부터 받은 입찰 금액을 가져옵니다.
+                        var bidAmount = Number(document.getElementById('bidAmount').innerText);
+                        var commissionRate = 0.05;
+
+                        // 수수료
+                        var commission = bidAmount * commissionRate;
+                        // 정산 예정 금액
+                        var settlementAmount = bidAmount - commission;
+
+                        document.getElementById('commission').innerText = commission;
+                        document.getElementById('settlementAmount').innerText = settlementAmount;
+                    </script>
 
                     <!-- 추가 정보 표시 -->
                 </div>

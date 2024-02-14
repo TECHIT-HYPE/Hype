@@ -11,7 +11,6 @@ import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.order.order.service.OrderService;
 import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
-import com.ll.hype.domain.wishlist.wishlist.dto.MyWishlistDto;
 import com.ll.hype.domain.wishlist.wishlist.dto.WishListResponse;
 import com.ll.hype.domain.wishlist.wishlist.entity.Wishlist;
 import com.ll.hype.domain.wishlist.wishlist.service.WishlistService;
@@ -230,5 +229,21 @@ public class MyPageController {
         return "domain/member/mypage/tradingOrder";
     }
 
+    //운송장번호 등록(수정)
+    @PostMapping("/order/trading/modify")
+    public String tradingOrderModify(@RequestParam("id") long id,
+                                     @RequestParam("deliveryNumber") long deliveryNumber,
+                                     @AuthenticationPrincipal UserPrincipal user) {
+        orderService.updateDeliveryNumber(id, deliveryNumber, user.getMember());
+        return "redirect:/mypage/order/trading";
+    }
+
+    // 판매자 정산 내역
+    @GetMapping("/settlement")
+    public String settlementOrder(@AuthenticationPrincipal UserPrincipal user, Model model) {
+        List<OrderResponse> saleOrder = orderService.settlementOrder(user.getMember());
+        model.addAttribute("data", saleOrder);
+        return "domain/member/mypage/settlement";
+    }
 
 }

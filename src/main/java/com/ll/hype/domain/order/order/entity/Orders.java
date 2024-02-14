@@ -13,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import org.hibernate.annotations.Comment;
-import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Getter
@@ -74,5 +73,12 @@ public class Orders extends BaseEntity {
         this.paymentStatus = paymentStatus;
         this.buy.updateStatus(Status.BID_COMPLETE);
         this.sale.updateStatus(Status.BID_COMPLETE);
+    }
+
+    public void updateDeliveryNumber(Long deliveryNumber) {
+        this.deliveryNumber = deliveryNumber;
+    }
+    public void updateDepositStatus(DepositStatus depositStatus) {
+        this.depositStatus = depositStatus;
     }
 }

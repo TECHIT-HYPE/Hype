@@ -1,6 +1,7 @@
 package com.ll.hype.domain.order.order.dto.response;
 
 import com.ll.hype.domain.order.buy.entity.Buy;
+import com.ll.hype.domain.order.order.entity.DepositStatus;
 import com.ll.hype.domain.order.order.entity.OrderStatus;
 import com.ll.hype.domain.order.order.entity.Orders;
 import com.ll.hype.domain.order.order.entity.PaymentStatus;
@@ -24,12 +25,13 @@ public class OrderResponse {
     private Sale sale;
     private LocalDate orderDate;
     private Long orderPrice;
-    // private Long deliveryNumber;
+    private Long deliveryNumber;
     private String receiverName;
     private Long receiverPhoneNumber;
     private String receiverAddress;
     private OrderStatus status;
     private PaymentStatus paymentStatus;
+    private DepositStatus depositStatus;
 
     @Builder.Default
     private List<String> fullPath = new ArrayList<>();
@@ -42,11 +44,13 @@ public class OrderResponse {
                 .sale(order.getSale())
                 .orderDate(order.getOrderDate())
                 .orderPrice(order.getOrderPrice())
+                .deliveryNumber(order.getDeliveryNumber())
                 .receiverName(order.getReceiverName())
                 .receiverPhoneNumber(order.getReceiverPhoneNumber())
                 .receiverAddress(order.getReceiverAddress())
                 .status(order.getStatus())
                 .paymentStatus(order.getPaymentStatus())
+                .depositStatus(order.getDepositStatus())
                 .fullPath(fullPath)
                 .build();
     }

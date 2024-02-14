@@ -23,7 +23,8 @@ public class SaleRequest {
     private LocalDate endDate;
     private String address;
     private Status status;
-    private String account;
+    private String accountBank;
+    private String accountNumber;
 
     public static Sale toEntity(SaleRequest saleRequest) {
         return Sale.builder()
@@ -35,7 +36,8 @@ public class SaleRequest {
                 .endDate(saleRequest.getEndDate())
                 .address(saleRequest.getAddress())
                 .status(saleRequest.getStatus())
-                .account(saleRequest.getAccount())
+                .accountBank(saleRequest.getAccountBank())
+                .accountNumber(saleRequest.getAccountNumber())
                 .build();
     }
 }

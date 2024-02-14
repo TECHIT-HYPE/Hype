@@ -49,10 +49,22 @@ public class Sale extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
-    @Comment("환불 계좌")
-    private String account; // ex) 신한은행 1002-123455-5555--88, 판매요청에만 컬럼 존재
+    @Comment("환불 계좌 은행 정보")
+    private String accountBank; // 신한은행
+
+    @Comment("환불 계좌 번호")
+    private String accountNumber; // 1002123455555588, 판매요청에만 컬럼 존재
 
     public void updateStatus(Status status) {
         this.status = status;
+    }
+
+    public void updatePrice(Long price) {
+        this.price = price;
+    }
+
+    public void updateAccount(String accountBank, String accountNumber) {
+        this.accountBank = accountBank;
+        this.accountNumber = accountNumber;
     }
 }

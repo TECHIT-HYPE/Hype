@@ -1,0 +1,64 @@
+<html layout:decorate="~{domain/member/mypage/myPageLayout}">
+<head>
+    <title>판매 정산 현황</title>
+    <style>
+        img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        #wishlist-card {
+            width: 100%;
+        }
+        button {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="my_page_content">
+    <div class="flex justify-between mb-4">
+        <h3 class="text-2xl font-bold">판매 정산 현황</h3>
+    </div>
+    <div role="list" class="container mx-auto divide-y divide-gray-100">
+        <div th:each="order : ${data}" class="flex justify-between gap-x-6 p-5 hover:bg-gray-100">
+            <div class="card card-side bg-base-100 shadow-xl" id="wishlist-card">
+                <figure id="card-figure">
+                    <ul>
+                        <li th:each="path : ${order.fullPath}">
+                            <img th:src="${path}" id="card-image"/>
+                        </li>
+                    </ul>
+                </figure>
+
+                <div class="card-body" style="padding: 1rem;">
+                    <h2 class="card-title" th:text="${order.sale.shoes.korName}"></h2>
+                    <div class="flex">
+                        <div class="mr-10">
+                            <label class="block text-gray-700 text-lg font-bold mb-2">신발 정보</label>
+                            <p class="text-sm">한글명 : <span th:text="${order.sale.shoes.korName}"></span></p>
+                            <p class="text-sm">영문명 : <span th:text="${order.sale.shoes.engName}"></span></p>
+                            <p class="text-sm">모델명 : <span th:text="${order.sale.shoes.model}"></span></p>
+                            <p class="text-sm">사이즈 : <span th:text="${order.sale.shoesSize.size}"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-lg font-bold mb-2">입찰 정보</label>
+                            <p class="text-sm">거래 성사 금액 : <span th:text="${order.orderPrice}"></span></p>
+                            <p class="text-sm">거래 성사 일자 : <span th:text="${order.orderDate}"></span></p>
+                            <p class="text-sm">받는 사람 연락처 : <span th:text="${order.receiverPhoneNumber}"></span></p>
+                            <p class="text-sm">받는 사람 주소 : <span th:text="${order.receiverAddress}"></span></p>
+                            <p class="text-sm">받는 사람 이름 : <span th:text="${order.receiverName}"></span></p>
+                            <p class="text-sm">거래 상태 : <span th:text="${order.status}"></span></p>
+                            <p class="text-l">판매자 정산 상태 : <span th:text="${order.depositStatus}"></span></p>
+                            <p class="text-sm">정산 예정 금액 : <span th:text="${order.orderPrice}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

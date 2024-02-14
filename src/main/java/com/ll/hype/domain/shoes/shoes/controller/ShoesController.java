@@ -1,13 +1,11 @@
 package com.ll.hype.domain.shoes.shoes.controller;
 
-import com.ll.hype.domain.order.buy.dto.request.BuyConfirmRequest;
+import com.ll.hype.domain.order.order.dto.response.OrderPriceResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesWishCheckRequest;
-import com.ll.hype.domain.shoes.shoes.entity.ShoesCategory;
 import com.ll.hype.domain.shoes.shoes.service.ShoesService;
 import com.ll.hype.domain.wishlist.wishlist.service.WishlistService;
 import com.ll.hype.global.security.authentication.UserPrincipal;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,12 +30,15 @@ import java.util.stream.Collectors;
 public class ShoesController {
     private final ShoesService shoesService;
     private final WishlistService wishlistService;
-
+    
     //신발 상세
     @GetMapping("/{id}")
     public String shoesDetail(@PathVariable("id") long id, Model model){
         ShoesResponse findOne = shoesService.findById(id);
         model.addAttribute("shoes", findOne);
+
+//        Optional<OrderPriceResponse> recentOrder = shoesService.getLatestTradePrice(id);
+//        recentOrder.ifPresent(order -> model.addAttribute("order", order));
 
         return "domain/shoes/shoes/detail";
     }

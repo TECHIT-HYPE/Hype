@@ -9,6 +9,7 @@ import java.util.Optional;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 
 public interface OrderRepository extends JpaRepository<Orders, Long> {
@@ -18,5 +19,15 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
             "ORDER BY o.orderDate DESC")
     List<Orders> findTradingByMember(Member member);
 
+    Optional<Orders> findByIdAndSaleMember(Long id, Member member);
+    @Query("SELECT o FROM Orders o " +
+            "WHERE o.sale.member.id = :#{#member.id} "+
+            "ORDER BY o.createDate DESC")
+    List<Orders> findBySaleMember(Member member);
 
+    @Query("SELECT o FROM Orders o " +
+            "WHERE o.buy.shoes.id = :shoesId " +
+            "ORDER BY o.orderDate DESC")
+//    "AND (o.status = 'TRADING' OR o.status = 'TRADE_COMPLETE') " +
+    Optional<Orders> findByShoesId(@Param("shoesId") long shoesId);
 }

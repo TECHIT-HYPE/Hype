@@ -1,25 +1,21 @@
 package com.ll.hype.domain.order.order.service;
 
 import com.ll.hype.domain.member.member.entity.Member;
-import com.ll.hype.domain.order.buy.dto.request.CreateBuyRequest;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
-import com.ll.hype.domain.order.order.dto.OrderRequest;
 import com.ll.hype.domain.order.order.dto.response.OrderResponse;
-import com.ll.hype.domain.order.order.entity.OrderStatus;
 import com.ll.hype.domain.order.order.entity.Orders;
 import com.ll.hype.domain.order.order.entity.PaymentStatus;
 import com.ll.hype.domain.order.order.repository.OrderRepository;
-import com.ll.hype.domain.order.sale.dto.request.CreateSaleRequest;
-import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
+import com.ll.hype.domain.order.order.util.validate.OrderValidator;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.domain.order.sale.repository.SaleRepository;
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
+import com.ll.hype.global.exception.custom.EntityNotFoundException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import lombok.RequiredArgsConstructor;
@@ -54,38 +50,6 @@ public class OrderService {
         return null;
     }
 
-    // TODO
-    // + 금액, 모델명, 사이즈가 다르면 거래불가
-    // + !! buyResponse 주문 저장되면 status 변경
-
-//    public OrderResponse createOrder(OrderRequest orderRequest, SaleResponse saleResponse, Member member) {
-//        Shoes shoes = shoesRepository.findById(saleResponse.getShoes().getId())
-//                .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
-//
-//        Buy buy = buyRepository.findHighestPriceBuy(shoes, saleResponse.getShoesSize().getSize()) //orderRequest.getBuy().getId()
-//                .orElseThrow(() -> new IllegalArgumentException("조회된 구매 입찰이 없습니다."));
-//
-//        Sale sale = saleRepository.findById(saleResponse.getId())
-//                .orElseThrow(() -> new IllegalArgumentException("조회된 판매 입찰이 없습니다."));
-//
-//        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, saleResponse.getShoes().getId());
-//
-//        Orders order = Orders.builder()
-//                .buy(buy)
-//                .sale(sale)
-//                .orderDate(LocalDate.now())
-//                .orderPrice(buy.getPrice())
-//                .receiverName(buy.getReceiverName())
-//                .receiverPhoneNumber(buy.getReceiverPhoneNumber())
-//                .receiverAddress(buy.getReceiverAddress())
-//                .status(OrderStatus.TRADING)
-//                .paymentStatus(PaymentStatus.WAIT_PAYMENT)
-//                .build();
-//        orderRepository.save(order);
-//
-//        return OrderResponse.of(order, fullPath);
-//    }
-
     public void checkAmount(String tossId, String amountStr) {
         Orders order = orderRepository.findByTossId(tossId)
                 .orElseThrow(() -> new IllegalArgumentException("찾는 주문이 없습니다."));
@@ -116,8 +80,37 @@ public class OrderService {
             List<String> fullPath = imageBridgeComponent.findOneFullPath(
                     ImageType.SHOES, order.getSale().getShoes().getId());
             OrderResponse orderResponse = OrderResponse.of(order, fullPath);
-            orderResponses.add(orderResponse);
+
+            if (order.getBuy().getMember().getId().equals(member.getId()) ||
+                    order.getSale().getMember().getId().equals(member.getId())) {
+                orderResponses.add(orderResponse);
+            }
         }
         return orderResponses;
     }
+
+    // 운송장번호 수정(등록)
+    @Transactional
+    public void updateDeliveryNumber(long id, long deliveryNumber, Member member) {
+        Orders order = orderRepository.findByIdAndSaleMember(id, member)
+                .orElseThrow(() -> new EntityNotFoundException("조회된 거래 내역이 없습니다."));
+        OrderValidator.checkUserMatch(order, member);
+        order.updateDeliveryNumber(deliveryNumber);
+    }
+
+    // 판매 정산 내역
+    public List<OrderResponse> settlementOrder(Member member) {
+        List<Orders> saleOrder = orderRepository.findBySaleMember(member);
+        List<OrderResponse> orderResponses = new ArrayList<>();
+
+        for (Orders order : saleOrder) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(
+                    ImageType.SHOES, order.getSale().getShoes().getId());
+            OrderResponse orderResponse = OrderResponse.of(order, fullPath);
+                orderResponses.add(orderResponse);
+        }
+        return orderResponses;
+    }
+
+
 }
