@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:c="http://www.w3.org/1999/XSL/Transform">
 <head>
     <meta charset="UTF-8"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -50,6 +50,7 @@
             max-width: 100%;
         }
 
+
         .profile-right {
             margin-left: 20px;
         }
@@ -92,11 +93,13 @@
 
         <!-- 유저이미지 -->
         <div class="profile-left">
-            <div class="profile-img-wrap story-border" th:if="${profileDto.getEmail() eq #authentication.principal.username}">
+            <!-- 프로필 이미지 감싸는 div -->
+            <div class="profile-img-wrap story-border">
                 <!-- 프로필 이미지 -->
                 <img class="profile-image" th:src="${profileDto.getProfileImage() != null ? profileDto.getProfileImage() : 'https://kr.object.ncloudstorage.com/hypeimagebucket/SOCIAL/person.jpeg'}"/>
             </div>
         </div>
+
         <!-- 유저이미지 end -->
 
         <!-- 유저정보 및 사진등록 구독하기 -->
@@ -122,11 +125,18 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
             <!-- 다른 사용자인 경우 -->
-            <div th:unless="${profileDto.getEmail() eq #authentication.principal.username}">
-                <button class="cta" th:onclick="'toggleSubscribe(' + ${profileDto.id} + ', this)'"></button>
+                <div th:unless="${profileDto.getEmail() eq #authentication.principal.username}">
+                    <form th:action="@{'/social/unfollow/' + ${profileDto.id}}" method="post" th:if="${profileDto.followState}">
+                        <button class="cta blue" type="submit">팔로잉</button>
+                    </form>
+                    <form th:action="@{'/social/follow/' + ${profileDto.id}}" method="post" th:unless="${profileDto.followState}">
+                        <button class="cta">팔로우</button>
+                    </form>
+                </div>
+
+
             </div>
         </div>
         <!-- 유저정보 및 사진등록 구독하기 end -->
@@ -149,6 +159,22 @@
         </th:block>
     </div>
 </section>
+
+<div class="modal-subscribe" th:id="subscribeModal">
+    <div class="subscribe">
+        <div class="subscribe-header">
+            <span>구독정보</span>
+            <button onclick="modalClose()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="subscribe-list" id="subscribeModalList">
+            <!-- 여기에 구독 정보를 동적으로 추가할 수 있습니다. -->
+        </div>
+    </div>
+</div>
+
 
 <script th:src="@{/js/socialmemberprofile.js}"></script>
 
