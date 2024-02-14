@@ -6,21 +6,16 @@ import com.ll.hype.domain.admin.admin.dto.response.MemberListResponse;
 import com.ll.hype.domain.admin.admin.service.AdminService;
 import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.dto.BrandResponse;
-import com.ll.hype.domain.brand.brand.entity.Brand;
-import com.ll.hype.domain.customer.answer.entity.Answer;
 import com.ll.hype.domain.customer.question.dto.QuestionRequest;
 import com.ll.hype.domain.customer.question.dto.QuestionResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
-import com.ll.hype.domain.shoes.shoes.entity.Shoes;
-import com.ll.hype.global.security.authentication.UserPrincipal;
 import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -129,6 +124,21 @@ public class AdminController {
         List<BrandResponse> brands = adminService.brandFindAll();
         model.addAttribute("brands", brands);
         return "domain/admin/brand/list";
+    }
+
+    @GetMapping("/brand/{id}")
+    public String brandDetail(@PathVariable("id") Long id,
+                              BrandRequest brandRequest,
+                              Model model) {
+        BrandResponse brand = adminService.brandFind(id);
+        model.addAttribute("data", brand);
+        return "domain/admin/brand/detail";
+    }
+
+    @DeleteMapping("/brand/delete")
+    public String brandDelete(@RequestParam("id") Long id) {
+        adminService.brandDelete(id);
+        return "redirect:/admin/brand/list";
     }
     //============== Brand End ==============
 
