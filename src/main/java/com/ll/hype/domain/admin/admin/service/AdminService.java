@@ -239,9 +239,7 @@ public class AdminService {
         }
 
         if (!imageBridgeComponent.findAllFullPath(ImageType.MEMBER, findMember.getId()).isEmpty()) {
-            log.info("[AdminService.modifyMember] 멤버는 프로필 이미지를 가지고 있음 ! ");
             imageBridgeComponent.delete(ImageType.MEMBER, findMember.getId());
-            log.info("[AdminService.modifyMember] 기존 이미지 삭제함! ");
         }
 
         imageBridgeComponent.save(ImageType.MEMBER, findMember.getId(), request.getFiles());
