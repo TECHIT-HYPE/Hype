@@ -30,12 +30,12 @@
             </div>
         </div>
 
-        <form th:action="@{|/sale/shoes/size|}" method="post">
+        <form th:action="@{|/sale/shoes/bid|}" method="post" id="saleForm">
             <input type="hidden" id="shoesId" name="shoesId" th:value="${shoes.id}">
             <div class="grid-container">
                 <th:block th:each="size : ${shoes.sizeMap.keySet()}">
                     <div class="grid-item">
-                        <input type="radio" id="size" name="size" th:value="${size}">
+                        <input type="radio" id="size" name="size" required th:value="${size}" th:checked="${size == shoes.selectSize}">
                         <div class="flex flex-col">
                             <p th:text="${size}"></p>
                             <p th:if="${shoes.sizeMap.get(size) == 0}" th:text="'판매 입찰'"></p>
@@ -45,37 +45,37 @@
                     </div>
                 </th:block>
                 <br>
-                <input type="submit" value="판매하기" onclick="checkAlreadyBid()">
+                <input type="button" value="판매하기" onclick="checkAlreadyBid()">
             </div>
-            <script>
-                async function checkAlreadyBid() {
-
-                    var shoesId = document.querySelector('input[name="shoesId"]').value;
-                    var selectedSize = document.querySelector('input[name="size"]:checked').value;
-                    var data = {
-                        shoesId: shoesId,
-                        size: selectedSize
-                    };
-                    const csrfTokenHeaderName = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
-                    const csrfTokenValue = document.querySelector("meta[name='_csrf']").getAttribute("content");
-
-                    const response =  await fetch('/sale/confirm', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            [csrfTokenHeaderName]: csrfTokenValue
-                        },
-                        body: JSON.stringify(data)
-                    });
-
-                    if (response.status == 200) {document.getElementById("buyForm").submit();}
-                    if (response.status == 202) {alert("이미 입찰 중인 상품입니다.");}
-                    if (response.status == 400) {alert("알 수 없는 오류가 발생했습니다.");}
-
-                }
-            </script>
         </form>
     </div>
+        <script>
+            async function checkAlreadyBid() {
+
+                var shoesId = document.querySelector('input[name="shoesId"]').value;
+                var selectedSize = document.querySelector('input[name="size"]:checked').value;
+                var data = {
+                    shoesId: shoesId,
+                    size: selectedSize
+                };
+                const csrfTokenHeaderName = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+                const csrfTokenValue = document.querySelector("meta[name='_csrf']").getAttribute("content");
+
+                const response =  await fetch('/sale/confirm', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [csrfTokenHeaderName]: csrfTokenValue
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.status == 200) {document.getElementById("saleForm").submit();}
+                if (response.status == 202) {customAlert.alert("이미 입찰 중인 상품입니다.");}
+                if (response.status == 400) {customAlert.alert("알 수 없는 오류가 발생했습니다.");}
+
+            }
+        </script>
 </div>
 </body>
 </html>

@@ -3,55 +3,74 @@
     <title>판매 내역</title>
     <style>
         img {
-            width: 150px;
+            width: 200px;
             height: 200px;
             object-fit: cover;
+        }
+
+        #wishlist-card {
+            width: 100%;
+        }
+
+        button {
+            margin-top: 1rem;
         }
     </style>
 </head>
 <body>
 <div layout:fragment="my_page_content">
     <h1 class="text-2xl font-bold mb-4">판매 내역</h1>
-    <div class="container mx-auto">
-        <div th:each="sale : ${data}" class="bg-gray-100 border border-gray-200 p-4 mb-4 flex">
-            <ul>
-                <li th:each="path : ${sale.fullPath}">
-                    <img th:src="${path}"/>
-                </li>
-            </ul>
-            <div class="flex">
-                <div class="ml-4 mb-4 mr-10">
-                    <label class="block text-gray-700 text-lg font-bold mb-2">신발 정보</label>
-                    <p class="text-sm">한글명 : <span th:text="${sale.shoes.korName}"></span></p>
-                    <p class="text-sm">영문명 : <span th:text="${sale.shoes.engName}"></span></p>
-                    <p class="text-sm">모델명 : <span th:text="${sale.shoes.model}"></span></p>
-                    <p class="text-sm">사이즈 : <span th:text="${sale.shoesSize.size}"></span></p>
+    <div role="list" class="container mx-auto divide-y divide-gray-100">
+        <div th:each="sale : ${data}" class="flex justify-between gap-x-6 p-5 hover:bg-gray-100">
+            <div class="card card-side bg-base-100 shadow-xl" id="wishlist-card">
+                <figure id="card-figure">
+                    <ul>
+                        <li th:each="path : ${sale.fullPath}">
+                            <img th:src="${path}" id="card-image"/>
+                        </li>
+                    </ul>
+                </figure>
+
+                <div class="card-body" style="padding: 1rem;">
+                    <h2 class="card-title" th:text="${sale.shoes.korName}"></h2>
+                    <div class="flex">
+                        <div class="mr-10">
+                            <label class="block text-gray-700 text-lg font-bold mb-2">신발 정보</label>
+                            <p class="text-sm">한글명 : <span th:text="${sale.shoes.korName}"></span></p>
+                            <p class="text-sm">영문명 : <span th:text="${sale.shoes.engName}"></span></p>
+                            <p class="text-sm">모델명 : <span th:text="${sale.shoes.model}"></span></p>
+                            <p class="text-sm">사이즈 : <span th:text="${sale.shoesSize.size}"></span></p>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-lg font-bold mb-2">입찰 정보</label>
+                            <p class="text-sm">금액 : <span th:text="${sale.price}"></span></p>
+                            <p class="text-sm">시작일 : <span th:text="${sale.startDate}"></span></p>
+                            <p class="text-sm">종료일 : <span th:text="${sale.endDate}"></span></p>
+                            <p class="text-sm">상태 : <span th:text="${sale.status}"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end" th:if="${sale.status == T(com.ll.hype.global.enums.Status).BIDDING}">
+                        <div class="card-actions mr-2">
+                            <form th:action="@{|/sale/modify|}" method="post">
+                                <input type="hidden" name="id" th:value="${sale.id}"/>
+                                <button type="submit" class="btn btn-warning card-action">
+                                    입찰 금액 변경
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="card-actions">
+                            <form th:action="@{|/sale/delete|}" method="post" onsubmit="return confirm('정말로 취소 하시겠습니까?');">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="id" th:value="${sale.id}"/>
+                                <button type="submit" class="btn btn-error card-action">
+                                    입찰 취소
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-lg font-bold mb-2">입찰 정보</label>
-                    <p class="text-sm">금액 : <span th:text="${sale.price}"></span></p>
-                    <p class="text-sm">시작일 : <span th:text="${sale.startDate}"></span></p>
-                    <p class="text-sm">종료일 : <span th:text="${sale.endDate}"></span></p>
-                    <p class="text-sm">상태 : <span th:text="${sale.status}"></span></p>
-                </div>
-            </div>
-
-            <div class="flex flex-col" th:if="${sale.status == T(com.ll.hype.global.enums.Status).BIDDING}">
-                <form th:action="@{|/sale/modify|}" method="post">
-                    <input type="hidden" name="id" th:value="${sale.id}"/>
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        입찰 금액 변경
-                    </button>
-                </form>
-
-                <form th:action="@{|/sale/delete|}" method="post" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <input type="hidden" name="id" th:value="${sale.id}"/>
-                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
-                        입찰 취소
-                    </button>
-                </form>
             </div>
         </div>
     </div>

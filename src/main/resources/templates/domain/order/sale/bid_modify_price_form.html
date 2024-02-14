@@ -22,7 +22,7 @@
         <form th:action="@{|/sale/modify/now|}" method="post">
             <input type="hidden" name="id" th:value="${data.id}"/>
             <input type="hidden" name="nowPrice" th:value="${data.saleNowPrice}"/>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">즉시 판매</button>
+            <button type="button" onclick="checkMinPriceZero()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">즉시 구매</button>
         </form>
 
         <form th:action method="post" id="bidForm">
@@ -43,10 +43,22 @@
         function checkPriceAndSubmit() {
             var price = document.getElementById("price").value;
             if (price >= thminPrice) {
-                alert("해당 금액은 즉시 판매 버튼을 눌러주세요.");
+                customAlert.alert("해당 금액은 즉시 판매 버튼을 눌러주세요.");
+                return;
+            }
+            if (price == 0) {
+                customAlert.alert("0원은 입력이 불가능합니다.");
                 return;
             }
             document.getElementById("bidForm").submit();
+        }
+
+        function checkMinPriceZero() {
+            if (thminPrice == 0) {
+                customAlert.alert("즉시 판매 상품이 없습니다.");
+                return;
+            }
+            document.getElementById("nowForm").submit();
         }
     </script>
 </div>
