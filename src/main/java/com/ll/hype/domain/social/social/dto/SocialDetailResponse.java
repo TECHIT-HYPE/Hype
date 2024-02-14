@@ -25,6 +25,8 @@ public class SocialDetailResponse {
     private Long likesCount;
     private boolean likesState;
     private List<SocialCommentRequest> socialCommentRequestList;
+    private List<SocialShoesRequest> socialShoesRequestList;
+
 
     public void addComment(SocialCommentRequest comment) {
         if (socialCommentRequestList == null) {

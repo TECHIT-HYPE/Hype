@@ -1,15 +1,23 @@
 package com.ll.hype.domain.social.social.controller;
 
+import com.ll.hype.domain.shoes.search.service.ShoesSearchService;
+import com.ll.hype.domain.shoes.shoes.dto.ShoesSearchResponse;
 import com.ll.hype.domain.social.social.dto.SocialDetailResponse;
+import com.ll.hype.domain.social.social.dto.SocialShoesRequest;
 import com.ll.hype.domain.social.social.dto.SocialUpdateRequest;
 import com.ll.hype.domain.social.social.dto.SocialUploadRequest;
+import com.ll.hype.domain.social.social.entity.Social;
 import com.ll.hype.domain.social.social.service.SocialDetailService;
 import com.ll.hype.domain.social.social.service.SocialUpdateService;
 import com.ll.hype.domain.social.social.service.SocialUploadService;
 import com.ll.hype.domain.social.socialcomment.dto.SocialCommentRequest;
+import com.ll.hype.global.s3.image.ImageType;
+import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import com.ll.hype.global.security.authentication.UserPrincipal;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,14 +28,21 @@ import java.util.List;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/social/feed")
-public class socialController {
-    @Autowired
-    private SocialUploadService socialUploadService;
-    @Autowired
-    private SocialDetailService socialDetailService;
-    @Autowired
-    private SocialUpdateService socialUpdateService;
+public class SocialController {
+    private final SocialUploadService socialUploadService;
+
+    private final SocialDetailService socialDetailService;
+
+    private final SocialUpdateService socialUpdateService;
+
+    private final ShoesSearchService shoesSearchService;
+
+    private final ImageBridgeComponent imageBridgeComponent;
+
+    private static final Logger logger = LoggerFactory.getLogger(SocialController.class);
+
 
     @GetMapping("")
     public String uploadFeed() {
@@ -40,24 +55,43 @@ public class socialController {
 
         model.addAttribute("detailDto", socialDetailResponse);
         model.addAttribute("comment", new SocialCommentRequest());
-        return "/domain/social/social/social/socialdetail";}
+        return "/domain/social/social/social/socialdetail";
+    }
 
 
     @PostMapping("/upload")
     public String uploadSocial(@RequestParam("content") String content,
                                @AuthenticationPrincipal UserPrincipal userPrincipal,
-                               @RequestParam(value = "files") List<MultipartFile> files) {
+                               @RequestParam(value = "files") List<MultipartFile> files,
+                               @RequestParam("shoesId") List<Long> shoesIdList,
+                               @RequestParam("shoesName") List<String> shoesNameList,
+                               Model model) {
 
         SocialUploadRequest socialUploadRequest = new SocialUploadRequest().builder()
                 .content(content)
                 .build();
 
+
         String memberEmail = userPrincipal.getUsername();
         Long principalId = userPrincipal.getMember().getId();
-        socialUploadService.upload(socialUploadRequest, files, memberEmail);
+
+        Social social = socialUploadService.upload(socialUploadRequest, files, memberEmail);
+        for (int i = 0; i < shoesIdList.size(); i++) {
+            Long shoesId = shoesIdList.get(i);
+            String shoesName = shoesNameList.get(i);
+            String shoesImage = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoesId).get(0);
+            SocialShoesRequest socialShoesRequest = SocialShoesRequest.builder()
+                    .shoesId(shoesId)
+                    .shoesName(shoesName)
+                    .shoesImage(shoesImage)
+                    .build();
+            socialUploadService.tagUpload(socialShoesRequest, social.getId());
+        }
 
         return "redirect:/social/profile/%s".formatted(principalId);
     }
+
+
     @GetMapping("/delete/{id}")
     public String deleteSocial(@PathVariable Long id,
                                @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -66,6 +100,7 @@ public class socialController {
         socialDetailService.delete(id);
         return "redirect:/social/profile/%s".formatted(principalId);
     }
+
     @GetMapping("/update/{id}") // 수정 폼 표시
     public String updateSocialForm(@PathVariable Long id, Model model, @AuthenticationPrincipal UserPrincipal userPrincipal) {
         // 기존의 내용을 가져와서 SocialUpdateRequest 객체에 설정
@@ -83,7 +118,6 @@ public class socialController {
     }
 
 
-
     @PostMapping("/update/{id}")
     public String update(@PathVariable Long id,
                          @ModelAttribute("socialUpdateRequest") SocialUpdateRequest socialUpdateRequest,
@@ -98,5 +132,17 @@ public class socialController {
         socialUpdateService.update(id, files, socialUpdateRequest, memberEmail);
 
         return "redirect:/social/profile/%s".formatted(principalId);
+    }
+
+    @GetMapping("/tag/search")
+    public String searchShoes() {
+        return "/domain/social/social/social/socialshoessearch";
+    }
+
+    @PostMapping("/tag/search")
+    public String showShoesList(@RequestParam(value = "keyword") String keyword, Model model) {
+        ShoesSearchResponse data = shoesSearchService.findByKeyword(keyword);
+        model.addAttribute("data", data);
+        return "/domain/social/social/social/socialshoessearchlist";
     }
 }
