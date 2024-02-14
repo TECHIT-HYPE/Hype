@@ -1,30 +1,44 @@
 <html layout:decorate="~{domain/member/mypage/myPageLayout}">
 <head>
     <title>관심</title>
+    <style>
+        img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        #wishlist-card{
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="my_page_content">
     <h2 class="text-2xl font-bold mb-4">관심</h2>
 
-    <ul role="list" class="divide-y divide-gray-100" >
-        <li class="flex justify-between gap-x-6 p-5 hover:bg-gray-100" th:each="item : ${wishlist}">
-            <div class="flex min-w-0 gap-x-4">
-                <img class="h-20 w-20 flex-none bg-gray-50 rounded" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-                <div class="min-w-0 flex-auto flex flex-col justify-between">
-                    <p class="text-sm font-semibold leading-6 text-gray-900" th:text="${item.brandEngName}"></p>
-                    <p class="mb-2 truncate text-xs leading-5 text-gray-500" th:text="${item.shoesEngName}"></p>
-                    <p class="text-sl font-semibold leading-6 text-gray-900" th:text="${item.shoesSize}"></p>
+    <ul role="list" class="divide-y divide-gray-100">
+        <li class="flex justify-between gap-x-6 p-5 hover:bg-gray-100" th:each="item : ${data}">
+            <div class="card card-side bg-base-100 shadow-xl" id="wishlist-card">
+                <figure id="card-figure">
+                    <ul style="padding: 0;">
+                        <li th:each="path : ${item.fullPath}">
+                            <img th:src="${path}" id="card-image"/>
+                        </li>
+                    </ul>
+                </figure>
+
+                <div class="card-body" style="padding: 1rem;">
+                    <h2 class="card-title" th:text="${item.shoes.korName}"></h2>
+                    <p th:text="${item.shoes.engName}" class="card-description"></p>
+                    <p class="text-sl font-semibold leading-6 text-gray-900 card-description" th:text="${item.size}"></p>
+
+                    <div class="card-actions justify-end">
+                        <a method="DELETE" class="btn btn-primary card-action"
+                           onclick="return confirm('정말로 삭제하시겠습니까?');" th:href="|/mypage/wishlist/${item.id}/delete|"
+                           style="margin-top: 1rem;"> 삭제 </a>
+                    </div>
                 </div>
-            </div>
-            <div class="flex flex-col items-end justify-between">
-                <button type="submit" class="w-full bg-red-500 text-white p-3 rounded-md text-left" style="width: 120px;">
-                    <span class="text-sm leading-6">즉시 구매가</span>
-                    <br/>
-                    <span class="text-sl font-semibold leading-6" th:if="${item.instantPrice != null}" th:text="|${#numbers.formatDecimal(item.instantPrice, 0, 'COMMA', 0, 'POINT')}원|"></span>
-                    <span class="text-sl font-semibold leading-6" th:unless="${item.instantPrice != null}" th:text="'-'"></span>
-                </button>
-                <a method="DELETE" class="text-xs leading-5 text-gray-500 underline"
-                   onclick="return confirm('정말로 삭제하시겠습니까?');" th:href="|/mypage/wishlist/${item.id}/delete|"> 삭제 </a>
             </div>
         </li>
     </ul>

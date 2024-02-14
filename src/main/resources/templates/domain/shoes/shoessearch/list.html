@@ -1,70 +1,95 @@
 <html layout:decorate="~{global/usrLayout}">
 <head>
-    <title>신발 목록</title>
+    <title>검색 결과</title>
+    <style>
+        #keyword {
+            border-style: solid;
+            border-width: 1px;
+            border-color: #CCCCCC;
+        }
+    </style>
 </head>
 <body layout:fragment="content">
 <div class="container mx-auto mt-8">
-    <h1 class="text-3xl font-bold mb-4">신발 목록</h1>
 
-<!-- 검색 결과가 있을 경우에만 표시 -->
-<!--<div th:if="${not #lists.isEmpty(shoes)}">-->
+    <!-- 검색 -->
+    <div class="flex items-center justify-between mb-8">
+        <form class="relative w-full" th:action="@{|/shoes/search/keyword|}" method="POST" role="search">
+            <input type="text"
+                   class="w-full border-gray-300 pl-10 pr-12 py-5 rounded-full focus:outline-none focus:shadow-outline-blue"
+                   placeholder="Search..."
+                   name="keyword"
+                   id="keyword"
+                   aria-label="Search"
+                   th:value="${data.keyword}"
+                   required>
+            <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <!-- 돋보기 아이콘 -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-gray-400" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 15.36l2.42 2.42L19 17.34l-2.42-2.42a8 8 0 1 0-1.42 1.42zM10 16a6 6 0 1 1 6-6 6 6 0 0 1-6 6z"/>
+                </svg>
+            </div>
+            <button class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white rounded-full p-2"
+                    type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+            </button>
+        </form>
+    </div>
 
-    <table class="min-w-full border border-gray-300">
-<!--<table border="1">-->
-    <thead>
-    <tr>
-        <th class="py-2 px-4 border-b">신발 한글 이름 </th>
-        <th class="py-2 px-4 border-b">신발 영어 이름</th>
-        <th class="py-2 px-4 border-b">브랜드 한글 이름</th>
-        <th class="py-2 px-4 border-b">브랜드 영어 이름</th>
-<!--        <th>신발 한글 이름</th>-->
-<!--        <th>신발 영어 이름</th>-->
-<!--        <th>브랜드 한글 이름</th>-->
-<!--        <th>브랜드 영어 이름</th>-->
-        <!-- 기타 필요한 컬럼들을 추가하세요 -->
-    </tr>
-    </thead>
-    <tbody>
-    <!-- 검색 결과를 반복문을 사용하여 표시 -->
-    <tr th:each="shoes : ${data.shoes}">
-        <td class="py-2 px-4 border-b" th:text="${shoes.korName}"></td>
-        <td class="py-2 px-4 border-b" th:text="${shoes.engName}"></td>
-        <td class="py-2 px-4 border-b" th:text="${shoes.brand.korName}"></td>
-        <td class="py-2 px-4 border-b" th:text="${shoes.brand.engName}"></td>
-        <!--            // 여기서 검색 할 목록..? 아무튼 shoesResponse에서 확인하기-->
-    </tr>
-    </tbody>
-</table>
+    <!-- Content -->
+    <div th:if="${data.brands.size() > 0}">
+        <h2 class="text-xl">
+            Brand List
+            <span class="badge badge-lg" th:text="'+'+${data.brands.size()}">NEW</span>
+        </h2>
+        <div class="carousel carousel-center p-4 space-x-4 rounded-box">
+            <div class="carousel-item" th:each="brand : ${data.brands}">
+                <a class="avatar">
+                    <div class="w-48 h-48 rounded-full">
+                        <div th:each="path : ${brand.fullPath}">
+                            <img class="hover:blur rounded-full overflow-hidden" th:src="${path}"/>
+                            <div class="rounded-full overflow-hidden absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-50 text-white text-center">
+                                <span th:text="${brand.korName}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
 
-<br/><br/>
-    <h2 class="text-3xl font-bold mb-4">브랜드 목록</h2>
-<table class="w-full border-collapse border border-gray-300">
-    <thead>
-    <tr>
-        <th class="p-3 border-b">ID</th>
-        <th class="p-3 border-b">Create Date</th>
-        <th class="p-3 border-b">Modify Date</th>
-        <th class="p-3 border-b">Korean Name</th>
-        <th class="p-3 border-b">English Name</th>
-        <th class="p-3 border-b">Status</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="brand : ${data.brands}" class="hover:bg-gray-100">
-        <td class="p-3 border-b" th:text="${brand.id}"></td>
-        <td class="p-3 border-b" th:text="${brand.createDate}"></td>
-        <td class="p-3 border-b" th:text="${brand.modifyDate}"></td>
-        <td class="p-3 border-b" th:text="${brand.korName}"></td>
-        <td class="p-3 border-b" th:text="${brand.engName}"></td>
-    </tr>
-    </tbody>
-</table>
-<!--</div>-->
-<!---->
-<!-- 검색 결과가 없을 경우 메시지를 표시 -->
-<!--<div th:if="${#lists.isEmpty(shoes)}">-->
-<!--    <p>검색 결과가 없습니다.</p>-->
-<!--</div>-->
+    <br>
+    <hr>
+    <br>
 
+    <div th:if="${data.shoes.size() > 0}">
+        <h2 class="text-xl">
+            Shoes List
+            <span class="badge badge-lg" th:text="'+'+${data.shoes.size()}">NEW</span>
+        </h2>
+
+        <div class="carousel carousel-center p-4 space-x-4 rounded-box">
+            <div class="carousel-item" th:each="shoes : ${data.shoes}">
+                <a th:href="@{|/shoes/${shoes.id}|}">
+                    <div th:each="path : ${shoes.fullPath}">
+                        <div class="card card-compact w-48 bg-base-100 shadow-xl">
+                            <figure><img th:src="${path}" alt="Shoes"/></figure>
+                            <div class="card-body">
+                                <h2 class="card-title text-sm" th:text="${shoes.korName}"></h2>
+                                <p th:text="${shoes.model}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

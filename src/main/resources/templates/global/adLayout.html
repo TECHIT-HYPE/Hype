@@ -1,26 +1,24 @@
 <!DOCTYPE html>
-<html layout:decorate="~{global/layout}">
+<html layout:decorate="~{global/user_layout}">
 <body>
-<div layout:fragment="header" class="sticky bg-white top-0 flex justify-between px-[10px] py-[15px] border-b border-black mx-auto con">
-    <a href="/" class="flex items-center">HYPE ADMIN</a>
-    <div class="flex flex-col justify-center">
-        <div class="flex mb-[20px] space-x-8">
-            <a href="/admin/main/brand">브랜드</a>
-            <a href="/admin/main/shoes">신발</a>
-            <a href="/admin/cs/question/list">고객센터</a>
-            <div>알림</div>
-            <div sec:authorize="isAnonymous()" >
-                <a th:href="@{/member/login}">로그인</a>
-            </div>
-            <div sec:authorize="isAuthenticated()" >
-                <a th:href="@{/member/logout}">로그아웃</a>
-            </div>
+<div layout:fragment="content" >
+    <div class="con mx-auto flex">
+        <div class="ml-10 mr-10 w-[150px]">
+            <div class="text-xl font-bold mt-12 mb-2">관리</div>
+            <a th:href="@{/admin/member/list}"
+               class="block text-black hover:text-blue-500">회원 관리</a>
+            <a th:href="@{/admin/main/brand}"
+               class="block text-black hover:text-blue-500">브랜드 관리</a>
+            <a th:href="@{/admin/main/shoes}"
+               class="block text-black hover:text-blue-500">상품 관리</a>
+            <a th:href="@{/admin/cs/question/list}"
+               class="block text-black hover:text-blue-500">고객센터 관리</a>
+            <a th:href="@{/admin/buy/list}"
+               class="block text-black hover:text-blue-500">구매입찰 관리</a>
         </div>
-        <div class="flex space-x-4 justify-end">
-            <div>HOME</div>
-            <div>SHOP</div>
-            <div>BOARD</div>
-            <div>SEARCH</div>
+
+        <div class="flex-grow mt-8 p-6">
+            <th:block layout:fragment="ad_page_content"></th:block>
         </div>
     </div>
 </div>

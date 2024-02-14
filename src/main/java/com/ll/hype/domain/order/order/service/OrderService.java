@@ -3,22 +3,36 @@ package com.ll.hype.domain.order.order.service;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
-import com.ll.hype.domain.order.order.dto.OrderRequest;
-import com.ll.hype.domain.order.order.dto.OrderResponse;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.order.order.entity.Orders;
+import com.ll.hype.domain.order.order.entity.PaymentStatus;
 import com.ll.hype.domain.order.order.repository.OrderRepository;
+import com.ll.hype.domain.order.order.util.validate.OrderValidator;
 import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.domain.order.sale.repository.SaleRepository;
-import java.time.LocalDate;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
+import com.ll.hype.global.exception.custom.EntityNotFoundException;
+import com.ll.hype.global.s3.image.ImageType;
+import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
     private final BuyRepository buyRepository;
     private final SaleRepository saleRepository;
+    private final ShoesRepository shoesRepository;
+
+    private final ImageBridgeComponent imageBridgeComponent;
 
     // 거래 체결
     public Object createOrder(Buy buy, Sale sale) {
@@ -36,35 +50,66 @@ public class OrderService {
         return null;
     }
 
-    // TODO
-    // 금액, 모델명, 사이즈가 다르면 거래불가
-    // !! buyResponse 주문 저장되면 status 변경
-    // 운송장번호에 택배사 .. 택배사 통일?
+    public void checkAmount(String tossId, String amountStr) {
+        Orders order = orderRepository.findByTossId(tossId)
+                .orElseThrow(() -> new IllegalArgumentException("찾는 주문이 없습니다."));
 
-    public OrderResponse createOrder(OrderRequest orderRequest, long saleId, long buyId, Member member) {
-        Buy buy = buyRepository.findById(buyId) //orderRequest.getBuy().getId()
-                .orElseThrow(() -> new IllegalArgumentException("조회된 구매 입찰이 없습니다."));
+        long amount = Long.parseLong(amountStr);
 
-        Sale sale = saleRepository.findById(saleId)
-                .orElseThrow(() -> new IllegalArgumentException("조회된 판매 입찰이 없습니다."));
+        log.info("[OrderService.checkAmount] amount : " + amount);
+        log.info("[OrderService.checkAmount] Order amount : " + order.getOrderPrice());
 
-        // TODO
-        // BuyService 에 있는 Order.builder 참고해서 수정해 주세요 ~!
-
-        //        Orders orders = Orders.builder()
-        //                .buy(buy)
-        //                .sale(sale)
-        //                .orderDate(LocalDate.now())
-        //                .orderPrice(buy.getPrice())
-        //                .deliveryNumber(1234567890L)
-        //                .receiverAddress(buy.getReceiverAddress())
-        //                .phoneNumber(buy.getMember().getPhoneNumber())
-        //                .status(Status.ORDER_COMPLETE)
-        //                .settlementStatus(SettlementStatus.WAIT_PAYMENT)
-        //                .build();
-        //        orderRepository.save(orders);
-        //
-        //        return OrderResponse.of(orders);
-        return null;
+        if (amount != order.getOrderPrice()) {
+            throw new IllegalArgumentException("주문금액과 결제금액이 일치하지 않습니다.");
+        }
     }
+
+    @Transactional
+    public void setPaymentComplete(String tossId) {
+        Orders order = orderRepository.findByTossId(tossId)
+                .orElseThrow(() -> new IllegalArgumentException("찾는 주문이 없습니다."));
+        order.updatePaymentStatus(PaymentStatus.COMPLETE_PAYMENT);
+    }
+
+    public List<OrderResponse> findTradingOrder(Member member) {
+        List<Orders> tradingOrderAll = orderRepository.findTradingByMember(member);
+        List<OrderResponse> orderResponses = new ArrayList<>();
+
+        for (Orders order : tradingOrderAll) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(
+                    ImageType.SHOES, order.getSale().getShoes().getId());
+            OrderResponse orderResponse = OrderResponse.of(order, fullPath);
+
+            if (order.getBuy().getMember().getId().equals(member.getId()) ||
+                    order.getSale().getMember().getId().equals(member.getId())) {
+                orderResponses.add(orderResponse);
+            }
+        }
+        return orderResponses;
+    }
+
+    // 운송장번호 수정(등록)
+    @Transactional
+    public void updateDeliveryNumber(long id, long deliveryNumber, Member member) {
+        Orders order = orderRepository.findByIdAndSaleMember(id, member)
+                .orElseThrow(() -> new EntityNotFoundException("조회된 거래 내역이 없습니다."));
+        OrderValidator.checkUserMatch(order, member);
+        order.updateDeliveryNumber(deliveryNumber);
+    }
+
+    // 판매 정산 내역
+    public List<OrderResponse> settlementOrder(Member member) {
+        List<Orders> saleOrder = orderRepository.findBySaleMember(member);
+        List<OrderResponse> orderResponses = new ArrayList<>();
+
+        for (Orders order : saleOrder) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(
+                    ImageType.SHOES, order.getSale().getShoes().getId());
+            OrderResponse orderResponse = OrderResponse.of(order, fullPath);
+                orderResponses.add(orderResponse);
+        }
+        return orderResponses;
+    }
+
+
 }

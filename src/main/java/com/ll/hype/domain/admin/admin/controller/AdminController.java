@@ -1,21 +1,28 @@
 package com.ll.hype.domain.admin.admin.controller;
 
+import com.ll.hype.domain.admin.admin.dto.request.MemberModifyRequest;
+import com.ll.hype.domain.admin.admin.dto.request.MemberPwClearRequest;
+import com.ll.hype.domain.admin.admin.dto.response.MemberListResponse;
 import com.ll.hype.domain.admin.admin.service.AdminService;
 import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.dto.BrandResponse;
 import com.ll.hype.domain.customer.question.dto.QuestionResponse;
+import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.metamodel.model.domain.internal.MapMember;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +45,46 @@ public class AdminController {
     //============== Main End ==============
 
     //============== Member Start ==============
+    @GetMapping("/member/main")
+    public String memberHome() {
+        return "domain/admin/member/main";
+    }
 
+    @GetMapping("/member/list")
+    public String memberList(Model model) {
+        List<MemberListResponse> members = adminService.getMembers();
+        model.addAttribute("data", members);
+        return "domain/admin/member/list";
+    }
+
+    @GetMapping("/member/{id}")
+    public String memberDetail(@PathVariable("id") Long id,
+                               MemberModifyRequest memberModifyRequest,
+                               Model model) {
+        MemberListResponse member = adminService.getMember(id);
+        model.addAttribute("data", member);
+        return "domain/admin/member/detail";
+    }
+
+    @PostMapping("/member/clearPw")
+    public ResponseEntity<String> clearPw(@RequestBody MemberPwClearRequest request) {
+        log.info("[AdminController.memberPwClear] id : " + request.getId());
+        adminService.clearMemberPw(request.getId());
+        return ResponseEntity.ok().body("비밀번호 변경 완료");
+    }
+
+    @PutMapping("/member/modify")
+    public String memberModify(MemberModifyRequest memberModifyRequest) {
+        adminService.modifyMember(memberModifyRequest);
+        return "redirect:/admin/member/%s".formatted(memberModifyRequest.getId());
+    }
+
+    @DeleteMapping("/member/delete")
+    public String memberDelete(@RequestParam("id") Long id) {
+        log.info("[AdminController.memberDelete] id : " + id);
+        adminService.memberDelete(id);
+        return "redirect:/admin/member/list";
+    }
     //============== Member End ==============
 
 
@@ -142,4 +188,20 @@ public class AdminController {
         return "redirect:/admin/cs/question/detail/%s".formatted(customerQResponse.getId());
     }
     //============== CS Question & Answer End ==============
+
+
+    //============== Buy Start ==============
+    @GetMapping("/buy/list")
+    public String buyFindAll(Model model) {
+        List<BuyResponse> buyResponses = adminService.buyFindAll();
+        model.addAttribute("data", buyResponses);
+        return "domain/admin/buy/list";
+    }
+
+    @DeleteMapping("/buy/delete")
+    public String deleteBuy(@RequestParam("id") Long id) {
+        adminService.buyDelete(id);
+        return "redirect:/admin/buy/list";
+    }
+    //============== Buy End ==============
 }

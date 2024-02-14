@@ -54,4 +54,12 @@ public class Buy extends BaseEntity {
     @Comment("거래 상태")
     @Enumerated(value = EnumType.STRING)
     private Status status; // 거래 상태 거래중 거래완료
+
+    public void updateStatus(Status status) {
+        this.status = status;
+    }
+
+    public void updatePrice(Long price) {
+        this.price = price;
+    }
 }

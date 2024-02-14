@@ -30,7 +30,8 @@ public class ShoesSearchService {
         List<Shoes> findByShoesKeyword = shoesRepository.findByShoesKeyword(keyword);
 
         for (Shoes shoes : findByShoesKeyword) {
-            shoess.add(ShoesResponse.of(shoes));
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
+            shoess.add(ShoesResponse.of(shoes, fullPath));
         }
 
         // Brand 검색 상품을 담는 배열
@@ -42,7 +43,7 @@ public class ShoesSearchService {
             brands.add(BrandResponse.of(brand, fullPath));
         }
 
-        return ShoesSearchResponse.of(shoess, brands);
+        return ShoesSearchResponse.of(keyword, shoess, brands);
     }
 
     //신발 영어 이름 조회

@@ -17,14 +17,14 @@
                     <p>한글명: [[${orderResponse.sale.shoes.korName}]]</p>
                     <p>신발 모델: [[${orderResponse.sale.shoes.model}]]</p>
                     <p>사이즈: [[${orderResponse.sale.shoesSize.size}]]</p>
-                    <p>거래 성사 금액: [[${orderResponse.buy.price}]]원</p>
+                    <p>거래 성사 금액: [[${orderResponse.orderPrice}]]원</p>
                     <p>거래 성사일: [[${orderResponse.orderDate}]]</p>
-                    <p>배송 정보: [[${orderResponse.deliveryNumber}]]</p>
+                    <p>배송 정보: {운송장 번호}</p>
                     <p>거래 상태: [[${orderResponse.status}]]</p>
-                    <p>수취인 이름: {이름}</p>
-                    <p>수취인 주소: {주소}</p>
-                    <p>수취인 연락처: {연락처}</p>
-                    <p>정산 상태: [[${orderResponse.settlementStatus}]]</p>
+                    <p>수취인 이름: [[${orderResponse.receiverName}]]</p>
+                    <p>수취인 주소: [[${orderResponse.receiverAddress}]]</p>
+                    <p>수취인 연락처: [[${orderResponse.receiverPhoneNumber}]]</p>
+                    <p>정산 상태: [[${orderResponse.paymentStatus}]]</p>
                     <p>정산 계좌: [[${orderResponse.sale.account}]]</p>
                     <hr>
                     <p>최종 주문 정보: {입찰금액/수수료/정산 예정 금액}</p>

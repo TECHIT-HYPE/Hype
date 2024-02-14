@@ -4,8 +4,9 @@ package com.ll.hype.domain.order.order.controller;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.service.BuyService;
 import com.ll.hype.domain.order.order.dto.OrderRequest;
-import com.ll.hype.domain.order.order.dto.OrderResponse;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.order.order.service.OrderService;
+import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
 import com.ll.hype.domain.order.sale.service.SaleService;
 import com.ll.hype.global.security.authentication.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,12 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
@@ -49,7 +45,6 @@ public class OrderController {
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String paymentCreate() throws Exception {
-
         return "domain/order/order/order_payment";
     }
 
@@ -59,31 +54,42 @@ public class OrderController {
      * @return
      * @throws Exception
      */
-    @GetMapping("/success")
+    @GetMapping("/payment/success")
     public String paymentSuccess() throws Exception {
         return "domain/order/order/success";
     }
 
     /**
-     * 인증실패처리
+     * 인증 실패 처리
      *
      * @param request
      * @param model
      * @return
      * @throws Exception
      */
-    @GetMapping("/fail")
+    @GetMapping("/payment/fail")
     public String paymentFail(HttpServletRequest request, Model model) throws Exception {
         String failCode = request.getParameter("code");
         String failMessage = request.getParameter("message");
+
+        // TODO
+        // 실패 시 로직 구현
 
         model.addAttribute("code", failCode);
         model.addAttribute("message", failMessage);
         return "domain/order/order/fail";
     }
 
-    @RequestMapping(value = "/confirm")
+    /**
+     * 결제 성공 후 2차 확인
+     *
+     * @param jsonBody
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/confirm")
     public ResponseEntity<JSONObject> paymentConfirm(@RequestBody String jsonBody) throws Exception {
+        log.info("[OrderController.confirm] paymentConfirm start");
         JSONParser parser = new JSONParser();
         String orderId;
         String amount;
@@ -98,9 +104,7 @@ public class OrderController {
             throw new RuntimeException(e);
         }
 
-        // TODO
-        // 여기서
-        // orderService.checkAmount(orderId, amount);
+        orderService.checkAmount(orderId, amount);
 
         JSONObject obj = new JSONObject();
         obj.put("orderId", orderId);
@@ -133,33 +137,24 @@ public class OrderController {
 
         int code = connection.getResponseCode();
         boolean isSuccess = code == 200 ? true : false;
-
         InputStream responseStream = isSuccess ? connection.getInputStream() : connection.getErrorStream();
 
-        // TODO: 결제 성공 및 실패 비즈니스 로직을 구현하세요.
-        // if isSuccess
-        // orderService.setPaymentComplete(orderId)
-        // else
-        // throw new Exception() ~
+        if (!isSuccess) {
+            throw new IllegalArgumentException("결제 실패");
+        }
 
         Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8);
         JSONObject jsonObject = (JSONObject) parser.parse(reader);
         responseStream.close();
 
         return ResponseEntity.status(code).body(jsonObject);
-
     }
 
-    // 즉시 판매 -> 오더생성
-    @PostMapping("/sale/create")
-    public String createOrder(OrderRequest orderRequest, @RequestParam("saleId") long saleId,
-                              @RequestParam("buyId") long buyId, @AuthenticationPrincipal UserPrincipal user,
-                              Model model) {
-        BuyResponse buyResponse = buyService.findByBuyId(buyId);
-        model.addAttribute("buyData", buyResponse);
-
-        OrderResponse orderResponse = orderService.createOrder(orderRequest, saleId, buyId, user.getMember());
-        model.addAttribute("orderResponse", orderResponse);
-        return "domain/order/orderDetail";
+    @PostMapping("/complete")
+    public String paymentComplete(@RequestParam String tossId,
+                                  Model model) {
+        log.info("[OrderController.paymentComplete] 진입 : " + tossId);
+        orderService.setPaymentComplete(tossId);
+        return "redirect:/mypage/buy/history";
     }
 }

@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ShoesSizeRepository extends JpaRepository<ShoesSize, Long> {
     Optional<ShoesSize> findByShoesAndSize(Shoes shoes, int size);
+    Optional<ShoesSize> findByShoesIdAndSize(Long id, int size);
 }

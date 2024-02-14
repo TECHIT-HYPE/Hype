@@ -2,6 +2,7 @@ package com.ll.hype.domain.order.order.entity;
 
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.sale.entity.Sale;
+import com.ll.hype.global.enums.Status;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -52,11 +53,35 @@ public class Orders extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private OrderStatus status;
 
-    @Comment("정산상태")
+    @Comment("구매자정산상태")
     @Enumerated(value = EnumType.STRING)
     private PaymentStatus paymentStatus;
 
-    public void createTossId() {
-        tossId = super.getId().toString() +"-"+ this.orderDate.toString();
+    @Comment("판매자정산상태")
+    @Enumerated(value = EnumType.STRING)
+    private DepositStatus depositStatus;
+
+    public String createTossId() {
+        return super.getId() + "-" + orderDate;
+    }
+
+    public void updateTossId(String tossId) {
+        this.tossId = tossId;
+    }
+
+    public void updatePaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public void updateBuySaleStatus(Status status) {
+        this.buy.updateStatus(status);
+        this.sale.updateStatus(status);
+    }
+
+    public void updateDeliveryNumber(Long deliveryNumber) {
+        this.deliveryNumber = deliveryNumber;
+    }
+    public void updateDepositStatus(DepositStatus depositStatus) {
+        this.depositStatus = depositStatus;
     }
 }

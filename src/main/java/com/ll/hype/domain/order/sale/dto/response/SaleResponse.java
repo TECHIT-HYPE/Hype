@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
@@ -29,9 +31,13 @@ public class SaleResponse {
     private LocalDate endDate;
     private String address;
     private Status status;
-    private String account;
+    private String accountBank;
+    private String accountNumber;
 
-    public static SaleResponse of(Sale sale) {
+    @Builder.Default
+    private List<String> fullPath = new ArrayList<>();
+
+    public static SaleResponse of(Sale sale, List<String> fullPath) {
         return SaleResponse.builder()
                 .id(sale.getId())
                 .createDate(sale.getCreateDate())
@@ -44,7 +50,9 @@ public class SaleResponse {
                 .endDate(sale.getEndDate())
                 .address(sale.getAddress())
                 .status(sale.getStatus())
-                .account(sale.getAccount())
+                .accountBank(sale.getAccountBank())
+                .accountNumber(sale.getAccountNumber())
+                .fullPath(fullPath)
                 .build();
     }
 }

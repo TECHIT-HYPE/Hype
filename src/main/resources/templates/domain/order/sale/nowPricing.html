@@ -8,17 +8,17 @@
     <div class="flex justify-center mt-5">판매하기</div>
     <div class="container mx-auto mt-5">
         <div class="header text-center mb-5">
-            <div class="flex">
+            <div>
                 <ul>
-                    <li th:each="path : ${saleData.fullPath}">
+                    <li th:each="path : ${SaleFormResponse.fullPath}">
                         <img th:src="${path}" class="w-20"/>
                     </li>
                 </ul>
                 <div>
-                    <p class="text-l" th:text="${saleData.buy.shoes.model}"></p>
-                    <p class="text-l" th:text="${saleData.buy.shoes.korName}"></p>
-                    <p class="text-l" th:text="${saleData.buy.shoes.engName}"></p>
-                    <p class="text-l" th:text="${saleData.buy.shoesSize.size}"></p>
+                    <p class="text-l" th:text="${SaleFormResponse.shoes.model}"></p>
+                    <p class="text-l" th:text="${SaleFormResponse.shoes.korName}"></p>
+                    <p class="text-l" th:text="${SaleFormResponse.shoes.engName}"></p>
+                    <p class="text-l" th:text="${SaleFormResponse.size}"></p>
                 </div>
             </div>
             <hr>
@@ -28,8 +28,8 @@
                     <th>즉시 판매가</th>
                 </tr>
                 <tr>
-                    <td th:text="${buyData.sale.price}"></td>
-                    <td th:text="${saleData.buy.price}"></td>
+                    <td th:text="${BuyFormResponse.price}"></td>
+                    <td th:text="${SaleFormResponse.price}"></td>
                 </tr>
             </table>
 
@@ -37,33 +37,94 @@
             <div>
                 <div style="display: flex; justify-content: space-around; align-items: center;">
                     <form th:action="@{|/sale/shoes/bid|}" method="post">
-                        <input type="hidden" name="shoesId" th:value="${saleData.buy.shoes.id}"/>
-                        <input type="hidden" name="size" th:value="${saleData.buy.shoesSize.size}"/>
+                        <input type="hidden" name="shoesId" th:value="${SaleFormResponse.shoes.id}"/>
+                        <input type="hidden" name="size" th:value="${SaleFormResponse.size}"/>
                         <button type="submit">판매입찰</button>
                     </form>
 
                     <form th:action="@{|/sale/shoes/now|}" method="post">
-                        <input type="hidden" name="shoesId" th:value="${saleData.buy.shoes.id}"/>
-                        <input type="hidden" name="size" th:value="${saleData.buy.shoesSize.size}"/>
+                        <input type="hidden" name="shoesId" th:value="${SaleFormResponse.shoes.id}"/>
+                        <input type="hidden" name="size" th:value="${SaleFormResponse.size}"/>
                         <button type="submit" disabled>즉시판매</button>
                     </form>
                 </div>
 
-                <form th:action="@{|/order/sale/create|}" method="post" id="now">
-                    <input type="hidden" name="shoesId" th:value="${saleData.buy.shoes.id}"/>
-                    <input type="hidden" name="size" th:value="${saleData.buy.shoesSize.size}"/>
-                    <input type="hidden" name="price" th:value="${saleData.buy.price}"/>
-                    <input type="hidden" name="buyId" th:value="${saleData.buy.id}"/>
-                    <input type="hidden" name="saleId" th:value="${buyData.sale.id}"/>
+                <form th:action="@{|/sale/shoes/sale/now|}" method="post" id="now">
+                    <input type="hidden" name="shoesId" th:value="${SaleFormResponse.shoes.id}"/>
+                    <input type="hidden" name="size" th:value="${SaleFormResponse.size}"/>
+                    <input type="hidden" name="price" th:value="${SaleFormResponse.price}"/>
 
                     <div>
                         <label id="immediateSale">
                             <label for="immediateSalePrice">즉시 판매가: </label>
-                            <span id="immediateSalePrice" th:text="${saleData.buy.price}"></span>원
+                            <span id="immediateSalePrice" th:text="${SaleFormResponse.price}"></span>원
                             <p id="immediateSaleFee">수수료: -원</p>
                             <p>배송비 선불 ・ 판매자 부담</p>
-                            <hr>
+
                             <p id="finalImmediateAmount"></p>
+
+                            <hr>
+                            <br>
+                            <div>
+                                <h2 class="text-xl font-bold">판매 약관 동의</h2>
+                                <div>
+                                    <input type="checkbox" id="term1" name="terms" class="checkbox" required>
+                                    <label for="term1">판매하려는 상품이 맞습니다.</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="term2" name="terms" class="checkbox" required>
+                                    <label for="term2">국내/해외에서 발매한 정품·새상품입니다.</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="term3" name="terms" class="checkbox" required>
+                                    <label for="term3">박스/패키지의 상태를 확인합니다.</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="term4" name="terms" class="checkbox" required>
+                                    <label for="term4">이중 포장하여 선불 발송합니다.</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="term5" name="terms" class="checkbox" required>
+                                    <label for="term5">HYPE의 최신 이용정책을 모두 확인하였으며, 판매를 계속합니다.</label>
+                                </div>
+                            </div>
+                            <hr>
+                            <br>
+                            <div>
+                                <h2 class="text-xl font-bold">판매 정산 계좌</h2>
+                                <label for="accountBank">은행</label>
+                                <input type="text" id="accountBank" name="accountBank" placeholder="plz bank">
+                                <br>
+                                <label for="accountNumber">계좌번호</label>
+                                <input  type="text" id="accountNumber" name="accountNumber" placeholder="plz account number..">
+                            </div>
+                            <br>
+                            <div>
+                                <h2 class="text-xl font-bold">반송 주소</h2>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">받는 사람 이름</label>
+                                    <input type="text" id="receiverName" name="receiverName" placeholder="받는 사람의 이름을 입력해 주세요.">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">받는 사람 연락처</label>
+                                    <input type="text" id="receiverPhoneNumber" name="receiverPhoneNumber"
+                                           placeholder="연락처를 입력해주세요.">
+                                </div>
+                                <br>
+                                <label>
+                                    <input type="text" id="sample6_postcode" name="postCode" placeholder="우편번호" readonly required>
+                                    <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+                                    <input type="text" id="sample6_address" name="address" placeholder="주소" readonly required><br>
+                                    <input type="text" id="sample6_detailAddress" name="detailAddress" placeholder="상세주소">
+                                    <input type="text" id="sample6_extraAddress" name="extraAddress" placeholder="참고항목" readonly
+                                           required>
+                                </label>
+                                <hr>
+                            </div>
+                            <br>
+                            <input type="hidden" name="bidSaleFee" id="commissionFee">
+                            <input type="hidden" name="finalBidSaleAmount" id="finalAmount">
+
                             <button type="submit">즉시 판매하기</button>
                         </label>
                     </div>
@@ -83,6 +144,10 @@
                         var finalImmediateAmount = immediatePrice - immediateSaleFee;
                         document.getElementById('immediateSaleFee').textContent = '수수료: ' + immediateSaleFee.toFixed(0) + '원';
                         document.getElementById('finalImmediateAmount').textContent = '정산금액: ' + finalImmediateAmount.toFixed(0) + '원';
+
+                        // hidden 필드에 값 설정
+                        document.getElementById('commissionFee').value = immediateSaleFee.toFixed(0);
+                        document.getElementById('finalAmount').value = finalImmediateAmount.toFixed(0);
                     }
 
                     // 페이지 로드 시 정산 금액 계산 및 표시

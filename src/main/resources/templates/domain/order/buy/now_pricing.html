@@ -1,150 +1,149 @@
-<html layout:decorate="~{global/usrLayout}">
+<html layout:decorate="~{global/user_layout}">
 <head>
     <title>구매입찰 상세페이지</title>
 </head>
 <body>
-<div layout:fragment="content">
-    <div class="flex justify-center">즉시구매하기</div>
-    <div class="container mx-auto mt-5">
-        <div class="header text-center mb-5">
-            <div class="flex">
-                <ul>
-                    <li th:each="path : ${data.fullPath}">
-                        <img th:src="${path}" class="w-20"/>
-                    </li>
-                </ul>
-                <div>
-                    <p class="text-l" th:text="${data.sale.shoes.model}"></p>
-                    <p class="text-l" th:text="${data.sale.shoes.korName}"></p>
-                    <p class="text-l" th:text="${data.sale.shoes.engName}"></p>
-                    <p class="text-l" th:text="${data.sale.shoesSize.size}"></p>
-                </div>
-            </div>
-            <hr>
-            <table style="display: flex; justify-content: space-around; align-items: center;">
-                <tr>
-                    <td>즉시 구매가 :</td>
-                    <td th:text="${data.sale.price}"></td>
-                </tr>
-            </table>
-            <hr>
-            <div>
-                <div style="display: flex; justify-content: space-around; align-items: center;">
-                    <form th:action="@{|/buy/shoes/bid|}" method="post">
-                        <input type="hidden" name="shoesId" th:value="${data.sale.shoes.id}"/>
-                        <input type="hidden" name="size" th:value="${data.sale.shoesSize.size}"/>
-                        <button type="submit">구매입찰</button>
-                    </form>
-
-                    <form th:action="@{|/buy/shoes/now|}" method="post">
-                        <input type="hidden" name="shoesId" th:value="${data.sale.shoes.id}"/>
-                        <input type="hidden" name="size" th:value="${data.sale.shoesSize.size}"/>
-                        <button type="submit" disabled>즉시구매</button>
-                    </form>
-                </div>
-
-                <form th:action="@{|/buy/shoes/buy/now|}" method="post" id="bid">
-                    <input type="hidden" name="shoesId" th:value="${data.sale.shoes.id}"/>
-                    <input type="hidden" name="size" th:value="${data.sale.shoesSize.size}"/>
-                    <input type="hidden" name="price" th:value="${data.sale.price}"/>
-
-                    <p>즉시구매가 : </p>
-                    <p th:text="${data.sale.price}"></p>
-
-                    <p>배송비 판매자 부담</p>
-
-                    <br>
-                    <hr>
-                    <div>
-                        <label class="block text-gray-700 text-sm font-bold mb-2">받는 사람 이름</label>
-                        <input type="text" id="receiverName" name="receiverName" placeholder="받는 사람의 이름을 입력해 주세요.">
-                    </div>
-
-                    <div>
-                        <label class="block text-gray-700 text-sm font-bold mb-2">받는 사람 연락처</label>
-                        <input type="text" id="receiverPhoneNumber" name="receiverPhoneNumber"
-                               placeholder="연락처를 입력해주세요.">
-                    </div>
-
-                    <br>
-
-                    <label>
-                        <input type="text" id="sample6_postcode" name="postCode" placeholder="우편번호" readonly required>
-                        <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-                        <input type="text" id="sample6_address" name="address" placeholder="주소" readonly required><br>
-                        <input type="text" id="sample6_detailAddress" name="detailAddress" placeholder="상세주소">
-                        <input type="text" id="sample6_extraAddress" name="extraAddress" placeholder="참고항목" readonly
-                               required>
-                    </label>
-                    <hr>
-                    <br>
-
-                    <button type="submit">입찰</button>
-                </form>
+<div layout:fragment="content" class="py-8 px-4">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">즉시 구매</h2>
+    <div class="mx-auto bg-white rounded-lg p-6">
+        <div class="flex items-center mb-4">
+            <ul class="flex-shrink-0">
+                <li th:each="path : ${data.fullPath}" class="mr-2">
+                    <img th:src="${path}" class="w-20"/>
+                </li>
+            </ul>
+            <div class="ml-4">
+                <p class="text-lg font-semibold" th:text="${data.shoes.model}"></p>
+                <p class="text-lg" th:text="${data.shoes.korName}"></p>
+                <p class="text-lg" th:text="${data.shoes.engName}"></p>
+                <p class="text-lg" th:text="${data.size}"></p>
             </div>
         </div>
-        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-        <script>
-            function sample6_execDaumPostcode() {
-                new daum.Postcode({
-                    oncomplete: function (data) {
-                        // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+        <hr class="my-4">
+        <table class="w-full mb-4">
+            <tr>
+                <td class="w-1/2">즉시 구매가 :</td>
+                <td class="text-right" th:text="${data.price}"></td>
+            </tr>
+        </table>
+        <hr class="my-4">
+        <div>
+            <div class="flex justify-around items-center">
+                <form th:action="@{|/buy/shoes/bid|}" method="post">
+                    <input type="hidden" name="shoesId" th:value="${data.shoes.id}"/>
+                    <input type="hidden" name="size" th:value="${data.size}"/>
+                    <button type="submit" class="btn-blue">구매입찰</button>
+                </form>
+                <form th:action="@{|/buy/shoes/now|}" method="post" id="buyNow">
+                    <input type="hidden" name="shoesId" th:value="${data.shoes.id}"/>
+                    <input type="hidden" name="size" th:value="${data.size}"/>
+                    <button type="button" disabled class="btn-blue">즉시구매</button>
+                </form>
+            </div>
 
-                        // 각 주소의 노출 규칙에 따라 주소를 조합한다.
-                        // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-                        var addr = ''; // 주소 변수
-                        var extraAddr = ''; // 참고항목 변수
+            <form th:action="@{|/buy/shoes/buy/now|}" method="post" id="bid" class="mt-8">
+                <input type="hidden" name="shoesId" th:value="${data.shoes.id}"/>
+                <input type="hidden" name="size" th:value="${data.size}"/>
+                <input type="hidden" name="price" th:value="${data.price}"/>
 
-                        //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-                        if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-                            addr = data.roadAddress;
-                        } else { // 사용자가 지번 주소를 선택했을 경우(J)
-                            addr = data.jibunAddress;
-                        }
+                <p class="text-lg font-semibold mb-2" th:text="'즉시구매가 : '+${data.price}">즉시구매가 : </p>
 
-                        // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-                        if (data.userSelectedType === 'R') {
-                            // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-                            // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-                            if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
-                                extraAddr += data.bname;
-                            }
-                            // 건물명이 있고, 공동주택일 경우 추가한다.
-                            if (data.buildingName !== '' && data.apartment === 'Y') {
-                                extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-                            }
-                            // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-                            if (extraAddr !== '') {
-                                extraAddr = ' (' + extraAddr + ')';
-                            }
-                            // 조합된 참고항목을 해당 필드에 넣는다.
-                            document.getElementById("sample6_extraAddress").value = extraAddr;
+                <p>* 배송비 판매자 부담</p>
 
-                        } else {
-                            document.getElementById("sample6_extraAddress").value = '';
-                        }
-
-                        // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                        document.getElementById('sample6_postcode').value = data.zonecode;
-                        document.getElementById("sample6_address").value = addr;
-                        // 커서를 상세주소 필드로 이동한다.
-                        document.getElementById("sample6_detailAddress").focus();
-                    }
-                }).open();
-            }
-        </script>
-
-        <script th:inline="javascript">
-            function cal() {
-                var purchasePrice = document.getElementById('price').text;
-                var commission = Math.round(parseInt(purchasePrice)  * 0.05);
-                var totalPrice = parseInt(purchasePrice) + parseInt(commission);
-                document.getElementById('commission').innerText = '수수료: ' + commission + '원';
-                document.getElementById('totalPrice').innerText = '총 : ' + totalPrice + '원';
-                document.getElementById('totalPriceValue').value = totalPrice;
-            }
-        </script>
+                <br>
+                <hr>
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">받는 사람 이름</label>
+                    <input type="text" id="receiverName" name="receiverName" placeholder="받는 사람의 이름을 입력해 주세요."
+                           class="input mb-4 w-full">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">받는 사람 연락처</label>
+                    <input type="text" id="receiverPhoneNumber" name="receiverPhoneNumber"
+                           placeholder="연락처를 입력해주세요." class="input mb-4 w-full">
+                </div>
+                <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기" class="mt-2 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                <br>
+                <label class="block text-gray-700 text-sm font-bold mb-2">주소</label>
+                <input type="text" id="sample6_postcode" name="postCode" placeholder="우편번호" readonly required
+                       class="input mb-2 w-full">
+                <br>
+                <input type="text" id="sample6_address" name="address" placeholder="주소" readonly required
+                       class="input mb-2 w-full">
+                <br>
+                <input type="text" id="sample6_detailAddress" name="detailAddress" placeholder="상세주소" class="input mb-2 w-full">
+                <br>
+                <input type="text" id="sample6_extraAddress" name="extraAddress" placeholder="참고항목" readonly
+                       required class="input mb-4 w-full">
+                <hr>
+                <br>
+                <div>
+                    <input type="checkbox" id="term1" name="terms" class="checkbox" required>
+                    <label for="term1">구매하려는 상품이 맞습니다.</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="term2" name="terms" class="checkbox" required>
+                    <label for="term2">개인의 실수로 상품 개봉 혹은 회손 시 환불이 불가합니다.</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="term5" name="terms" class="checkbox" required>
+                    <label for="term5">HYPE의 최신 이용정책을 모두 확인하였으며, 구매를 계속합니다.</label>
+                </div>
+                <button type="submit" class="mt-2 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">입찰</button>
+            </form>
+        </div>
     </div>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        function sample6_execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function (data) {
+                    // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                    // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                    // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                    var addr = ''; // 주소 변수
+                    var extraAddr = ''; // 참고항목 변수
+
+                    //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                    if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                        addr = data.roadAddress;
+                    } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                        addr = data.jibunAddress;
+                    }
+
+                    // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                    if (data.userSelectedType === 'R') {
+                        // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                        // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                        if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                            extraAddr += data.bname;
+                        }
+                        // 건물명이 있고, 공동주택일 경우 추가한다.
+                        if (data.buildingName !== '' && data.apartment === 'Y') {
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                        if (extraAddr !== '') {
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                        // 조합된 참고항목을 해당 필드에 넣는다.
+                        document.getElementById("sample6_extraAddress").value = extraAddr;
+
+                    } else {
+                        document.getElementById("sample6_extraAddress").value = '';
+                    }
+
+                    // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                    document.getElementById('sample6_postcode').value = data.zonecode;
+                    document.getElementById("sample6_address").value = addr;
+                    // 커서를 상세주소 필드로 이동한다.
+                    document.getElementById("sample6_detailAddress").focus();
+                }
+            }).open();
+        }
+    </script>
+</div>
 </div>
 </body>
 </html>

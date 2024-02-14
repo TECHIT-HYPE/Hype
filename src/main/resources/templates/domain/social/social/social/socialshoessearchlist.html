@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:s="http://www.springframework.org/tags">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>검색 결과</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+
+<script>
+    // 선택한 신발 정보를 부모 창으로 전달하는 함수
+    function sendShoesInfoToParent(shoesId, shoesName) {
+        // 부모 창의 함수 호출
+        window.opener.receiveShoesInfo(shoesId, shoesName);
+        // 자식 창 닫기 (선택사항)
+        window.close();
+    }
+
+    // 예시: 신발 정보를 클릭할 때 선택한 정보를 부모 창으로 전달
+    function selectShoes(shoesId, shoesName) {
+        sendShoesInfoToParent(shoesId, shoesName);
+    }
+</script>
+
+<table>
+    <thead>
+    <tr>
+        <th>English Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="shoes : ${data.shoes}">
+        <td>
+            <!-- 수정: th:value로 변경하고 onclick 이벤트 추가 -->
+            <a href="#" th:value="${shoes.id}" th:text="${shoes.engName}" onclick="selectShoes(this.getAttribute('value'), this.innerText); return false;"></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- CSRF 토큰 입력 -->
+<s:csrfInput />
+
+<!-- jQuery CDN 추가 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</body>
+</html>

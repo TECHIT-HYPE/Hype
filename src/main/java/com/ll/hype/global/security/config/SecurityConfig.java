@@ -22,6 +22,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/admin/**")).hasRole(MemberRole.ADMIN.getValue())
+                        .requestMatchers(new AntPathRequestMatcher("/buy/**")).authenticated()
+                        .requestMatchers(new AntPathRequestMatcher("/order/**")).authenticated()
                         .requestMatchers(new AntPathRequestMatcher("/cs/**")).authenticated()
                         .requestMatchers(new AntPathRequestMatcher("/member/**")).anonymous()
                         .requestMatchers(new AntPathRequestMatcher("/mypage/**")).authenticated()

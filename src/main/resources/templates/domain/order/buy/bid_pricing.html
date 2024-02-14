@@ -1,112 +1,113 @@
-<html layout:decorate="~{global/usrLayout}">
+<html layout:decorate="~{global/user_layout}">
 <head>
     <title>구매입찰 상세페이지</title>
 </head>
 <body>
-<div layout:fragment="content">
-    <div class="flex justify-center">구매입찰하기</div>
-    <div class="container mx-auto mt-5">
-        <div class="header text-center mb-5">
-            <div class="flex">
-                <ul>
-                    <li th:each="path : ${data.fullPath}">
-                        <img th:src="${path}" class="w-20"/>
-                    </li>
-                </ul>
-                <div>
-                    <p class="text-l" th:text="${data.sale.shoes.model}"></p>
-                    <p class="text-l" th:text="${data.sale.shoes.korName}"></p>
-                    <p class="text-l" th:text="${data.sale.shoes.engName}"></p>
-                    <p class="text-l" th:text="${data.sale.shoesSize.size}"></p>
-                </div>
-            </div>
-            <hr>
-            <table style="display: flex; justify-content: space-around; align-items: center;">
-                <tr>
-                    <td>즉시 구매가 :</td>
-                    <td th:text="${data.sale.price}"></td>
-                </tr>
-            </table>
-            <hr>
-            <div>
-                <div style="display: flex; justify-content: space-around; align-items: center;">
-                    <form th:action="@{|/buy/shoes/bid|}" method="post">
-                        <input type="hidden" name="shoesId" th:value="${data.sale.shoes.id}"/>
-                        <input type="hidden" name="size" th:value="${data.sale.shoesSize.size}"/>
-                        <button type="submit" disabled>구매입찰</button>
-                    </form>
-
-                    <form th:action="@{|/buy/shoes/now|}" method="post">
-                        <input type="hidden" name="shoesId" th:value="${data.sale.shoes.id}"/>
-                        <input type="hidden" name="size" th:value="${data.sale.shoesSize.size}"/>
-                        <button type="submit">즉시구매</button>
-                    </form>
-                </div>
-
-                <form th:action="@{|/buy/shoes/buy/bid|}" method="post" id="bid">
-                    <input type="hidden" name="shoesId" th:value="${data.sale.shoes.id}"/>
-                    <input type="hidden" name="size" th:value="${data.sale.shoesSize.size}"/>
-
-                    <p>구매 희망가</p>
-                    <input type="number" id="price" name="price" placeholder="구매 희망가를 입력해 주세요." th:onchange="cal()">
-
-                    <!-- <p id="commission">수수료: 0원</p> -->
-
-                    <p>배송비 판매자 부담</p>
-
-                    <p>입찰 마감기한</p>
-                    <div class="flex space-x-4">
-                        <label class="inline-flex items-center">
-                            <input type="radio" class="form-radio" name="endDate" value="7" checked>
-                            <span class="ml-2">7일</span>
-                        </label>
-
-                        <label class="inline-flex items-center">
-                            <input type="radio" class="form-radio" name="endDate" value="14">
-                            <span class="ml-2">14일</span>
-                        </label>
-
-                        <label class="inline-flex items-center">
-                            <input type="radio" class="form-radio" name="endDate" value="21">
-                            <span class="ml-2">21일</span>
-                        </label>
-
-                        <label class="inline-flex items-center">
-                            <input type="radio" class="form-radio" name="endDate" value="28">
-                            <span class="ml-2">28일</span>
-                        </label>
-                    </div>
-
-                    <br>
-                    <hr>
-                    <div>
-                        <label class="block text-gray-700 text-sm font-bold mb-2">받는 사람 이름</label>
-                        <input type="text" id="receiverName" name="receiverName" placeholder="받는 사람의 이름을 입력해 주세요.">
-                    </div>
-
-                    <div>
-                        <label class="block text-gray-700 text-sm font-bold mb-2">받는 사람 연락처</label>
-                        <input type="text" id="receiverPhoneNumber" name="receiverPhoneNumber"
-                               placeholder="연락처를 입력해주세요.">
-                    </div>
-
-                    <br>
-
-                    <label>
-                        <input type="text" id="sample6_postcode" name="postCode" placeholder="우편번호" readonly required>
-                        <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-                        <input type="text" id="sample6_address" name="address" placeholder="주소" readonly required><br>
-                        <input type="text" id="sample6_detailAddress" name="detailAddress" placeholder="상세주소">
-                        <input type="text" id="sample6_extraAddress" name="extraAddress" placeholder="참고항목" readonly
-                               required>
-                    </label>
-                    <hr>
-                    <br>
-
-                    <button type="submit">입찰</button>
-                </form>
+<div layout:fragment="content" class="py-8 px-4">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">구매 입찰</h2>
+    <div class="mx-auto bg-white rounded-lg p-6">
+        <div class="flex items-center mb-4">
+            <ul class="flex-shrink-0">
+                <li th:each="path : ${data.fullPath}" class="mr-2">
+                    <img th:src="${path}" class="w-20"/>
+                </li>
+            </ul>
+            <div class="ml-4">
+                <p class="text-lg font-semibold" th:text="${data.shoes.model}"></p>
+                <p class="text-lg" th:text="${data.shoes.korName}"></p>
+                <p class="text-lg" th:text="${data.shoes.engName}"></p>
+                <p class="text-lg" th:text="${data.size}"></p>
             </div>
         </div>
+        <hr class="my-4">
+        <table class="w-full mb-4">
+            <tr>
+                <td class="w-1/2">즉시 구매가 :</td>
+                <td class="text-right" th:text="${data.price}"></td>
+            </tr>
+        </table>
+        <hr class="my-4">
+        <div class="flex justify-around items-center">
+            <form th:action="@{|/buy/shoes/bid|}" method="post">
+                <input type="hidden" name="shoesId" th:value="${data.shoes.id}"/>
+                <input type="hidden" name="size" th:value="${data.size}"/>
+                <button type="submit" disabled class="btn-disabled">구매입찰</button>
+            </form>
+            <form th:action="@{|/buy/shoes/now|}" method="post" id="buyNow">
+                <input type="hidden" name="shoesId" th:value="${data.shoes.id}"/>
+                <input type="hidden" name="size" th:value="${data.size}"/>
+                <button type="button" onclick="checkPriceAndSubmit()" class="btn-blue">즉시구매</button>
+            </form>
+        </div>
+        <form th:action="@{|/buy/shoes/buy/bid|}" method="post" id="bid" class="mt-8">
+            <input type="hidden" name="shoesId" th:value="${data.shoes.id}"/>
+            <input type="hidden" name="size" th:value="${data.size}"/>
+            <p class="text-lg font-semibold mb-2">구매 희망가</p>
+            <input type="number" id="price" name="price" placeholder="구매 희망가를 입력해 주세요." class="input mb-4 w-full">
+            <p>* 배송비 판매자 부담</p>
+            <p>입찰 마감기한</p>
+            <div class="flex space-x-4">
+                <label class="inline-flex items-center">
+                    <input type="radio" class="form-radio" name="endDate" value="7" checked>
+                    <span class="ml-2">7일</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="radio" class="form-radio" name="endDate" value="14">
+                    <span class="ml-2">14일</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="radio" class="form-radio" name="endDate" value="21">
+                    <span class="ml-2">21일</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="radio" class="form-radio" name="endDate" value="28">
+                    <span class="ml-2">28일</span>
+                </label>
+            </div>
+            <br>
+            <hr>
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">받는 사람 이름</label>
+                <input type="text" id="receiverName" name="receiverName" placeholder="받는 사람의 이름을 입력해 주세요."
+                       class="input mb-4 w-full">
+            </div>
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">받는 사람 연락처</label>
+                <input type="text" id="receiverPhoneNumber" name="receiverPhoneNumber"
+                       placeholder="연락처를 입력해주세요." class="input mb-4 w-full">
+            </div>
+            <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기" class="mt-2 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            <br>
+            <label class="block text-gray-700 text-sm font-bold mb-2">주소</label>
+            <input type="text" id="sample6_postcode" name="postCode" placeholder="우편번호" readonly required
+                   class="input mb-2 w-full">
+            <br>
+            <input type="text" id="sample6_address" name="address" placeholder="주소" readonly required
+                   class="input mb-2 w-full">
+            <br>
+            <input type="text" id="sample6_detailAddress" name="detailAddress" placeholder="상세주소" class="input mb-2 w-full">
+            <br>
+            <input type="text" id="sample6_extraAddress" name="extraAddress" placeholder="참고항목" readonly
+                   required class="input mb-4 w-full">
+            <hr>
+            <br>
+            <div>
+                <input type="checkbox" id="term1" name="terms" class="checkbox" required>
+                <label for="term1">구매하려는 상품이 맞습니다.</label>
+            </div>
+            <div>
+                <input type="checkbox" id="term2" name="terms" class="checkbox" required>
+                <label for="term2">개인의 실수로 상품 개봉 혹은 회손 시 환불이 불가합니다.</label>
+            </div>
+            <div>
+                <input type="checkbox" id="term5" name="terms" class="checkbox" required>
+                <label for="term5">HYPE의 최신 이용정책을 모두 확인하였으며, 구매를 계속합니다.</label>
+            </div>
+            <button type="submit" class="mt-2 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">입찰</button>
+        </form>
+        <script th:inline="javascript">
+            const thprice = /*[[ ${data.price} ]]*/ null;
+        </script>
         <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
         <script>
             function sample6_execDaumPostcode() {
@@ -156,16 +157,14 @@
                     }
                 }).open();
             }
-        </script>
 
-        <script th:inline="javascript">
-            function cal() {
-                var purchasePrice = document.getElementById('price').value;
-                var commission = Math.round(purchasePrice * 0.05);
-                var totalPrice = parseInt(purchasePrice) + parseInt(commission);
-                document.getElementById('commission').innerText = '수수료: ' + commission + '원';
-                document.getElementById('totalPrice').innerText = '총 : ' + totalPrice + '원';
-                document.getElementById('totalPriceValue').value = totalPrice;
+            function checkPriceAndSubmit() {
+                const price = thprice;
+                if (price === 0) {
+                    customAlert.alert("즉시 구매가 가능한 상품이 없습니다.");
+                    return;
+                }
+                document.getElementById("buyNow").submit();
             }
         </script>
     </div>

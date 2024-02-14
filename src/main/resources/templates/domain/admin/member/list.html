@@ -1,0 +1,39 @@
+<html layout:decorate="~{global/adLayout}">
+<head>
+    <title>관리자 회원 목록</title>
+</head>
+<body>
+<div layout:fragment="ad_page_content" class="container mx-auto p-4 bg-white rounded">
+    <div class="bg-white">
+        <div class="grid grid-cols-1"> <!-- 수평으로 3개씩 배치 -->
+            <ul role="list" class="grid gap-6 sm:grid-cols-1 sm:gap-6 lg:grid-cols-3"> <!-- 수평으로 1개씩 배치 -->
+                <li th:each="member : ${data}">
+                    <a th:href="@{|/admin/member/${member.id}|}">
+                        <div class="bg-white rounded-lg shadow-lg p-6"> <!-- 라운드 카드 형태 -->
+                            <div class="flex items-center gap-6">
+                                <ul>
+                                    <li th:each="path : ${member.fullPath}">
+                                        <div class="avatar">
+                                            <div class="w-16 rounded-full">
+                                                <img th:src="${path}"/>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                                <div>
+                                    <h3 class="text-base font-semibold leading-7 tracking-tight text-gray-900"
+                                        th:text="${member.nickname}"></h3>
+                                    <p class="text-sm font-semibold leading-6 text-indigo-600"
+                                       th:text="${member.name} + ' / ' + ${member.role}">Counder / CEO</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
