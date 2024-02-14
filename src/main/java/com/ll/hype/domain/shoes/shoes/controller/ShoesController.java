@@ -42,10 +42,8 @@ public class ShoesController {
         ShoesResponse findOne = shoesService.findById(id);
         model.addAttribute("shoes", findOne);
 
-//        OrderPriceResponse recentOrder = shoesService.getLatestTradePrice(id);
-//        model.addAttribute("order", recentOrder);
-        Optional<OrderPriceResponse> recentOrder = shoesService.getLatestTradePrice(id);
-        recentOrder.ifPresent(order -> model.addAttribute("order", order));
+//        Optional<OrderPriceResponse> recentOrder = shoesService.getLatestTradePrice(id);
+//        recentOrder.ifPresent(order -> model.addAttribute("order", order));
 
         return "domain/shoes/shoes/detail";
     }

@@ -1,9 +1,11 @@
 package com.ll.hype.domain.order.sale.service;
 
+import com.ll.hype.domain.address.address.entity.Address;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
 import com.ll.hype.domain.order.order.dto.response.OrderResponse;
+import com.ll.hype.domain.order.order.entity.DepositStatus;
 import com.ll.hype.domain.order.order.entity.OrderStatus;
 import com.ll.hype.domain.order.order.entity.Orders;
 import com.ll.hype.domain.order.order.entity.PaymentStatus;
@@ -66,7 +68,7 @@ public class SaleService {
     }
 
     // 사이즈별 최고가
-    public SaleSizeInfoResponse findByShoesSizeMaxPrice(Long id, Member member) {
+    public SaleSizeInfoResponse findByShoesSizeMaxPrice(Long id, Member member, int selectSize) {
         Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
         List<Buy> findByMaxPrice = buyRepository.findHighestPriceByShoesId(shoes, member);
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
@@ -78,7 +80,7 @@ public class SaleService {
         for (Buy buy : findByMaxPrice) {
             sizeMap.put(buy.getShoesSize().getSize(), buy.getPrice());
         }
-        return SaleSizeInfoResponse.of(shoes, sizeMap, fullPath);
+        return SaleSizeInfoResponse.of(shoes, sizeMap, fullPath, selectSize);
     }
 
     public SaleFormResponse findByShoesSizeMaxPriceOne(Long id, int size, Member member) {

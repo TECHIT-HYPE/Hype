@@ -8,6 +8,8 @@ import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import com.ll.hype.global.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,7 +34,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             "AND s.status = 'BIDDING'")
     Optional<Sale> findLowestPriceSale(Shoes shoes, int size, Member member);
 
-    Optional<Sale> findByShoesIdAndMemberAndShoesSizeSize(Long id, Member member, int size);
+    Optional<Sale> findByShoesIdAndMemberAndShoesSizeSizeAndStatus(Long id, Member member, int size, Status status);
 
     @Query("SELECT s FROM Sale s " +
             "ORDER BY s.createDate DESC")
