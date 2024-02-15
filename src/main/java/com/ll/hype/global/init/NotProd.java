@@ -343,7 +343,7 @@ public class NotProd {
                         .engName("New Balance")
                         .status(StatusCode.ENABLE)
                         .build();
-        files = List.of(getMultipartFile("img/n_logo.jpeg"));
+        files = List.of(getMultipartFile("img/nb_logo.jpeg"));
         adminService.saveBrand(brandRequest3, files);
 
         BrandRequest brandRequest4 =
