@@ -1,11 +1,14 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:c="http://www.w3.org/1999/XSL/Transform">
+<html layout:decorate="~{global/user_layout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-    <meta charset="UTF-8"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>프로필 페이지</title>
-    <!-- 다른 헤더 설정 -->
-    <th:block th:include="/domain/social/social/header.html"></th:block>
+    <!-- Style -->
+    <link rel="stylesheet" th:href="@{/resource/social/style.css}">
+    <link rel="stylesheet" th:href="@{/resource/social/story.css}">
+    <link rel="stylesheet" th:href="@{/resource/social/popular.css}">
+    <link rel="stylesheet" th:href="@{/resource/social/profile.css}">
+    <link rel="stylesheet" th:href="@{/resource/social/upload.css}">
+    <link rel="stylesheet" th:href="@{/resource/social/update.css}">
+    <link rel="shortcut icon" th:href="@{/images/insta.svg}">
 
     <style>
         * {
@@ -86,98 +89,107 @@
 </head>
 
 <body>
-<!-- 프로필 섹션 -->
-<section class="profile">
-    <!-- 유저정보 컨테이너 -->
-    <div class="profileContainer">
+<div layout:fragment="content">
+    <!-- 프로필 섹션 -->
+    <section class="profile">
+        <!-- 유저정보 컨테이너 -->
+        <div class="profileContainer">
 
-        <!-- 유저이미지 -->
-        <div class="profile-left">
-            <!-- 프로필 이미지 감싸는 div -->
-            <div class="profile-img-wrap story-border">
-                <!-- 프로필 이미지 -->
-                <img class="profile-image" th:src="${profileDto.getProfileImage() != null ? profileDto.getProfileImage() : 'https://kr.object.ncloudstorage.com/hypeimagebucket/SOCIAL/person.jpeg'}"/>
+            <!-- 유저이미지 -->
+            <div class="profile-left">
+                <!-- 프로필 이미지 감싸는 div -->
+                <div class="profile-img-wrap story-border">
+                    <!-- 프로필 이미지 -->
+                    <img class="profile-image"
+                         th:src="${profileDto.getProfileImage() != null ? profileDto.getProfileImage() : 'https://kr.object.ncloudstorage.com/hypeimagebucket/SOCIAL/person.jpeg'}"/>
+                </div>
             </div>
-        </div>
 
-        <!-- 유저이미지 end -->
+            <!-- 유저이미지 end -->
 
-        <!-- 유저정보 및 사진등록 구독하기 -->
-        <div class="profile-right">
-            <div class="name-group">
-                <h2 th:text="${profileDto.getNickname()}"></h2>
+            <!-- 유저정보 및 사진등록 구독하기 -->
+            <div class="profile-right">
+                <div class="name-group">
+                    <h2 th:text="${profileDto.getNickname()}"></h2>
 
-                <!-- 사용자가 로그인한 사용자인 경우 -->
-                <div th:if="${profileDto.getEmail() eq #authentication.principal.username}">
-                    <!-- 파일 업로드 버튼 클릭 시 모달 팝업 호출 -->
-                    <button class="modi" onclick="openPopup()">프로필 수정</button>
+                    <!-- 사용자가 로그인한 사용자인 경우 -->
+                    <div th:if="${profileDto.getEmail() eq #authentication.principal.username}">
+                        <!-- 파일 업로드 버튼 클릭 시 모달 팝업 호출 -->
+                        <button class="modi" onclick="openPopup()">프로필 수정</button>
 
-                    <!-- 모달 창 -->
-                    <div id="profileModal" class="modal">
-                        <div class="modal-content">
-                            <span class="close" onclick="closePopup()">&times;</span>
-                            <!-- 파일 선택 폼 -->
-                            <form th:action="@{/social/profile/{id}(id=${profileDto.getId()})}" method="post" enctype="multipart/form-data">
-                                <label for="profileImage">프로필 이미지</label>
-                                <input type="file" id="profileImage" name="multipartFiles" required/>
-                                <input type="submit" value="수정"/>
-                            </form>
+                        <!-- 모달 창 -->
+                        <div id="profileModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" onclick="closePopup()">&times;</span>
+                                <!-- 파일 선택 폼 -->
+                                <form th:action="@{/social/profile/{id}(id=${profileDto.getId()})}" method="post"
+                                      enctype="multipart/form-data">
+                                    <label for="profileImage">프로필 이미지</label>
+                                    <input type="file" id="profileImage" name="multipartFiles" required/>
+                                    <input type="submit" value="수정"/>
+                                </form>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- 다른 사용자인 경우 -->
+                    <div th:unless="${profileDto.getEmail() eq #authentication.principal.username}">
+                        <form th:action="@{'/social/unfollow/' + ${profileDto.id}}" method="post"
+                              th:if="${profileDto.followState}">
+                            <button class="cta blue" type="submit">팔로잉</button>
+                        </form>
+                        <form th:action="@{'/social/follow/' + ${profileDto.id}}" method="post"
+                              th:unless="${profileDto.followState}">
+                            <button class="cta">팔로우</button>
+                        </form>
+                    </div>
+
+
+                    <a href="/social/feed">
+                        <i class="fas fa-camera"></i>
+                    </a>
+
                 </div>
+            </div>
+            <!-- 유저정보 및 사진등록 구독하기 end -->
+        </div>
+    </section>
 
-            <!-- 다른 사용자인 경우 -->
-                <div th:unless="${profileDto.getEmail() eq #authentication.principal.username}">
-                    <form th:action="@{'/social/unfollow/' + ${profileDto.id}}" method="post" th:if="${profileDto.followState}">
-                        <button class="cta blue" type="submit">팔로잉</button>
-                    </form>
-                    <form th:action="@{'/social/follow/' + ${profileDto.id}}" method="post" th:unless="${profileDto.followState}">
-                        <button class="cta">팔로우</button>
-                    </form>
-                </div>
+    <!-- 사용자의 게시물 부분 추가 -->
+    <section class="user-posts">
+        <!-- 각 게시물 아이템 순회 -->
+        <div th:each="social : ${profileDto.getSocials()}" class="post-item">
+            <!-- 이미지 경로 리스트 가져오기 -->
+            <th:block th:with="imagePaths=${imageBridgeComponent.findOneFullPath('SOCIAL', social.getId())}">
+                <!-- 이미지 경로 리스트가 비어있지 않으면 이미지 출력 -->
+                <th:block th:if="${#lists.size(imagePaths) > 0}">
+                    <!-- 이미지를 클릭하면 해당 게시물로 이동하도록 설정 -->
+                    <a th:href="@{/social/feed/{id}(id=${social.getId()})}">
+                        <img th:src="${imagePaths[0]}" alt="게시물 이미지" class="post-image"/>
+                    </a>
+                </th:block>
+            </th:block>
+        </div>
+    </section>
 
+    <div class="modal-subscribe" th:id="subscribeModal">
+        <div class="subscribe">
+            <div class="subscribe-header">
+                <span>구독정보</span>
+                <button onclick="modalClose()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
 
+            <div class="subscribe-list" id="subscribeModalList">
+                <!-- 여기에 구독 정보를 동적으로 추가할 수 있습니다. -->
             </div>
         </div>
-        <!-- 유저정보 및 사진등록 구독하기 end -->
     </div>
-</section>
 
-<!-- 사용자의 게시물 부분 추가 -->
-<section class="user-posts">
-    <!-- 각 게시물 아이템 순회 -->
-    <div th:each="social : ${profileDto.getSocials()}" class="post-item">
-        <!-- 이미지 경로 리스트 가져오기 -->
-        <th:block th:with="imagePaths=${imageBridgeComponent.findOneFullPath('SOCIAL', social.getId())}">
-            <!-- 이미지 경로 리스트가 비어있지 않으면 이미지 출력 -->
-            <th:block th:if="${#lists.size(imagePaths) > 0}">
-                <!-- 이미지를 클릭하면 해당 게시물로 이동하도록 설정 -->
-                <a th:href="@{/social/feed/{id}(id=${social.getId()})}">
-                <img th:src="${imagePaths[0]}" alt="게시물 이미지" class="post-image"/>
-                </a>
-            </th:block>
-        </th:block>
-    </div>
-</section>
 
-<div class="modal-subscribe" th:id="subscribeModal">
-    <div class="subscribe">
-        <div class="subscribe-header">
-            <span>구독정보</span>
-            <button onclick="modalClose()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
-        <div class="subscribe-list" id="subscribeModalList">
-            <!-- 여기에 구독 정보를 동적으로 추가할 수 있습니다. -->
-        </div>
-    </div>
+    <script th:src="@{/js/socialmemberprofile.js}"></script>
 </div>
-
-
-<script th:src="@{/js/socialmemberprofile.js}"></script>
-
 </body>
 </html>
 
