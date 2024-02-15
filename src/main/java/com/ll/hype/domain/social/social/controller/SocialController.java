@@ -63,9 +63,13 @@ public class SocialController {
     public String uploadSocial(@RequestParam("content") String content,
                                @AuthenticationPrincipal UserPrincipal userPrincipal,
                                @RequestParam(value = "files") List<MultipartFile> files,
-                               @RequestParam("shoesId") List<Long> shoesIdList,
-                               @RequestParam("shoesName") List<String> shoesNameList,
+                               @RequestParam(value = "shoesId", required = false) List<Long> shoesIdList,
+                               @RequestParam(value = "shoesName", required = false) List<String> shoesNameList,
                                Model model) {
+
+        if (files == null) {
+            throw new IllegalArgumentException("파일이 null입니다.");
+        }
 
         SocialUploadRequest socialUploadRequest = new SocialUploadRequest().builder()
                 .content(content)
@@ -73,22 +77,23 @@ public class SocialController {
 
 
         String memberEmail = userPrincipal.getUsername();
-        Long principalId = userPrincipal.getMember().getId();
 
         Social social = socialUploadService.upload(socialUploadRequest, files, memberEmail);
-        for (int i = 0; i < shoesIdList.size(); i++) {
-            Long shoesId = shoesIdList.get(i);
-            String shoesName = shoesNameList.get(i);
-            String shoesImage = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoesId).get(0);
-            SocialShoesRequest socialShoesRequest = SocialShoesRequest.builder()
-                    .shoesId(shoesId)
-                    .shoesName(shoesName)
-                    .shoesImage(shoesImage)
-                    .build();
-            socialUploadService.tagUpload(socialShoesRequest, social.getId());
+        if (shoesIdList != null && shoesNameList != null && !shoesIdList.isEmpty() && !shoesNameList.isEmpty()) {
+            for (int i = 0; i < shoesIdList.size(); i++) {
+                Long shoesId = shoesIdList.get(i);
+                String shoesName = shoesNameList.get(i);
+                String shoesImage = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoesId).get(0);
+                SocialShoesRequest socialShoesRequest = SocialShoesRequest.builder()
+                        .shoesId(shoesId)
+                        .shoesName(shoesName)
+                        .shoesImage(shoesImage)
+                        .build();
+                socialUploadService.tagUpload(socialShoesRequest, social.getId());
+            }
         }
 
-        return "redirect:/social/profile/%s".formatted(principalId);
+        return "redirect:/social/feed/%s".formatted(social.getId());
     }
 
 
@@ -107,10 +112,10 @@ public class SocialController {
         SocialDetailResponse socialDetailResponse = socialDetailService.findSocial(id, userPrincipal.getMember().getId());
         SocialUpdateRequest socialUpdateRequest = SocialUpdateRequest.builder()
                 .socialId(socialDetailResponse.getSocialId())
+                .content(socialDetailResponse.getContent())
+                .postImages(socialDetailResponse.getPostImages())
+                .socialShoesRequestList(socialDetailResponse.getSocialShoesRequestList())
                 .build();
-        socialUpdateRequest.setContent(socialDetailResponse.getContent());
-        socialUpdateRequest.setPostImages(socialDetailResponse.getPostImages());
-
         // 모델에 추가
         model.addAttribute("socialUpdateRequest", socialUpdateRequest);
 
@@ -122,7 +127,9 @@ public class SocialController {
     public String update(@PathVariable Long id,
                          @ModelAttribute("socialUpdateRequest") SocialUpdateRequest socialUpdateRequest,
                          @RequestParam("files") List<MultipartFile> files,
-                         @AuthenticationPrincipal UserPrincipal userPrincipal) {
+                         @AuthenticationPrincipal UserPrincipal userPrincipal,
+                         @RequestParam(value = "shoesId", required = false) List<Long> shoesIdList,
+                         @RequestParam(value = "shoesName", required = false) List<String> shoesNameList) {
 
         // 사용자 정보 설정
         String memberEmail = userPrincipal.getUsername();
