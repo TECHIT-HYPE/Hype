@@ -4,6 +4,7 @@ import com.ll.hype.domain.address.address.entity.Address;
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
+import com.ll.hype.domain.order.buy.util.validate.BuyValidator;
 import com.ll.hype.domain.order.order.dto.response.OrderResponse;
 import com.ll.hype.domain.order.order.entity.DepositStatus;
 import com.ll.hype.domain.order.order.entity.OrderStatus;
@@ -167,11 +168,8 @@ public class SaleService {
         Buy buy = buyRepository.findHighestPriceBuy(shoes, saleRequest.getSize(), member)
                 .orElseThrow(() -> new IllegalArgumentException("구매입찰 내역을 찾을 수 없습니다."));
 
-//        buy.updateStatus(Status.BID_COMPLETE);
-
-        if (!buy.getPrice().equals(sale.getPrice())) {
-            throw new IllegalArgumentException("거래 성사 금액이 일치하지 않습니다.");
-        }
+        SaleValidator.canNotMyDataOrder(buy, member);
+        SaleValidator.checkSalePriceEqualsBuyPrice(sale.getPrice(), buy.getPrice());
 
         Orders order = Orders.builder()
                 .buy(buy)
@@ -187,7 +185,6 @@ public class SaleService {
                 .build();
         orderRepository.save(order);
 
-//        order.updateDepositStatus(DepositStatus.WAIT_DEPOSIT); // 판매자 정산 상태
         order.updateBuySaleStatus(Status.BID_COMPLETE); // buy.status, sale.status
         //====== 판매자 택배 발송 전 프로세스
         return OrderResponse.of(order, fullPath);
