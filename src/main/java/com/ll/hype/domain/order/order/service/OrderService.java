@@ -2,19 +2,18 @@ package com.ll.hype.domain.order.order.service;
 
 import com.ll.hype.domain.member.member.entity.Member;
 import com.ll.hype.domain.order.buy.entity.Buy;
-import com.ll.hype.domain.order.buy.repository.BuyRepository;
 import com.ll.hype.domain.order.order.dto.response.OrderResponse;
+import com.ll.hype.domain.order.order.entity.DepositStatus;
+import com.ll.hype.domain.order.order.entity.OrderStatus;
 import com.ll.hype.domain.order.order.entity.Orders;
 import com.ll.hype.domain.order.order.entity.PaymentStatus;
 import com.ll.hype.domain.order.order.repository.OrderRepository;
 import com.ll.hype.domain.order.order.util.validate.OrderValidator;
 import com.ll.hype.domain.order.sale.entity.Sale;
-import com.ll.hype.domain.order.sale.repository.SaleRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
 import com.ll.hype.global.exception.custom.EntityNotFoundException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
@@ -28,10 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final BuyRepository buyRepository;
-    private final SaleRepository saleRepository;
-    private final ShoesRepository shoesRepository;
-
     private final ImageBridgeComponent imageBridgeComponent;
 
     // 거래 체결
@@ -56,9 +51,6 @@ public class OrderService {
 
         long amount = Long.parseLong(amountStr);
 
-        log.info("[OrderService.checkAmount] amount : " + amount);
-        log.info("[OrderService.checkAmount] Order amount : " + order.getOrderPrice());
-
         if (amount != order.getOrderPrice()) {
             throw new IllegalArgumentException("주문금액과 결제금액이 일치하지 않습니다.");
         }
@@ -71,19 +63,28 @@ public class OrderService {
         order.updatePaymentStatus(PaymentStatus.COMPLETE_PAYMENT);
     }
 
-    public List<OrderResponse> findTradingOrder(Member member) {
-        List<Orders> tradingOrderAll = orderRepository.findTradingByMember(member);
+    public List<OrderResponse> findTradingOrderBuy(Member member) {
+        List<Orders> tradingOrderAll = orderRepository.findOrderBuyByMember(member);
         List<OrderResponse> orderResponses = new ArrayList<>();
 
         for (Orders order : tradingOrderAll) {
             List<String> fullPath = imageBridgeComponent.findOneFullPath(
                     ImageType.SHOES, order.getSale().getShoes().getId());
             OrderResponse orderResponse = OrderResponse.of(order, fullPath);
+            orderResponses.add(orderResponse);
+        }
+        return orderResponses;
+    }
 
-            if (order.getBuy().getMember().getId().equals(member.getId()) ||
-                    order.getSale().getMember().getId().equals(member.getId())) {
-                orderResponses.add(orderResponse);
-            }
+    public List<OrderResponse> findTradingOrderSale(Member member) {
+        List<Orders> tradingOrderAll = orderRepository.findOrderSaleByMember(member);
+        List<OrderResponse> orderResponses = new ArrayList<>();
+
+        for (Orders order : tradingOrderAll) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(
+                    ImageType.SHOES, order.getSale().getShoes().getId());
+            OrderResponse orderResponse = OrderResponse.of(order, fullPath);
+            orderResponses.add(orderResponse);
         }
         return orderResponses;
     }
@@ -106,10 +107,33 @@ public class OrderService {
             List<String> fullPath = imageBridgeComponent.findOneFullPath(
                     ImageType.SHOES, order.getSale().getShoes().getId());
             OrderResponse orderResponse = OrderResponse.of(order, fullPath);
-                orderResponses.add(orderResponse);
+            orderResponses.add(orderResponse);
         }
         return orderResponses;
     }
 
+    public OrderResponse findOrder(Long id, Member member) {
+        Orders order = orderRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order Not Found"));
+
+        if (!member.getId().equals(order.getBuy().getMember().getId())) {
+            throw new IllegalArgumentException("결제 정보가 다릅니다.");
+        }
+
+        List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES,
+                order.getBuy().getShoes().getId());
+
+        return OrderResponse.of(order, fullPath);
+    }
+
+    @Transactional
+    public void orderComplete(Long id, Member member) {
+        Orders order = orderRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order Not Found"));
+        if (!member.getId().equals(order.getBuy().getMember().getId())) {
+            throw new IllegalArgumentException("결제 정보가 다릅니다.");
+        }
+
+        order.updateDepositStatus(DepositStatus.NEED_DEPOSIT);
+        order.updateOrderStatus(OrderStatus.TRADE_COMPLETE);
+    }
 
 }

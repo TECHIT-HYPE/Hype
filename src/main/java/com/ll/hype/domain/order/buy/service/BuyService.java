@@ -174,7 +174,7 @@ public class BuyService {
                 .receiverPhoneNumber(buyRequest.getReceiverPhoneNumber())
                 .receiverAddress(address.getFullAddress())
                 .startDate(LocalDate.now())
-                .endDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(buyRequest.getEndDate()))
                 .status(Status.BIDDING)
                 .build();
 
@@ -216,7 +216,7 @@ public class BuyService {
                 .receiverPhoneNumber(buyRequest.getReceiverPhoneNumber())
                 .receiverAddress(address.getFullAddress())
                 .startDate(LocalDate.now())
-                .endDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(buyRequest.getEndDate()))
                 .status(Status.BIDDING)
                 .build();
 

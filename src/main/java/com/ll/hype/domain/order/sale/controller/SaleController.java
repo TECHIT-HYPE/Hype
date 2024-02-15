@@ -114,7 +114,7 @@ public class SaleController {
 
         OrderResponse order = saleService.createSaleNow(saleRequest, user.getMember());
         model.addAttribute("order", order);
-        return "redirect:/mypage/order/trading";
+        return "redirect:/mypage/order/trading/sale";
     }
 
     // 생성 완료: 판매 입찰 내역

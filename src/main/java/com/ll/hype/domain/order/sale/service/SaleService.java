@@ -29,6 +29,7 @@ import com.ll.hype.global.exception.custom.EntityNotFoundException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class SaleService {
@@ -87,9 +89,10 @@ public class SaleService {
         long price = 0L;
         Shoes shoes = shoesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
         Optional<Buy> highestPriceBuy = buyRepository.findHighestPriceBuy(shoes, size, member);
-
+        log.info("[SaleService.findByShoesSizeMaxPriceOne] highestPriceBuy.isPresent() : " + highestPriceBuy.isPresent());
         if (highestPriceBuy.isPresent()) {
             price = highestPriceBuy.get().getPrice();
+            log.info("[SaleService.findByShoesSizeMaxPriceOne] price : " + price);
         }
 
         List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, shoes.getId());
@@ -98,6 +101,7 @@ public class SaleService {
     }
 
     // 판매 입찰 생성
+    @Transactional
     public SaleResponse createSaleBid(CreateSaleRequest saleRequest, Member member) {
         Shoes shoes = shoesRepository.findById(saleRequest.getShoesId())
                 .orElseThrow(() -> new EntityNotFoundException("조회된 신발이 없습니다."));
@@ -133,6 +137,7 @@ public class SaleService {
     }
 
     //즉시 판매 생성
+    @Transactional
     public OrderResponse createSaleNow(CreateSaleRequest saleRequest, Member member) {
         Shoes shoes = shoesRepository.findById(saleRequest.getShoesId())
                 .orElseThrow(() -> new IllegalArgumentException("조회된 신발이 없습니다."));
@@ -189,6 +194,7 @@ public class SaleService {
 
 //        order.updateDepositStatus(DepositStatus.WAIT_DEPOSIT); // 판매자 정산 상태
         order.updateBuySaleStatus(Status.BID_COMPLETE); // buy.status, sale.status
+        order.updateTossId(order.createTossId());
         //====== 판매자 택배 발송 전 프로세스
         return OrderResponse.of(order, fullPath);
     }
@@ -200,7 +206,7 @@ public class SaleService {
 
     // 판매 입찰 금액 수정 폼
     public SaleModifyPriceResponse findSaleIdAndMember(Long id, Member member) {
-        Sale sale = saleRepository.findByIdAndMember(id, member)
+        Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("조회된 판매 입찰 내역이 없습니다."));
 
         SaleValidator.checkUserMatch(sale, member);
