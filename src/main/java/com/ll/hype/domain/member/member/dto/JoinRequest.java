@@ -33,8 +33,7 @@ public class JoinRequest {
     @NotBlank(message = "별명은 필수 항목입니다.")
     private String nickname; // 별명
 
-    @NotBlank(message = "전화번호는 필수 항목입니다.")
-    @Pattern(regexp="^[0-9]+$", message="올바른 전화번호 형식을 입력해주세요.")
+    @NotNull(message = "전화번호는 필수 항목입니다.")
     private Long phoneNumber;
 
     @NotNull(message = "생년월일는 필수 항목입니다.")

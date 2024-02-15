@@ -8,6 +8,7 @@ import com.ll.hype.domain.brand.brand.entity.Brand;
 import com.ll.hype.domain.brand.brand.repository.BrandRepository;
 import com.ll.hype.domain.customer.answer.entity.Answer;
 import com.ll.hype.domain.customer.answer.repository.AnswerRepository;
+import com.ll.hype.domain.customer.question.dto.QuestionRequest;
 import com.ll.hype.domain.customer.question.dto.QuestionResponse;
 import com.ll.hype.domain.customer.question.entity.Question;
 import com.ll.hype.domain.customer.question.repository.QuestionRepository;
@@ -16,20 +17,29 @@ import com.ll.hype.domain.member.member.repository.MemberRepository;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.entity.Buy;
 import com.ll.hype.domain.order.buy.repository.BuyRepository;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
+import com.ll.hype.domain.order.order.entity.DepositStatus;
+import com.ll.hype.domain.order.order.entity.Orders;
+import com.ll.hype.domain.order.order.repository.OrderRepository;
+import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
+import com.ll.hype.domain.order.sale.entity.Sale;
+import com.ll.hype.domain.order.sale.repository.SaleRepository;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.entity.Shoes;
 import com.ll.hype.domain.shoes.shoes.entity.ShoesSize;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesRepository;
 import com.ll.hype.domain.shoes.shoes.repository.ShoesSizeRepository;
+import com.ll.hype.global.enums.Status;
 import com.ll.hype.global.enums.StatusCode;
 import com.ll.hype.global.exception.custom.EntityNotFoundException;
 import com.ll.hype.global.s3.image.ImageType;
 import com.ll.hype.global.s3.image.imagebridge.component.ImageBridgeComponent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -42,13 +52,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class AdminService {
     private final BrandRepository brandRepository;
     private final ShoesRepository shoesRepository;
+    private final SaleRepository saleRepository;
     private final ShoesSizeRepository shoesSizeRepository;
-    private final QuestionRepository csQRepository;
-    private final AnswerRepository csARepository;
+    private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
     private final ImageBridgeComponent imageBridgeComponent;
     private final MemberRepository memberRepository;
     private final BuyRepository buyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OrderRepository orderRepository;
 
     //============== Brand Start ==============
     // Brand 저장
@@ -98,6 +110,24 @@ public class AdminService {
         brand.updateStatus(StatusCode.DISABLE);
     }
 
+    // Brand 상세 조회
+    public BrandResponse brandFind(Long id) {
+        Brand findBrand = brandRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Brand Not Found"));
+        List<String> fullPath = imageBridgeComponent.findAllFullPath(ImageType.BRAND, findBrand.getId());
+
+        return BrandResponse.of(findBrand, fullPath);
+    }
+
+    // Brand 삭제
+    public void brandDelete(Long id) {
+        Brand brand = brandRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Data Not Found"));
+        if (shoesRepository.existsByBrand(brand)) {
+            throw new EntityNotFoundException("Brand in Use");
+        }
+
+        brandRepository.delete(brand);
+    }
     //============== Brand End ==============
 
 
@@ -130,13 +160,25 @@ public class AdminService {
         }
         return severalShoes;
     }
+
+    // Shoes 상세 조회
+    public ShoesResponse shoesFind(Long id) {
+        Shoes findShoes = shoesRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Shoes Not Found"));
+        List<String> fullPath = imageBridgeComponent.findAllFullPath(ImageType.SHOES, findShoes.getId());
+
+        return ShoesResponse.of(findShoes, fullPath);
+    }
+
     //============== Shoes End ==============
 
-
     //============== CS Question Start ==============
-    // Question 상세 조회
+
+    /**
+     * Question Find One
+     */
     public QuestionResponse findQuestion(Long id) {
-        Question question = csQRepository.findById(id)
+        Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 문의가 없습니다."));
 
         List<String> fullPath = imageBridgeComponent.findAllFullPath(ImageType.QUESTION, question.getId());
@@ -144,23 +186,54 @@ public class AdminService {
         return QuestionResponse.of(question, fullPath);
     }
 
-    // Question 전체 조회
+    /**
+     * Question Find All
+     */
     public List<QuestionResponse> findQuestionAll() {
         List<QuestionResponse> questions = new ArrayList<>();
-        for (Question customerQ : csQRepository.findAll()) {
+        for (Question customerQ : questionRepository.findAll()) {
             List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.QUESTION, customerQ.getId());
             questions.add(QuestionResponse.of(customerQ, fullPath));
         }
         return questions;
     }
 
+    /**
+     * Question Delete
+     */
+    @Transactional
+    public void questionDelete(Long id) {
+        Question findQuestion = questionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Question Not Found"));
+
+        imageBridgeComponent.delete(ImageType.QUESTION, findQuestion.getId());
+        answerRepository.deleteAll(findQuestion.getAnswers());
+        questionRepository.delete(findQuestion);
+    }
+
+    /**
+     * Question Update
+     */
+    @Transactional
+    public void questionUpdate(Long id, QuestionRequest request) {
+        Question findQuestion = questionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("조회된 문의사항이 없습니다."));
+
+        Question customerQ = QuestionRequest.toEntity(request);
+        findQuestion.update(customerQ);
+    }
+
+
+    /**
+     * Answre Create
+     */
     @Transactional
     // Answer 생성
     public QuestionResponse createAnswer(Long id, String content, String email) {
         Member findMember = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 사용자가 없습니다."));
 
-        Question customerQ = csQRepository.findById(id)
+        Question customerQ = questionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 문의가 없습니다."));
 
         Answer csA = Answer.builder()
@@ -169,19 +242,21 @@ public class AdminService {
                 .member(findMember)
                 .build();
 
-        csARepository.save(csA);
+        answerRepository.save(csA);
         customerQ.getAnswers().add(csA);
         return QuestionResponse.of(customerQ);
     }
 
+    /**
+     * Answer Delete
+     */
     @Transactional
-    // Answer 삭제
     public QuestionResponse deleteAnswer(Long id) {
-        Answer customerA = csARepository.findById(id)
+        Answer customerA = answerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("조회된 답변이 없습니다."));
 
         Question question = customerA.getQuestion();
-        csARepository.delete(customerA);
+        answerRepository.delete(customerA);
 
         return QuestionResponse.of(question);
     }
@@ -228,7 +303,8 @@ public class AdminService {
                 request.getNickname(),
                 request.getPhoneNumber(),
                 request.getGender(),
-                request.getShoesSize());
+                request.getShoesSize(),
+                request.getRole());
 
         log.info("[AdminService.modifyMember] name : " + request.getFiles().get(0).getOriginalFilename());
         log.info("[AdminService.modifyMember] size : " + request.getFiles().size());
@@ -263,15 +339,58 @@ public class AdminService {
 
         for (Buy buy : findAll) {
             List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, buy.getShoes().getId());
-            buys.add(BuyResponse.of(buy,fullPath));
+            buys.add(BuyResponse.of(buy, fullPath));
         }
 
         return buys;
     }
 
+    @Transactional
     public void buyDelete(Long id) {
         Buy buy = buyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Data Not Found"));
-        buyRepository.delete(buy);
+        buy.updateStatus(Status.BID_CANCEL);
     }
     //============== Buy End ==============
+
+
+    //============== Sale Start ==============
+    public List<SaleResponse> saleFindAll() {
+        List<Sale> findAll = saleRepository.findAll();
+        List<SaleResponse> sales = new ArrayList<>();
+
+        for (Sale sale : findAll) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES, sale.getShoes().getId());
+            sales.add(SaleResponse.of(sale, fullPath));
+        }
+
+        return sales;
+    }
+
+    @Transactional
+    public void saleDelete(Long id) {
+        Sale sale = saleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Data Not Found"));
+        sale.updateStatus(Status.BID_CANCEL);
+    }
+    //============== Sale End ==============
+
+    //============== Order Start ==============
+    public List<OrderResponse> orderFindAll() {
+        List<Orders> findAll = orderRepository.findAllOrderByCreateDateDesc();
+        List<OrderResponse> orders = new ArrayList<>();
+
+        for (Orders order : findAll) {
+            List<String> fullPath = imageBridgeComponent.findOneFullPath(ImageType.SHOES,
+                    order.getBuy().getShoes().getId());
+            orders.add(OrderResponse.of(order, fullPath));
+        }
+
+        return orders;
+    }
+
+    @Transactional
+    public void orderDepositComplete(Long id) {
+        Orders orders = orderRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order Not Found"));
+        orders.updateDepositStatus(DepositStatus.COMPLETE_DEPOSIT);
+    }
+    //============== Order End ==============
 }

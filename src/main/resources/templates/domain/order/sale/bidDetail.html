@@ -1,13 +1,16 @@
-<html layout:decorate="~{global/usrLayout}" xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html layout:decorate="~{global/user_layout}">
 
 <head>
     <title>판매 입찰 내역</title>
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="flex justify-center mt-5"><h3>판매 입찰 내역</h3></div>
+    <div class="flex justify-center mt-5">
+        <p class="text-2xl font-semibold text-gray-900 mb-4">판매 입찰 내역</p>
+
+    </div>
     <div class="container mx-auto mt-5">
-        <div class="header text-center mb-5">
+        <div class="header mb-5">
 
             <div class="sale-details">
                 <div class="sale-info">
@@ -21,10 +24,10 @@
                     <p>반송 주소: [[${saleResponse.address}]]</p>
                     <p>정산 계좌 은행: [[${saleResponse.accountBank}]]</p>
                     <p>정산 계좌 번호: [[${saleResponse.accountNumber}]]</p>
+                    <br>
                     <hr>
-                    <p>최종 주문 정보</p>
-<!--                    <p>수수료: <span id="commissionFee"></span>원</p>-->
-<!--                    <p>정산 예정 금액: <span id="finalAmount"></span>원</p>-->
+                    <br>
+                    <p class="text-2xl font-semibold text-gray-900 mb-4">최종 주문 정보</p>
                     <p>입찰 금액: <span id="bidAmount">[[${saleResponse.price}]]</span>원</p>
                     <p>수수료: <span id="commission"></span>원</p>
                     <p>정산 예정 금액: <span id="settlementAmount"></span>원</p>
@@ -43,8 +46,8 @@
                         document.getElementById('settlementAmount').innerText = settlementAmount;
                     </script>
 
-                    <!-- 추가 정보 표시 -->
                 </div>
+                <br>
                 <a href="/">홈으로</a>
 
             </div>

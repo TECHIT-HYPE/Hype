@@ -1,11 +1,13 @@
 package com.ll.hype.domain.shoes.shoes.controller;
 
-import com.ll.hype.domain.order.order.dto.response.OrderPriceResponse;
+import com.ll.hype.domain.shoes.shoes.dto.ShoesAddWIshRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesWishCheckRequest;
 import com.ll.hype.domain.shoes.shoes.service.ShoesService;
 import com.ll.hype.domain.wishlist.wishlist.service.WishlistService;
 import com.ll.hype.global.security.authentication.UserPrincipal;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,9 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-import java.util.Optional;
-
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/shoes")
@@ -30,16 +29,12 @@ import java.util.Optional;
 public class ShoesController {
     private final ShoesService shoesService;
     private final WishlistService wishlistService;
-    
+
     //신발 상세
     @GetMapping("/{id}")
-    public String shoesDetail(@PathVariable("id") long id, Model model){
+    public String shoesDetail(@PathVariable("id") long id, Model model) {
         ShoesResponse findOne = shoesService.findById(id);
         model.addAttribute("shoes", findOne);
-
-//        Optional<OrderPriceResponse> recentOrder = shoesService.getLatestTradePrice(id);
-//        recentOrder.ifPresent(order -> model.addAttribute("order", order));
-
         return "domain/shoes/shoes/detail";
     }
 
@@ -54,17 +49,22 @@ public class ShoesController {
     }
 
     @PostMapping("/love")
-    public String wish(@RequestParam("id") Long id,
-                       @RequestParam("selectSize") int selectSize,
-                       @AuthenticationPrincipal UserPrincipal user) {
-        wishlistService.addWishShoes(id, selectSize, user.getMember());
-        return "redirect:/shoes/%s".formatted(id);
+    public ResponseEntity<String> wish(@RequestBody ShoesAddWIshRequest request,
+                                       @AuthenticationPrincipal UserPrincipal user) {
+        log.info("[ShoesController.wish] ShoesAddWIshRequest : " + request.getShoesId() + " / " + request.getSize());
+        boolean check = wishlistService.addWishShoes(request.getShoesId(), request.getSize(), user.getMember());
+
+        log.info("[ShoesController.wish] check : " + check);
+
+        if (!check) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("알 수 없는 오류 발생");
+        }
+        return ResponseEntity.ok().body("");
     }
 
     @PostMapping("/love/check")
     public ResponseEntity<String> checkWish(@RequestBody ShoesWishCheckRequest shoesWishCheckRequest,
                                             @AuthenticationPrincipal UserPrincipal user) {
-
         log.info("[ShoesController.checkWish] id : " + shoesWishCheckRequest.getShoesId());
         log.info("[ShoesController.checkWish] size : " + shoesWishCheckRequest.getSize());
         if (!wishlistService.checkShoesWish(shoesWishCheckRequest, user.getMember())) {

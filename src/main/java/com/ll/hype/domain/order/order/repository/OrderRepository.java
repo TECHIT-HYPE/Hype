@@ -15,11 +15,23 @@ import org.springframework.data.repository.query.Param;
 public interface OrderRepository extends JpaRepository<Orders, Long> {
     Optional<Orders> findByTossId(String tossId);
 
-    @Query("SELECT o FROM Orders o WHERE o.status ='TRADING' "+
-            "ORDER BY o.orderDate DESC")
-    List<Orders> findTradingByMember(Member member);
+    @Query("SELECT o FROM Orders o "+
+            "ORDER BY o.createDate DESC")
+    List<Orders> findAllOrderByCreateDateDesc();
 
+    @Query("SELECT o FROM Orders o WHERE o.buy.member = :member "+
+            "ORDER BY o.createDate DESC")
+    List<Orders> findOrderBuyByMember(Member member);
+
+    @Query("SELECT o FROM Orders o WHERE o.sale.member = :member "+
+            "ORDER BY o.createDate DESC")
+    List<Orders> findOrderSaleByMember(Member member);
+
+    @Query("SELECT o FROM Orders o " +
+            "WHERE o.id = :id AND o.sale.member = :member " +
+            "ORDER BY o.createDate DESC")
     Optional<Orders> findByIdAndSaleMember(Long id, Member member);
+
     @Query("SELECT o FROM Orders o " +
             "WHERE o.sale.member.id = :#{#member.id} "+
             "ORDER BY o.createDate DESC")
@@ -27,7 +39,7 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
 
     @Query("SELECT o FROM Orders o " +
             "WHERE o.buy.shoes.id = :shoesId " +
-            "ORDER BY o.orderDate DESC")
-//    "AND (o.status = 'TRADING' OR o.status = 'TRADE_COMPLETE') " +
+            "ORDER BY o.createDate DESC")
+//    "AND (o.status = 'TRADE_COMPLETE') " +
     Optional<Orders> findByShoesId(@Param("shoesId") long shoesId);
 }

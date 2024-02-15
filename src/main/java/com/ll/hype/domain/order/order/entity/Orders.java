@@ -5,6 +5,7 @@ import com.ll.hype.domain.order.sale.entity.Sale;
 import com.ll.hype.global.enums.Status;
 import com.ll.hype.global.jpa.BaseEntity;
 import jakarta.persistence.*;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -66,7 +67,10 @@ public class Orders extends BaseEntity {
     }
 
     public void updateTossId(String tossId) {
-        this.tossId = tossId;
+        UUID uuid = UUID.randomUUID();
+        String hashed = Integer.toHexString(uuid.hashCode());
+        String eightCharUUID = hashed.substring(0, 8);
+        this.tossId = tossId + eightCharUUID;
     }
 
     public void updatePaymentStatus(PaymentStatus paymentStatus) {
@@ -77,11 +81,13 @@ public class Orders extends BaseEntity {
         this.buy.updateStatus(status);
         this.sale.updateStatus(status);
     }
-
     public void updateDeliveryNumber(Long deliveryNumber) {
         this.deliveryNumber = deliveryNumber;
     }
     public void updateDepositStatus(DepositStatus depositStatus) {
         this.depositStatus = depositStatus;
+    }
+    public void updateOrderStatus(OrderStatus orderStatus) {
+        this.status = orderStatus;
     }
 }

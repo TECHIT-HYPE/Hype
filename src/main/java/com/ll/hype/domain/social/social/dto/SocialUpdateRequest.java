@@ -15,6 +15,7 @@ public class SocialUpdateRequest {
     private Long socialId;
     private String content;
     private List<String> postImages;
+    private List<SocialShoesRequest> socialShoesRequestList;
 
     // 수정자 추가
     public void setContent(String content) {

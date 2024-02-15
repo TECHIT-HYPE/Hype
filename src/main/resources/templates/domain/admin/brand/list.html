@@ -28,7 +28,9 @@
             </td>
             <td class="p-3 border-b" th:text="${brand.createDate}"></td>
             <td class="p-3 border-b" th:text="${brand.modifyDate}"></td>
-            <td class="p-3 border-b" th:text="${brand.korName}"></td>
+            <td class="p-3 border-b">
+                <a th:href="@{|/admin/brand/${brand.id}|}" th:text="${brand.korName}"></a>
+            </td>
             <td class="p-3 border-b" th:text="${brand.engName}"></td>
             <td class="p-3 border-b" th:text="${brand.status}"></td>
         </tr>

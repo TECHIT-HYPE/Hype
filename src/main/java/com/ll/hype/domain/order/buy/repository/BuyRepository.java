@@ -33,15 +33,11 @@ public interface BuyRepository extends JpaRepository<Buy, Long> {
             "AND b.price = (SELECT MAX(bb.price) FROM Buy bb " +
             "WHERE bb.shoes = :shoes " +
             "AND bb.shoesSize.size = :size) " +
-            "AND b.status = 'BIDDING' " +
-            "And b.member.id != :#{#member.id} " +
+            "AND b.member.id != :#{#member.id} " +
             "ORDER BY b.createDate ASC")
     Optional<Buy> findHighestPriceBuy(Shoes shoes, int size, Member member);
-
     Optional<Buy> findByShoesIdAndMemberAndShoesSizeSizeAndStatus(Long id, Member member, int size, Status status);
 
-    @Query("SELECT b FROM Buy b " +
-            "ORDER BY b.createDate DESC")
     List<Buy> findByMember(Member member);
 
     Optional<Buy> findByIdAndMember(Long id, Member member);

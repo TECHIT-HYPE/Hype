@@ -72,41 +72,111 @@
             order: 4;
             margin-top: 10px;
         }
+        /* 새로운 버튼에 대한 스타일 */
+        #tag-button {
+            background-color: #0095f6;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            margin-top: 10px; /* 간격 조절 */
+        }
     </style>
 
     <!-- 헤더 -->
     <th:block th:include="/domain/social/social/header.html"></th:block>
-
 </head>
 <body>
 
 <div class="container">
-    <!-- 파일 업로드 부분 -->
-    <form th:action="@{/social/feed/update/{id}(id=${socialUpdateRequest.socialId})}" method="post" enctype="multipart/form-data" th:object="${socialUpdateRequest}">
-        <!-- 수정할 게시물의 ID를 hidden으로 전송 -->
-        <input name="id" type="hidden" th:value="${socialUpdateRequest.socialId}">
 
-        <!-- 이미지 파일 선택 -->
-        <div id="file-container">
-            <label for="files" style="cursor: pointer;">이미지 선택</label>
-            <input type="file" id="files" name="files" multiple accept="image/*">
+    <!-- 파일 업로드 부분 -->
+    <form th:action="@{'/social/feed/update/' + ${socialUpdateRequest.socialId}}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <div id="image-container">
+            <!-- 이미지 미리보기 -->
+            <img th:each="image : ${socialUpdateRequest.postImages}" th:src="@{${image}}" th:alt="Image" />
         </div>
 
-        <!-- 이미지 미리보기를 위한 컨테이너 -->
-        <div id="image-container"></div>
+
+        <!-- 이미지 선택 버튼 -->
+        <div id="file-container">
+            <label for="files" style="cursor: pointer;">이미지 선택</label>
+            <input type="file" id="files" name="files" multiple accept="image/*" style="display: none;" onchange="handleFileSelect(this)">
+        </div>
+
+        <div id="shoes-preview">
+            <!-- 신발 미리보기 프래그먼트 -->
+            <div th:each="shoes : ${socialUpdateRequest.socialShoesRequestList}">
+                <!-- 미리보기 내용 -->
+                <p th:text="${shoes.shoesName}"></p>
+                <!-- hidden으로 저장된 신발 정보 -->
+                <input type="hidden" name="shoesId" th:value="${shoes.shoesId}">
+                <input type="hidden" name="shoesName" th:value="${shoes.shoesName}">
+            </div>
+        </div>
+
+        <button type="button" id="tag-button" onclick="openTagPopup()">태그</button>
 
         <!-- 본문 작성 부분 -->
         <textarea id="text-area" name="content" placeholder="글을 입력하세요..." th:text="${socialUpdateRequest.content}"></textarea>
-
-        <!-- 제출 버튼 -->
         <button type="submit" id="submit-button">게시</button>
     </form>
+
 </div>
 
+
+<!-- JavaScript 코드 -->
 <script>
+    function openTagPopup() {
+        // 팝업창을 엽니다.
+        var popupWindow = window.open("/social/feed/tag/search", "TagPopup", "width=600,height=400");
+        // 팝업창이 차단되었는지 확인합니다.
+        if (!popupWindow || popupWindow.closed || typeof popupWindow.closed == 'undefined') {
+            alert("팝업 차단이 감지되었습니다. 팝업 차단을 해제해주세요.");
+        }
+    }
+    var selectedShoesList = [];
+
+    // 신발 정보를 받아서 배열에 추가하고 화면에 미리보기 업데이트
+    function receiveShoesInfo(shoesId, shoesName) {
+        // 받은 신발 정보를 배열에 추가
+        selectedShoesList.push({ id: shoesId, name: shoesName });
+        // 미리보기 업데이트
+        updateShoesPreview();
+    }
+
+    window.addEventListener('message', function (event) {
+        // 신발 정보를 받아서 처리
+        var shoesId = event.data.shoesId;
+        var shoesName = event.data.shoesName;
+        // 신발 정보를 사용하여 미리보기 업데이트
+        receiveShoesInfo(shoesId, shoesName);
+    });
+
+    function updateShoesPreview() {
+        // 미리보기 컨테이너 선택
+        var shoesPreviewContainer = document.getElementById('shoes-preview');
+
+        // 미리보기 내용 초기화
+        shoesPreviewContainer.innerHTML = '';
+
+        // 선택된 신발 목록을 순회하면서 미리보기 업데이트
+        selectedShoesList.forEach(function (shoes) {
+            // 미리보기 내용 생성
+            var shoesPreviewContent = '<div style="display: inline-block; margin-right: 10px;">';
+            shoesPreviewContent += '<p>' + shoes.name + '</p>';
+            shoesPreviewContent += '<input type="hidden" name="shoesId" value="' + shoes.id + '">';
+            shoesPreviewContent += '<input type="hidden" name="shoesName" value="' + shoes.name + '">'; // shoesName 추가
+            shoesPreviewContent += '</div>';
+
+            // 미리보기 컨테이너에 추가
+            shoesPreviewContainer.innerHTML += shoesPreviewContent;
+        });
+    }
     function handleFileSelect(input) {
         var imageContainer = document.getElementById('image-container');
-        imageContainer.innerHTML = ''; // 이미지 컨테이너 내용 초기화
 
         for (var i = 0; i < input.files.length; i++) {
             var file = input.files[i];
@@ -130,15 +200,23 @@
             }
         }
     }
+    function validateForm() {
+        var fileInput = document.getElementById('files');
+        if (fileInput.files.length === 0) {
+            alert('이미지를 선택해주세요.');
+            return false;
+        }
+        return true;
+    }
 
-    // 파일 선택 시 미리보기 함수 호출
-    document.getElementById('files').addEventListener('change', function () {
-        handleFileSelect(this);
+    document.getElementById('submit-button').addEventListener('click', function(event) {
+        if (!validateForm()) {
+            event.preventDefault(); // 폼 제출을 막습니다.
+        }
     });
+
+
 </script>
-
-
-
 
 </body>
 </html>

@@ -6,8 +6,11 @@ import com.ll.hype.domain.admin.admin.dto.response.MemberListResponse;
 import com.ll.hype.domain.admin.admin.service.AdminService;
 import com.ll.hype.domain.brand.brand.dto.BrandRequest;
 import com.ll.hype.domain.brand.brand.dto.BrandResponse;
+import com.ll.hype.domain.customer.question.dto.QuestionRequest;
 import com.ll.hype.domain.customer.question.dto.QuestionResponse;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
+import com.ll.hype.domain.order.order.dto.response.OrderResponse;
+import com.ll.hype.domain.order.sale.dto.response.SaleResponse;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesRequest;
 import com.ll.hype.domain.shoes.shoes.dto.ShoesResponse;
 import java.security.Principal;
@@ -87,21 +90,27 @@ public class AdminController {
     }
     //============== Member End ==============
 
-
     //============== Brand Start ==============
-    // Brand home
+
+    /**
+     * Brand home
+     */
     @GetMapping("/main/brand")
     public String brandHome() {
         return "domain/admin/brand/main";
     }
 
-    // 관리자 브랜드 생성 폼
+    /**
+     * 관리자 브랜드 생성 폼
+     */
     @GetMapping("/brand/create")
     public String createBrandForm(BrandRequest brandRequest) {
         return "/domain/admin/brand/addForm";
     }
 
-    // 관리자 브랜드 생성
+    /**
+     * 관리자 브랜드 생성
+     */
     @PostMapping("/brand/create")
     public String createBrand(BrandRequest brandRequest,
                               @RequestParam(value = "files") List<MultipartFile> files) {
@@ -109,18 +118,37 @@ public class AdminController {
         return "redirect:/admin/brand/list";
     }
 
-    // 관리자 브랜드 전체 조회 (DISABLE 까지 조회)
+    /**
+     * 관리자 브랜드 전체 조회 (DISABLE 까지 조회)
+     */
     @GetMapping("/brand/list")
     public String brandFindAll(Model model) {
         List<BrandResponse> brands = adminService.brandFindAll();
         model.addAttribute("brands", brands);
         return "domain/admin/brand/list";
     }
+
+    @GetMapping("/brand/{id}")
+    public String brandDetail(@PathVariable("id") Long id,
+                              BrandRequest brandRequest,
+                              Model model) {
+        BrandResponse brand = adminService.brandFind(id);
+        model.addAttribute("data", brand);
+        return "domain/admin/brand/detail";
+    }
+
+    @DeleteMapping("/brand/delete")
+    public String brandDelete(@RequestParam("id") Long id) {
+        adminService.brandDelete(id);
+        return "redirect:/admin/brand/list";
+    }
     //============== Brand End ==============
 
-
     //============== Shoes Start ==============
-    // Shoes home
+
+    /**
+     * Shoes home
+     */
     @GetMapping("/main/shoes")
     public String shoesHome() {
         return "domain/admin/shoes/main";
@@ -146,11 +174,23 @@ public class AdminController {
         model.addAttribute("shoes", shoes);
         return "domain/admin/shoes/list";
     }
+
+    @GetMapping("/shoes/{id}")
+    public String shoesDetail(@PathVariable("id") Long id,
+                              ShoesRequest shoesRequest,
+                              Model model) {
+        ShoesResponse shoes = adminService.shoesFind(id);
+        model.addAttribute("data", shoes);
+        model.addAttribute("brands", adminService.brandFindEnable());
+        return "domain/admin/shoes/detail";
+    }
     //============== Shoes End ==============
 
-
     //============== CS Question & Answer Start ==============
-    // Question Detail
+
+    /**
+     * Question Detail
+     */
     @GetMapping("/cs/question/detail/{id}")
     public String questionDetail(@PathVariable Long id,
                                  Model model) {
@@ -159,7 +199,9 @@ public class AdminController {
         return "domain/admin/question/detail";
     }
 
-    // Question All List
+    /**
+     * Question All List
+     */
     @GetMapping("/cs/question/list")
     public String questionFindAll(Model model) {
         List<QuestionResponse> findAll = adminService.findQuestionAll();
@@ -167,7 +209,42 @@ public class AdminController {
         return "domain/admin/question/list";
     }
 
-    // Answer Create
+    /**
+     * Question Delete
+     */
+    @DeleteMapping("/cs/question/delete/{id}")
+    public String questionDelete(@PathVariable("id") Long id) {
+        adminService.questionDelete(id);
+        return "redirect:/admin/cs/question/list";
+    }
+
+    /**
+     * Question Update Form
+     */
+    @GetMapping("/cs/question/update/{id}")
+    public String questionUpdateForm(@PathVariable("id") Long id,
+                                     QuestionRequest customerQRequest,
+                                     Model model) {
+
+        QuestionResponse question = adminService.findQuestion(id);
+        model.addAttribute("question", question);
+        return "domain/admin/question/update_form";
+    }
+
+    /**
+     * Question Update
+     */
+    @PutMapping("/cs/question/update")
+    public String questionUpdate(@RequestParam("id") Long id,
+                                 QuestionRequest customerQRequest) {
+        adminService.questionUpdate(id, customerQRequest);
+        return "redirect:/admin/cs/question/detail/%s".formatted(id);
+    }
+
+
+    /**
+     * Answer Create
+     */
     @PostMapping("/cs/qeestion/answer/create/{id}")
     public String answerCreate(@PathVariable("id") Long id,
                                @RequestParam("content") String content,
@@ -181,7 +258,9 @@ public class AdminController {
         return "redirect:/admin/cs/question/detail/%s".formatted(id);
     }
 
-    // Answer Delete
+    /**
+     * Answer Delete
+     */
     @PostMapping("/cs/qeestion/answer/delete/{id}")
     public String answerDelete(@PathVariable("id") Long id) {
         QuestionResponse customerQResponse = adminService.deleteAnswer(id);
@@ -204,4 +283,35 @@ public class AdminController {
         return "redirect:/admin/buy/list";
     }
     //============== Buy End ==============
+
+    //============== Sale Start ==============
+    @GetMapping("/sale/list")
+    public String saleFindAll(Model model) {
+        List<SaleResponse> saleResponses = adminService.saleFindAll();
+        model.addAttribute("data", saleResponses);
+        return "domain/admin/sale/list";
+    }
+
+    @DeleteMapping("/sale/delete")
+    public String deleteSale(@RequestParam("id") Long id) {
+        adminService.saleDelete(id);
+        return "redirect:/admin/sale/list";
+    }
+    //============== Sale End ==============
+
+    //============== Order Start ==============
+    @GetMapping("/order/list")
+    public String orderFindAll(Model model) {
+        List<OrderResponse> orderResponses = adminService.orderFindAll();
+        model.addAttribute("data", orderResponses);
+        return "domain/admin/order/list";
+    }
+
+    @PutMapping("/order/deposit/complete")
+    public String orderDepositComplete(@RequestParam("id") Long id) {
+        adminService.orderDepositComplete(id);
+        return "redirect:/admin/order/list";
+    }
+    //============== Order End ==============
+
 }

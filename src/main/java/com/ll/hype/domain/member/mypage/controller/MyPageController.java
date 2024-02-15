@@ -221,12 +221,21 @@ public class MyPageController {
         return "domain/member/mypage/sale_history";
     }
 
-    @GetMapping("/order/trading")
-    public String tradingOrder(@AuthenticationPrincipal UserPrincipal user, Model model) {
-        List<OrderResponse> tradingOrder = orderService.findTradingOrder(user.getMember());
+    @GetMapping("/order/trading/buy")
+    public String tradingOrderBuy(@AuthenticationPrincipal UserPrincipal user, Model model) {
+        List<OrderResponse> tradingOrder = orderService.findTradingOrderBuy(user.getMember());
         model.addAttribute("data", tradingOrder);
 
-        return "domain/member/mypage/tradingOrder";
+        return "domain/member/mypage/trading_order_buy";
+    }
+
+    @GetMapping("/order/trading/sale")
+    public String tradingOrderSale(@AuthenticationPrincipal UserPrincipal user, Model model) {
+        List<OrderResponse> tradingOrder = orderService.findTradingOrderSale(user.getMember());
+        log.info("[MyPageController.tradingOrderSale] obj size : " + tradingOrder.size());
+        model.addAttribute("data", tradingOrder);
+
+        return "domain/member/mypage/trading_order_sale";
     }
 
     //운송장번호 등록(수정)
@@ -235,7 +244,7 @@ public class MyPageController {
                                      @RequestParam("deliveryNumber") long deliveryNumber,
                                      @AuthenticationPrincipal UserPrincipal user) {
         orderService.updateDeliveryNumber(id, deliveryNumber, user.getMember());
-        return "redirect:/mypage/order/trading";
+        return "redirect:/mypage/order/trading/sale";
     }
 
     // 판매자 정산 내역

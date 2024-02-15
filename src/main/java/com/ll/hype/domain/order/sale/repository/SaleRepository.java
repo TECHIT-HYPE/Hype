@@ -36,8 +36,6 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     Optional<Sale> findByShoesIdAndMemberAndShoesSizeSizeAndStatus(Long id, Member member, int size, Status status);
 
-    @Query("SELECT s FROM Sale s " +
-            "ORDER BY s.createDate DESC")
     List<Sale> findByMember(Member member);
 
     Optional<Sale> findByIdAndMember(Long id, Member member);

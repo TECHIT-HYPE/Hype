@@ -23,7 +23,7 @@
             <td class="py-2 px-4 border-b" th:text="${question.id}"></td>
             <td class="py-2 px-4 border-b" th:text="${question.member.name}"></td>
             <td class="py-2 px-4 border-b">
-                <a th:href="@{|/admin/cs/question/detail/${question.id}|}" th:text="${question.questionTitle}"></a>
+                <a th:href="@{|/admin/cs/question/detail/${question.id}|}" th:text="${question.questionTitle} + ' [+' + ${question.answers.size()}+']'"></a>
             </td>
             <td class="py-2 px-4 border-b" th:text="${question.questionContent}"></td>
             <td class="py-2 px-4 border-b" th:text="${question.questionCategory}"></td>

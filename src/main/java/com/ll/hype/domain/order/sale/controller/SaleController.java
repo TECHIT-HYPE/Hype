@@ -103,7 +103,7 @@ public class SaleController {
         SaleResponse saleResponse = saleService.createSaleBid(saleRequest, user.getMember());
         redirectAttributes.addFlashAttribute("saleId", saleResponse.getId());
 
-        return "redirect:/sale/shoes/sale/bid/detail";
+        return "redirect:/mypage/sale/history";
     }
 
     // 판매 생성: 즉시 판매
@@ -114,7 +114,7 @@ public class SaleController {
 
         OrderResponse order = saleService.createSaleNow(saleRequest, user.getMember());
         model.addAttribute("order", order);
-        return "redirect:/";
+        return "redirect:/mypage/order/trading/sale";
     }
 
     // 생성 완료: 판매 입찰 내역

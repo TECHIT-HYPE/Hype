@@ -19,6 +19,7 @@
 </head>
 <body>
 <div layout:fragment="my_page_content">
+    <h1 class="text-2xl font-bold mb-4">구매 내역</h1>
     <div role="list" class="container mx-auto divide-y divide-gray-100">
         <div th:each="buy : ${data}" class="flex justify-between gap-x-6 p-5 hover:bg-gray-100">
             <div class="card card-side bg-base-100 shadow-xl" id="wishlist-card">

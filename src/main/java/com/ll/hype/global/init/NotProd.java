@@ -61,7 +61,7 @@ public class NotProd {
     private final MemberRepository memberRepository;
     private final ShoesSizeRepository shoesSizeRepository;
     private final ShoesRepository shoesRepository;
-    private final BuyRepository orderRequestRepository;
+    private final BuyRepository buyRepository;
     private final AddressRepository addressRepository;
     private final SaleRepository saleRepository;
     private final WishlistRepository wishlistRepository;
@@ -898,8 +898,6 @@ public class NotProd {
         files = List.of(getMultipartFile("img/c3-1.webp"),getMultipartFile("img/c3-2.webp"));
         adminService.saveShoes(shoesRequest30, sizes, files);
 
-
-
         Address address = Address.builder()
                 .member(admin)
                 .addressName("관리자 집 지번")
@@ -1001,7 +999,7 @@ public class NotProd {
                 .addressName("TEST 집 도로명")
                 .postcode("28910")
                 .address("대구 수성구 청수로 274")
-                .detailAddress("1014 1005호")
+                .detailAddress("1014 1001호")
                 .extraAddress("(황금동, 힐스테이트)")
                 .isPrimary(false)
                 .build();
@@ -1013,7 +1011,7 @@ public class NotProd {
                 .addressName("TEST 집 도로명")
                 .postcode("18910")
                 .address("대구 수성구 달구벌대로 2435")
-                .detailAddress("101동 1003호")
+                .detailAddress("102동 1002호")
                 .extraAddress("(범어동, 제니스 아파트)")
                 .isPrimary(false)
                 .build();
@@ -1025,7 +1023,7 @@ public class NotProd {
                 .addressName("TEST 집 도로명")
                 .postcode("18910")
                 .address("대구 수성구 달구벌대로 2435")
-                .detailAddress("101동 1003호")
+                .detailAddress("103동 1003호")
                 .extraAddress("(범어동, 제니스 아파트)")
                 .isPrimary(false)
                 .build();
@@ -1037,7 +1035,7 @@ public class NotProd {
                 .addressName("TEST 집 도로명")
                 .postcode("18910")
                 .address("대구 수성구 달구벌대로 2435")
-                .detailAddress("101동 1003호")
+                .detailAddress("104동 1004호")
                 .extraAddress("(범어동, 제니스 아파트)")
                 .isPrimary(false)
                 .build();
@@ -1049,7 +1047,7 @@ public class NotProd {
                 .addressName("TEST 집 도로명")
                 .postcode("18910")
                 .address("대구 수성구 달구벌대로 2435")
-                .detailAddress("101동 1003호")
+                .detailAddress("105동 1005호")
                 .extraAddress("(범어동, 제니스 아파트)")
                 .isPrimary(false)
                 .build();
@@ -1061,7 +1059,7 @@ public class NotProd {
                 .addressName("TEST 집 도로명")
                 .postcode("18910")
                 .address("대구 수성구 달구벌대로 2435")
-                .detailAddress("101동 1003호")
+                .detailAddress("106동 1006호")
                 .extraAddress("(범어동, 제니스 아파트)")
                 .isPrimary(false)
                 .build();
@@ -1073,7 +1071,7 @@ public class NotProd {
                 .addressName("TEST 집 도로명")
                 .postcode("18910")
                 .address("대구 수성구 달구벌대로 2435")
-                .detailAddress("101동 1003호")
+                .detailAddress("107동 1007호")
                 .extraAddress("(범어동, 제니스 아파트)")
                 .isPrimary(false)
                 .build();
@@ -1120,82 +1118,191 @@ public class NotProd {
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(1))
                 .member(admin)
-                .price(125000L)
-                .startDate(LocalDate.of(2024, 1, 25))
-                .endDate(LocalDate.of(2024, 1, 30))
+                .price(130000L)
+                .startDate(LocalDate.of(2024, 2, 13))
+                .endDate(LocalDate.of(2024, 2, 27))
+                .receiverName("admin")
                 .receiverAddress(address3.getFullAddress())
+                .receiverPhoneNumber(1041932693L)
                 .status(Status.BIDDING)
                 .build();
 
-        orderRequestRepository.save(orderRequest);
+        buyRepository.save(orderRequest);
 
         Buy orderRequest2 = Buy.builder()
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(2))
                 .member(admin)
-                .price(150000L)
-                .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
-                .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
-                .receiverAddress(address4.getFullAddress())
+                .price(140000L)
+                .startDate(LocalDate.of(2024, 2, 15))
+                .endDate(LocalDate.of(2024, 2, 29))
+                .receiverName("admin")
+                .receiverAddress(address3.getFullAddress())
+                .receiverPhoneNumber(1041932693L)
                 .status(Status.BIDDING)
                 .build();
-        orderRequestRepository.save(orderRequest2);
+       buyRepository.save(orderRequest2);
 
-        Sale saleRequest = Sale.builder()
+        Buy orderRequest3 = Buy.builder()
                 .shoes(shoes)
                 .shoesSize(shoes.getSizes().get(3))
                 .member(userMember1)
-                .price(300000L)
-                .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
-                .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
-                .address(address2.getFullAddress())
+                .price(150000L)
+                .startDate(LocalDate.of(2024, 2, 13))
+                .endDate(LocalDate.of(2024, 2, 27))
+                .receiverName("테스트1")
+                .receiverAddress(address9.getFullAddress())
+                .receiverPhoneNumber(1000001111L)
+                .status(Status.BIDDING)
+                .build();
+        buyRepository.save(orderRequest3);
+
+        Buy orderRequest4 = Buy.builder()
+                .shoes(shoes)
+                .shoesSize(shoes.getSizes().get(4))
+                .member(userMember2)
+                .price(160000L)
+                .startDate(LocalDate.of(2024, 2, 14))
+                .endDate(LocalDate.of(2024, 2, 28))
+                .receiverName("테스트2")
+                .receiverAddress(address10.getFullAddress())
+                .receiverPhoneNumber(1000001112L)
+                .status(Status.BIDDING)
+                .build();
+        buyRepository.save(orderRequest4);
+
+        Buy orderRequest5 = Buy.builder()
+                .shoes(shoes)
+                .shoesSize(shoes.getSizes().get(5))
+                .member(userMember3)
+                .price(170000L)
+                .startDate(LocalDate.of(2024, 2, 15))
+                .endDate(LocalDate.of(2024, 2, 29))
+                .receiverName("테스트3")
+                .receiverAddress(address11.getFullAddress())
+                .receiverPhoneNumber(1000001113L)
+                .status(Status.BIDDING)
+                .build();
+        buyRepository.save(orderRequest5);
+
+       //===============================
+
+
+        Sale saleRequest = Sale.builder()
+                .shoes(shoes)
+                .shoesSize(shoes.getSizes().get(1))
+                .member(userMember1)
+                .price(230000L)
+                .startDate(LocalDate.of(2024, 2, 10))
+                .endDate(LocalDate.of(2024, 2, 17))
+                .address(address9.getFullAddress())
                 .status(Status.BIDDING)
                 .accountBank("신한은행")
-                .accountNumber("1234-5678-999999-10")
+                .accountNumber("1111-5678-999999-10")
                 .build();
         saleRepository.save(saleRequest);
 
         Sale saleRequest2 = Sale.builder()
                 .shoes(shoes)
-                .shoesSize(shoes.getSizes().get(4))
+                .shoesSize(shoes.getSizes().get(2))
                 .member(userMember2)
-                .price(400000L)
-                .startDate(LocalDate.of(2024, 1, 26)) // 다른 시작 날짜
-                .endDate(LocalDate.of(2024, 2, 5)) // 다른 종료 날짜
-                .address(address2.getFullAddress())
+                .price(240000L)
+                .startDate(LocalDate.of(2024, 1, 27))
+                .endDate(LocalDate.of(2024, 2, 17))
+                .address(address10.getFullAddress())
                 .status(Status.BIDDING)
                 .accountBank("신한은행")
-                .accountNumber("1234-5678-999999-10")
+                .accountNumber("2222-5678-999999-10")
                 .build();
         saleRepository.save(saleRequest2);
 
         Sale saleRequest3 = Sale.builder()
                 .shoes(shoes)
-                .shoesSize(shoes.getSizes().get(5))
+                .shoesSize(shoes.getSizes().get(3))
                 .member(userMember3)
-                .price(400000L)
-                .startDate(LocalDate.of(2024, 1, 1)) // 다른 시작 날짜
-                .endDate(LocalDate.of(2024, 1, 31)) // 다른 종료 날짜
-                .address(address2.getFullAddress())
-                .status(Status.BID_EXPIRED)
+                .price(250000L)
+                .startDate(LocalDate.of(2024, 2, 1))
+                .endDate(LocalDate.of(2024, 2, 22))
+                .address(address11.getFullAddress())
+                .status(Status.BIDDING)
                 .accountBank("신한은행")
-                .accountNumber("1234-5678-999999-10")
+                .accountNumber("3333-5678-999999-10")
                 .build();
         saleRepository.save(saleRequest3);
 
         Sale saleRequest4 = Sale.builder()
                 .shoes(shoes)
-                .shoesSize(shoes.getSizes().get(5))
+                .shoesSize(shoes.getSizes().get(4))
                 .member(userMember4)
-                .price(450000L)
-                .startDate(LocalDate.of(2024, 1, 1)) // 다른 시작 날짜
-                .endDate(LocalDate.of(2024, 1, 31)) // 다른 종료 날짜
-                .address(address2.getFullAddress())
-                .status(Status.BID_EXPIRED)
+                .price(260000L)
+                .startDate(LocalDate.of(2024, 2, 11))
+                .endDate(LocalDate.of(2024, 2, 25))
+                .address(address12.getFullAddress())
+                .status(Status.BIDDING)
                 .accountBank("신한은행")
-                .accountNumber("1234-5678-999999-10")
+                .accountNumber("4444-5678-999999-10")
                 .build();
         saleRepository.save(saleRequest4);
+
+        // ========== shoes2 ==========
+
+        Sale saleRequest5 = Sale.builder()
+                .shoes(shoes2)
+                .shoesSize(shoes.getSizes().get(1))
+                .member(userMember1)
+                .price(230000L)
+                .startDate(LocalDate.of(2024, 2, 10))
+                .endDate(LocalDate.of(2024, 2, 17))
+                .address(address9.getFullAddress())
+                .status(Status.BIDDING)
+                .accountBank("신한은행")
+                .accountNumber("1111-5678-999999-10")
+                .build();
+        saleRepository.save(saleRequest5);
+
+        Sale saleRequest6 = Sale.builder()
+                .shoes(shoes2)
+                .shoesSize(shoes.getSizes().get(2))
+                .member(userMember2)
+                .price(240000L)
+                .startDate(LocalDate.of(2024, 1, 27))
+                .endDate(LocalDate.of(2024, 2, 17))
+                .address(address10.getFullAddress())
+                .status(Status.BIDDING)
+                .accountBank("신한은행")
+                .accountNumber("2222-5678-999999-10")
+                .build();
+        saleRepository.save(saleRequest6);
+
+        Sale saleRequest7 = Sale.builder()
+                .shoes(shoes2)
+                .shoesSize(shoes.getSizes().get(3))
+                .member(userMember3)
+                .price(250000L)
+                .startDate(LocalDate.of(2024, 2, 1))
+                .endDate(LocalDate.of(2024, 2, 22))
+                .address(address11.getFullAddress())
+                .status(Status.BIDDING)
+                .accountBank("신한은행")
+                .accountNumber("3333-5678-999999-10")
+                .build();
+        saleRepository.save(saleRequest7);
+
+        Sale saleRequest8 = Sale.builder()
+                .shoes(shoes2)
+                .shoesSize(shoes.getSizes().get(4))
+                .member(userMember4)
+                .price(260000L)
+                .startDate(LocalDate.of(2024, 2, 11))
+                .endDate(LocalDate.of(2024, 2, 25))
+                .address(address12.getFullAddress())
+                .status(Status.BIDDING)
+                .accountBank("신한은행")
+                .accountNumber("4444-5678-999999-10")
+                .build();
+        saleRepository.save(saleRequest8);
+
+       // =========== wishlist ==========
 
         Wishlist wishlist = Wishlist.builder()
                 .member(admin)

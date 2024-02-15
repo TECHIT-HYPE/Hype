@@ -1,5 +1,6 @@
 package com.ll.hype.domain.admin.admin.dto.request;
 
+import com.ll.hype.domain.member.member.entity.MemberRole;
 import com.ll.hype.global.enums.Gender;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class MemberModifyRequest {
     private String name;
     private String nickname;
     private Long phoneNumber;
+    private MemberRole role;
     private Gender gender;
     private Integer shoesSize;
     private List<MultipartFile> files = new ArrayList<>();

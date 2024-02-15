@@ -19,6 +19,7 @@
 
     <ul role="list" class="divide-y divide-gray-100">
         <li class="flex justify-between gap-x-6 p-5 hover:bg-gray-100" th:each="item : ${data}">
+            <a th:href="@{|/shoes/${item.id}|}">
             <div class="card card-side bg-base-100 shadow-xl" id="wishlist-card">
                 <figure id="card-figure">
                     <ul style="padding: 0;">
@@ -40,6 +41,7 @@
                     </div>
                 </div>
             </div>
+            </a>
         </li>
     </ul>
 </div>

@@ -1,0 +1,126 @@
+<html layout:decorate="~{global/adLayout}">
+<head>
+    <title>관리자 신발 상품 상세</title>
+</head>
+<body>
+<div layout:fragment="ad_page_content" class="container bg-white rounded">
+    <form th:action="@{/admin/shoes/modify}" method="post" class="max-w-md mx-auto" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="PUT">
+        <input type="hidden" name="id" th:value="${data.id}"/>
+
+        <ul>
+            <li th:each="path : ${data.fullPath}">
+                <img th:src="${path}" class="w-20"/>
+            </li>
+        </ul>
+
+        <!-- existing code -->
+        <div class="mb-4">
+            <label for="files" class="block text-gray-700 text-sm font-bold mb-2">files:</label>
+            <input type="file" id="files" name="files" multiple required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="brand" class="block text-sm font-bold text-gray-700 mb-2">브랜드:</label>
+            <select id="brand" name="brand" th:value="${data.brand.id}" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.korName}"></option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label for="korName" class="block text-sm font-bold text-gray-700 mb-2">한글 이름:</label>
+            <input type="text" id="korName" name="korName" th:value="${data.korName}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="engName" class="block text-sm font-bold text-gray-700 mb-2">영어 이름:</label>
+            <input type="text" id="engName" name="engName" th:value="${data.engName}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="model" class="block text-sm font-bold text-gray-700 mb-2">모델:</label>
+            <input type="text" id="model" name="model" th:value="${data.model}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="price" class="block text-sm font-bold text-gray-700 mb-2">가격:</label>
+            <input type="number" id="price" name="price" th:value="${data.price}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="release" class="block text-sm font-bold text-gray-700 mb-2">출시일:</label>
+            <input type="date" id="release" name="release" th:value="${data.release}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="shoesCategory" class="block text-sm font-bold text-gray-700 mb-2">신발 카테고리:</label>
+            <select id="shoesCategory" name="shoesCategory" th:value="${data.shoesCategory}" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                <option th:each="category : ${T(com.ll.hype.domain.shoes.shoes.entity.ShoesCategory).values()}"
+                        th:value="${category}"
+                        th:text="${category}"></option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label for="color" class="block text-sm font-bold text-gray-700 mb-2">색상:</label>
+            <input type="text" id="color" name="color" th:value="${data.color}" required
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="gender" class="block text-sm font-bold text-gray-700 mb-2">성별:</label>
+            <select id="gender" name="gender" th:value="${data.gender}" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                <option th:each="gender : ${T(com.ll.hype.global.enums.Gender).values()}"
+                        th:value="${gender}"
+                        th:text="${gender}"></option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label for="status" class="block text-sm font-bold text-gray-700 mb-2">상태:</label>
+            <select id="status" name="status" th:value="${data.status}" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                <option value="ENABLE">활성화</option>
+                <option value="DISABLE">비활성화</option>
+                <!-- 필요한 만큼 옵션을 추가하세요 -->
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-sm font-bold text-gray-700 mb-2">사이즈:</label>
+            <th:block th:each="size : ${T(com.ll.hype.global.util.ShoesSizeGenerator).getSizes()}">
+                <div class="flex items-center">
+                    <input type="checkbox" id="sizes" name="sizes" th:value="${size}" th:checked="${data.sizes != null and data.sizes.![size].contains(size)}"
+                           class="mr-2 focus:outline-none focus:border-blue-500"/>
+                    <label th:for="${'size-' + size}" th:text="${size}" class="text-sm"></label>
+                </div>
+            </th:block>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue">
+            수정
+        </button>
+
+    </form>
+
+    <form th:action="@{|/admin/shoes/delete|}" method="post" onsubmit="return confirm('정말로 삭제 하시겠습니까?');" class="max-w-md mx-auto">
+        <input type="hidden" name="id" th:value="${data.id}">
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit"
+                class="mt-2 w-full bg-red-500 text-white p-3 rounded-md hover:bg-red-600 focus:outline-none focus:shadow-outline-blue">
+            삭제
+        </button>
+    </form>
+</div>
+</body>
+</html>

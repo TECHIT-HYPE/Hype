@@ -1,6 +1,7 @@
 package com.ll.hype.domain.order.order.controller;
 
 
+import com.ll.hype.domain.order.buy.dto.request.CreateBuyRequest;
 import com.ll.hype.domain.order.buy.dto.response.BuyResponse;
 import com.ll.hype.domain.order.buy.service.BuyService;
 import com.ll.hype.domain.order.order.dto.OrderRequest;
@@ -155,6 +156,29 @@ public class OrderController {
                                   Model model) {
         log.info("[OrderController.paymentComplete] 진입 : " + tossId);
         orderService.setPaymentComplete(tossId);
-        return "redirect:/mypage/buy/history";
+        return "redirect:/mypage/order/trading/buy";
+    }
+
+
+    /**
+     * 결제
+     */
+    @PostMapping("/payment")
+    public String createBuyNow(@RequestParam("id") Long id,
+                               @AuthenticationPrincipal UserPrincipal user,
+                               Model model) {
+        OrderResponse order = orderService.findOrder(id, user.getMember());
+        model.addAttribute("order", order);
+        return "domain/order/order/order_payment";
+    }
+
+    /**
+     * 구매 확정
+     */
+    @PutMapping("/trad/complete")
+    public String tradComplete(@RequestParam("id") Long id,
+                               @AuthenticationPrincipal UserPrincipal user) {
+        orderService.orderComplete(id, user.getMember());
+        return "redirect:/mypage/order/trading/buy";
     }
 }

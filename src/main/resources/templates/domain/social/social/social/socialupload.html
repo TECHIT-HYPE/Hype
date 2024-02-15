@@ -195,6 +195,21 @@
             }
         }
     }
+    function validateForm() {
+        var fileInput = document.getElementById('files');
+        if (fileInput.files.length === 0) {
+            alert('이미지를 선택해주세요.');
+            return false;
+        }
+        return true;
+    }
+
+    document.getElementById('submit-button').addEventListener('click', function(event) {
+        if (!validateForm()) {
+            event.preventDefault(); // 폼 제출을 막습니다.
+        }
+    });
+
 </script>
 
 </body>

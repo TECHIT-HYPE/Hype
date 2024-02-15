@@ -1,6 +1,6 @@
-<html layout:decorate="~{domain/member/mypage/myPageLayout}">
+<html layout:decorate="~{global/adLayout}">
 <head>
-    <title>판매 내역</title>
+    <title>관리자 판매 입찰 목록</title>
     <style>
         img {
             width: 200px;
@@ -18,8 +18,7 @@
     </style>
 </head>
 <body>
-<div layout:fragment="my_page_content">
-    <h1 class="text-2xl font-bold mb-4">판매 내역</h1>
+<div layout:fragment="ad_page_content">
     <div role="list" class="container mx-auto divide-y divide-gray-100">
         <div th:each="sale : ${data}" class="flex justify-between gap-x-6 p-5 hover:bg-gray-100">
             <div class="card card-side bg-base-100 shadow-xl" id="wishlist-card">
@@ -43,7 +42,8 @@
                         </div>
                         <div>
                             <label class="block text-gray-700 text-lg font-bold mb-2">입찰 정보</label>
-                            <p class="text-sm">금액 : <span th:text="${sale.price}"></span>원</p>
+                            <p class="text-sm">입찰자 : <span th:text="${sale.member.nickname}"></span></p>
+                            <p class="text-sm">금액 : <span th:text="${sale.price}"></span></p>
                             <p class="text-sm">시작일 : <span th:text="${sale.startDate}"></span></p>
                             <p class="text-sm">종료일 : <span th:text="${sale.endDate}"></span></p>
                             <p class="text-sm">상태 : <span th:text="${sale.status}"></span></p>
@@ -51,17 +51,9 @@
                     </div>
 
                     <div class="flex justify-end" th:if="${sale.status == T(com.ll.hype.global.enums.Status).BIDDING}">
-                        <div class="card-actions mr-2">
-                            <form th:action="@{|/sale/modify|}" method="post">
-                                <input type="hidden" name="id" th:value="${sale.id}"/>
-                                <button type="submit" class="btn btn-warning card-action">
-                                    입찰 금액 변경
-                                </button>
-                            </form>
-                        </div>
-
                         <div class="card-actions">
-                            <form th:action="@{|/sale/delete|}" method="post" onsubmit="return confirm('정말로 취소 하시겠습니까?');">
+                            <form th:action="@{|/admin/sale/delete|}" method="post"
+                                  onsubmit="return confirm('정말로 취소 하시겠습니까?');">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <input type="hidden" name="id" th:value="${sale.id}"/>
                                 <button type="submit" class="btn btn-error card-action">
