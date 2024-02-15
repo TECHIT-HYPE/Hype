@@ -375,7 +375,7 @@ public class AdminService {
 
     //============== Order Start ==============
     public List<OrderResponse> orderFindAll() {
-        List<Orders> findAll = orderRepository.findAll();
+        List<Orders> findAll = orderRepository.findAllOrderByCreateDateDesc();
         List<OrderResponse> orders = new ArrayList<>();
 
         for (Orders order : findAll) {

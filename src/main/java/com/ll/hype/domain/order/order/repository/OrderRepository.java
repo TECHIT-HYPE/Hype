@@ -15,6 +15,10 @@ import org.springframework.data.repository.query.Param;
 public interface OrderRepository extends JpaRepository<Orders, Long> {
     Optional<Orders> findByTossId(String tossId);
 
+    @Query("SELECT o FROM Orders o "+
+            "ORDER BY o.createDate DESC")
+    List<Orders> findAllOrderByCreateDateDesc();
+
     @Query("SELECT o FROM Orders o WHERE o.buy.member = :member "+
             "ORDER BY o.createDate DESC")
     List<Orders> findOrderBuyByMember(Member member);
