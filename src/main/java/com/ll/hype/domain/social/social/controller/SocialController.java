@@ -71,7 +71,7 @@ public class SocialController {
             throw new IllegalArgumentException("파일이 null입니다.");
         }
 
-        SocialUploadRequest socialUploadRequest = new SocialUploadRequest().builder()
+        SocialUploadRequest socialUploadRequest = SocialUploadRequest.builder()
                 .content(content)
                 .build();
 
